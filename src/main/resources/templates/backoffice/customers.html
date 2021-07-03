@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Cadastro de clientes</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+            />
+        <!-- https://fonts.google.com/specimen/Roboto -->
+        <link rel="stylesheet" th:href="@{css/fontawesome.min.css}" />
+        <!-- https://fontawesome.com/ -->
+        <link rel="stylesheet" th:href="@{jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
+        <!-- http://api.jqueryui.com/datepicker/ -->
+        <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+        <!-- https://getbootstrap.com/ -->
+        <link rel="stylesheet" th:href="@{css/templatemo-style.css}">
+        <!--
+            Product Admin CSS Template
+            https://templatemo.com/tm-524-product-admin
+        -->
+
+
+
+    </head>
+
+    <body>
+        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+        <div class="container-fluid height-full">
+            <div class="row ">
+                <div class="col-sm-6 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="tm-block-title d-inline-block">Edição de Clientes</h2>
+                            </div>
+                        </div>
+
+                        <form id="imageForm" method="POST" action="images/upload" enctype="multipart/form-data" style="display: none">
+                            <!-- <input type="text" name="title" style="display: none" required="true"/> -->
+                            <input id="fileInput" type="file" name="image" accept="image/*" style="display: none" required="true"/>
+                            <input id="fileInputSubmit" type="submit" value="Upload" style="display: none"/>
+                        </form>
+
+                        <form action="#" th:action="@{/backoffice/customers}" th:object="${customer}" method="post" class="tm-edit-product-form">
+                            <div class="row tm-edit-product-row">
+                                <div class="col-xl-6 col-lg-6 col-md-12">  
+                                    <div class="form-group mb-3">
+                                        <input
+                                            id="id"
+                                            name="id"
+                                            type="text"
+                                            th:field="*{id}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="name"
+                                            >Nome
+                                        </label>
+                                        <input
+                                            id="name"
+                                            name="name"
+                                            th:field="*{name}"
+                                            type="text"
+                                            class="form-control validate"
+                                            required
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="name"
+                                            >Email
+                                        </label>
+                                        <input
+                                            id="email"
+                                            name="email"
+                                            th:field="*{email}"
+                                            type="text"
+                                            class="form-control validate"
+                                            required
+                                            />
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-6">
+                                            <label
+                                                for="documentNumber"
+                                                >CPF
+                                            </label>
+                                            <input
+                                                id="documentNumber"
+                                                name="documentNumber"
+                                                th:field="*{documentNumber}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                        <div class="form-group mb-2 col-6">
+                                            <label
+                                                for="birthDate"
+                                                >Nascimento
+                                            </label>
+                                            <input
+                                                id="birthDate"
+                                                name="birthDate"
+                                                th:field="*{birthDate}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-6">
+                                            <label
+                                                for="sex"
+                                                >Sexo
+                                            </label>
+                                            <select
+                                                id="sex"
+                                                name="sex"
+                                                th:field="*{sex}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                >
+                                                <option value="Masculino" >Masculino</option>
+                                                <option value="Feminino" >Feminino</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-2 col-6">
+                                            <label
+                                                for="registeredDate"
+                                                >Dt Cadastro
+                                            </label>
+                                            <input
+                                                id="registeredDate"
+                                                name="registeredDate"
+                                                th:field="*{registeredDate}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                readonly="true"
+                                                />
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="col-xl-6 col-lg-6 col-md-12">  
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                            <label
+                                                for="isActive"
+                                                >Ativo
+                                            </label>
+                                            <input
+                                                id="isActive"
+                                                name="isActive"
+                                                th:field="*{isActive}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                data-large-mode="true"
+                                                checked="true"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                            <label
+                                                for="isBlocked"
+                                                >Bloqueado
+                                            </label>
+                                            <input
+                                                id="isBlocked"
+                                                name="isBlocked"
+                                                th:field="*{isBlocked}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                            <label
+                                                for="isEmailConformed"
+                                                >Email Confirmado
+                                            </label>
+                                            <input
+                                                id="isEmailConformed"
+                                                name="isEmailConformed"
+                                                th:field="*{isEmailConformed}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                            <label
+                                                for="offerOpted"
+                                                >Ofertas
+                                            </label>
+                                            <input
+                                                id="offerOpted"
+                                                name="offerOpted"
+                                                th:field="*{offerOpted}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-block text-uppercase">SALVAR CADASTRO</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-3 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <h2 class="tm-block-title">Telefones do Cliente</h2>
+                        <table class="table tm-table-small tm-product-table">
+                            <tbody>
+                                <tr th:each="phone : ${customerPhones}">
+                                    <td th:text="${phone.phone}" class="tm-product-name"/>
+                                    <td th:text="${phone.phoneType}" class="tm-product-name"/>
+                                    <td class="text-center">
+                                        <a href="#" class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+                        <form action="#" th:action="@{/backoffice/customers/phone}" th:object="${customerPhone}" method="post" class="tm-edit-product-form">
+                            <div class="row">
+                                <div class="form-group col-7">
+                                    <input
+                                        id="id"
+                                        name="id"
+                                        type="text"
+                                        th:value="${customer.id}"
+                                        class="form-control validate"
+                                        hidden="true"
+                                        />
+                                    <label
+                                        for="phone"
+                                        > Novo Telefone
+                                    </label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        th:field="*{phone}"
+                                        type="text"
+                                        placeholder="(00) 0000-0000"
+                                        class="form-control"
+                                        required="true"
+                                        />
+                                </div>
+                                <div class="form-group col-5">
+                                    <label
+                                        for="phoneType">Tp de Tel.</label>
+                                    <select
+                                        id="phoneType"
+                                        name="phoneType"
+                                        th:field="*{phoneType}"
+                                        type="text"
+                                        class="form-control"
+                                        required="true"
+
+                                        >
+                                        <option value="Celular" >Celular</option>
+                                        <option value="Casa">Casa</option>
+                                        <option value="Trabalho">Trabalho</option>
+                                        <option value="Recado">Recado</option>
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                                Cadastrar Novo Telefone
+                            </button>
+                        </form>
+
+                        <!-- table container -->
+                    </div>
+                </div>
+                <div class="col-sm-3 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <h2 class="tm-block-title">Endereços do Cliente</h2>
+                        <table class="table tm-table-small tm-product-table">
+                            <tbody>
+                                <tr th:each="address,iter : ${customerAddresses}">
+                                    <td class="tm-product-name">
+                                        <a th:text="${address.type}" />
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="tm-product-delete-link" href="#" th:href="'/backoffice/customers?id=' + ${customer.id} + '&addressid=' + (${iter.index} +1)">
+                                            <i class="far fa-eye tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="tm-product-delete-link" href="#" th:href="'/backoffice/customers/address?customerid=' + ${customer.id} + '&addressid=' + (${iter.index} +1)">
+                                            <i class="far fa-edit tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="alert alert-danger" role="alert" th:text="${errorAddress}" th:if="${errorAddress}"></div>
+                        <form action="#" th:action="@{/backoffice/customers/address}" method="get" class="tm-edit-product-form">
+                            <input
+                                id="id"
+                                name="customerid"
+                                type="text"
+                                th:value="${customer.id}"
+                                class="form-control validate"
+                                hidden="true"
+                                />
+                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                                Cadastrar Novo Endereço
+                            </button>
+                        </form>
+                        <!-- table container -->
+                        <textarea class="table tm-table-small tm-product-table" readonly="true" th:text="${addressString}" style="height: 130px;">Teste</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2021</b> All rights reserved. 
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+                </p>
+            </div>
+        </footer> 
+        <script th:src="@{js/ckeditor/ckeditor.js}"></script>
+        <script th:src="@{js/ckeditor/plugins/base64image/plugin.js}"></script>
+        <script th:src="@{js/jquery-3.3.1.min.js}"></script>
+        <!-- https://jquery.com/download/ -->
+        <script th:src="@{jquery-ui-datepicker/jquery-ui.min.js}"></script>
+        <!-- https://jqueryui.com/download/ -->
+        <script th:src="@{js/bootstrap.min.js}"></script>
+        <!-- https://getbootstrap.com/ -->
+
+        <script>
+
+            $(document).ready(function () {
+                $('.date').mask('00/00/0000');
+                $('.time').mask('00:00:00');
+                $('.date_time').mask('00/00/0000 00:00:00');
+                $('.cep').mask('00000-000');
+                $('.phone').mask('0000-0000');
+                $('.phone_with_ddd').mask('(00) 0000-0000');
+                $('.phone_us').mask('(000) 000-0000');
+                $('.mixed').mask('AAA 000-S0S');
+                $('.cpf').mask('000.000.000-00', {reverse: true});
+                $('.cnpj').mask('00.000.000/0000-00', {reverse: true});
+                $('.money').mask('000.000.000.000.000,00', {reverse: true});
+                $('.money2').mask("#.##0,00", {reverse: true});
+                $('.ip_address').mask('0ZZ.0ZZ.0ZZ.0ZZ', {
+                    translation: {
+                        'Z': {
+                            pattern: /[0-9]/, optional: true
+                        }
+                    }
+                });
+                $('.ip_address').mask('099.099.099.099');
+                $('.percent').mask('##0,00%', {reverse: true});
+                $('.clear-if-not-match').mask("00/00/0000", {clearIfNotMatch: true});
+                $('.placeholder').mask("00/00/0000", {placeholder: "__/__/____"});
+                $('.fallback').mask("00r00r0000", {
+                    translation: {
+                        'r': {
+                            pattern: /[\/]/,
+                            fallback: '/'
+                        },
+                        placeholder: "__/__/____"
+                    }
+                });
+                $('.selectonfocus').mask("00/00/0000", {selectOnFocus: true});
+            });
+
+
+            $(document).ready(function () {
+
+                if ($('#imageid').val()) {
+                    console.log("ready!");
+                    $.get("/images/download/" + $('#imageid').val())
+                            .done(function (data) {
+                                $('#imageBox').empty().prepend('<img id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="data:image/png;base64,' + data.imageData.data + '" />');
+                            });
+                }
+            });
+
+
+            $("#enviarImagem").click(function (event) {
+                //https://mkyong.com/jquery/jquery-ajax-submit-a-multipart-form/
+
+                //stop submit the form, we will post it manually.
+                event.preventDefault();
+
+                // Get form
+                var form = $('#imageForm')[0];
+                // Create an FormData object 
+                var data = new FormData(form);
+                console.log(form.fileInput.value);
+                data.append("title", form.fileInput.value);
+
+                // disabled the submit button
+                $("#enviarImagem").prop("disabled", true);
+
+                $.ajax({
+                    type: "POST",
+                    enctype: 'multipart/form-data',
+                    url: "/images/upload",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    timeout: 10000,
+                    success: function (data) {
+                        console.log("SUCCESS : ", data);
+                        $("#enviarImagem").prop("disabled", false);
+                        document.getElementById('imageid').setAttribute('value', data.id);
+                        $('#imageBox').empty().prepend('<img id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="data:image/png;base64,' + data.imageData.data + '" />');
+                    },
+                    error: function (e) {
+                        console.log("ERROR : ", e);
+                        $("#enviarImagem").prop("disabled", false);
+
+                    }
+                });
+
+            });
+
+        </script>
+
+        <script>
+            $(function () {
+                $("#birthDate").datepicker({dateFormat: 'dd/mm/yy'});
+            });
+        </script>
+
+        <script>
+
+            CKEDITOR.replace('description');
+            CKEDITOR.config.extraPlugins = "base64image";
+        </script>
+    </body>
+</html>

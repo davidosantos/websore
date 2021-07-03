@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Cadastro de clientes</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+            />
+        <!-- https://fonts.google.com/specimen/Roboto -->
+        <link rel="stylesheet" th:href="@{../css/fontawesome.min.css}" />
+        <!-- https://fontawesome.com/ -->
+        <link rel="stylesheet" th:href="@{../jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
+        <!-- http://api.jqueryui.com/datepicker/ -->
+        <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}" />
+        <!-- https://getbootstrap.com/ -->
+        <link rel="stylesheet" th:href="@{../css/templatemo-style.css}">
+        <!--
+            Product Admin CSS Template
+            https://templatemo.com/tm-524-product-admin
+        -->
+
+
+
+    </head>
+
+    <body>
+        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+        <div class="container-fluid height-full">
+            <div class="row ">
+                <div class="col-sm-12 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <div class="row">
+                            <a class="tm-product-delete-link" href="#" th:href="'/backoffice/customers?id=' + ${customer.id} + '&addressid=' + ${addressid}" >
+                                <i class="far fa-arrow-alt-circle-left tm-product-delete-icon"></i>
+                            </a>
+                            <div class="col-12">
+                                <h2 class="tm-block-title d-inline-block">Edição de Endereços.</h2>
+                                <h1 class="tm-block-title d-inline-block" th:text="'Cliente: ' +${customer.name}"/>
+                            </div>
+                        </div>
+                        <div class="alert alert-danger" role="alert" th:text="${errorAddress}" th:if="${errorAddress}"></div>
+                        <form action="#" th:action="@{/backoffice/customers/address}" th:object="${customerAddress}" method="post" class="tm-edit-product-form">
+                            <div class="row tm-edit-product-row">
+                                <div class="col-xl-12 col-lg-12 col-md-12">  
+                                    <div class="form-group mb-3">
+                                        <input
+                                            id="customerid"
+                                            name="customerid"
+                                            type="text"
+                                            th:value="${customer.id}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <input
+                                            id="addressid"
+                                            name="addressid"
+                                            type="text"
+                                            th:value="${addressid}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-5">
+                                            <label
+                                                for="street"
+                                                >Rua
+                                            </label>
+                                            <input
+                                                id="street"
+                                                name="street"
+                                                th:field="*{street}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 cal-2">
+                                            <label
+                                                for="number"
+                                                >Numero
+                                            </label>
+                                            <input
+                                                id="number"
+                                                name="number"
+                                                th:field="*{number}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-5">
+                                            <label
+                                                for="complement"
+                                                >Complemento
+                                            </label>
+                                            <input
+                                                id="complement"
+                                                name="complement"
+                                                th:field="*{complement}"
+                                                type="text"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-4">
+                                            <label
+                                                for="neighborhood"
+                                                >Bairro
+                                            </label>
+                                            <input
+                                                id="neighborhood"
+                                                name="neighborhood"
+                                                th:field="*{neighborhood}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-4">
+                                            <label
+                                                for="city"
+                                                >Cidade
+                                            </label>
+                                            <input
+                                                id="city"
+                                                name="city"
+                                                th:field="*{city}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-4">
+                                            <label
+                                                for="coutry"
+                                                >País
+                                            </label>
+                                            <input
+                                                id="coutry"
+                                                name="coutry"
+                                                th:field="*{coutry}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-4">
+                                            <label
+                                                for="zipCode"
+                                                >CEP
+                                            </label>
+                                            <input
+                                                id="zipCode"
+                                                name="zipCode"
+                                                th:field="*{zipCode}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-4">
+                                            <label
+                                                for="type"
+                                                >Tipo
+                                            </label>
+                                            <select
+                                                id="type"
+                                                name="type"
+                                                th:field="*{type}"
+                                                type="text"
+                                                class="form-control validate"
+                                                required
+                                                >
+                                                <option value="Casa">Casa</option>
+                                                <option value="Trabalho">Trabalho</option>
+                                                <option value="Cobrança">Cobrança</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3 col-4">
+                                            <label
+                                                for="reference"
+                                                >Referência
+                                            </label>
+                                            <input
+                                                id="reference"
+                                                name="reference"
+                                                th:field="*{reference}"
+                                                type="text"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="isActive"
+                                            >Ativo
+                                        </label>
+                                        <input
+                                            id="isActive"
+                                            name="isActive"
+                                            th:field="*{isActive}"
+                                            type="checkbox"
+                                            class="form-control validate"
+                                            />
+                                    </div>
+                                </div>  
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-block text-uppercase">SALVAR ENDEREÇO</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2021</b> All rights reserved. 
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+                </p>
+            </div>
+        </footer> 
+        <script th:src="@{../js/jquery-3.3.1.min.js}"></script>
+        <!-- https://jquery.com/download/ -->
+        <script th:src="@{../jquery-ui-datepicker/jquery-ui.min.js}"></script>
+        <!-- https://jqueryui.com/download/ -->
+        <script th:src="@{../js/bootstrap.min.js}"></script>
+        <!-- https://getbootstrap.com/ -->
+    </body>
+</html>
