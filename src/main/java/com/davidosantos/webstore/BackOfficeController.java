@@ -15,6 +15,8 @@ import com.davidosantos.webstore.products.ProductCategory;
 import com.davidosantos.webstore.products.ProductCategoryRepository;
 import com.davidosantos.webstore.products.ProductRepository;
 import com.davidosantos.webstore.products.ProductService;
+import com.davidosantos.webstore.products.ProductVariant;
+import com.davidosantos.webstore.products.ProductVariantValue;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -154,6 +156,77 @@ public class BackOfficeController {
         model.addAttribute("productCategories", productCategories);
 
         return "backoffice/products";
+    }
+
+    @RequestMapping("/products/product-variation")
+    public String backofficeEditProductsVariatonPage(@RequestParam(defaultValue = "") String id, Model model) {
+        Product product;
+        if (id.equals("")) {
+            product = new Product();
+        } else {
+            product = productRepository.findById(id).get();
+        }
+
+        List<ProductVariant> productVariants;
+        if (product.getProductVariants() != null) {
+            productVariants = product.getProductVariants();
+        } else {
+            productVariants = new ArrayList<ProductVariant>();
+        }
+
+        model.addAttribute("product", product);
+
+        model.addAttribute("productVariants", productVariants);
+
+        return "backoffice/product-variation";
+    }
+
+    @RequestMapping(value = "/products/product-variation", method = RequestMethod.POST)
+    public String backofficeSaveProductsVariatonPage(@RequestParam(defaultValue = "") String id, String variantName, Model model) {
+        Product product;
+        if (id.equals("")) {
+            product = new Product();
+        } else {
+            product = productRepository.findById(id).get();
+        }
+
+        ProductVariant productVariant = new ProductVariant();
+        productVariant.setIsActive(true);
+        productVariant.setName(variantName);
+        if (product.getProductVariants() == null) {
+            product.setProductVariants(new ArrayList<ProductVariant>());
+            product.getProductVariants().add(productVariant);
+        } else {
+            product.getProductVariants().add(productVariant);
+        }
+
+        productService.saveProduct(product);
+
+        return "redirect:/backoffice/products/product-variation?id=" + product.getId();
+    }
+
+    @RequestMapping(value = "/products/product-variation-value", method = RequestMethod.POST)
+    public String backofficeSaveProductsVariatonValuePage(
+            @RequestParam(defaultValue = "") String id,
+            @RequestParam(defaultValue = "") String variantName,
+            @RequestParam(defaultValue = "") String variantValue,
+            Model model) {
+        Product product;
+        if (id.equals("")) {
+            product = new Product();
+        } else {
+            product = productRepository.findById(id).get();
+        }
+
+        ProductVariantValue productVariantValue = new ProductVariantValue();
+        productVariantValue.setIsActive(true);
+        productVariantValue.setName(variantValue);
+
+        product.getProductVariants().stream().filter(variant -> variant.getName().equals(variantName)).findFirst().get().getProductVariantValues().add(productVariantValue);
+
+        productService.saveProduct(product);
+
+        return "redirect:/backoffice/products/product-variation?id=" + product.getId();
     }
 
     @RequestMapping("/customers")

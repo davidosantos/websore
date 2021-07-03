@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Cadastro de Variantes de Produtos</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+            />
+        <!-- https://fonts.google.com/specimen/Roboto -->
+        <link rel="stylesheet" th:href="@{../css/fontawesome.min.css}" />
+        <!-- https://fontawesome.com/ -->
+        <link rel="stylesheet" th:href="@{../jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
+        <!-- http://api.jqueryui.com/datepicker/ -->
+        <link rel="stylesheet" th:href="@{../css/bootstrap.min.css}" />
+        <!-- https://getbootstrap.com/ -->
+        <link rel="stylesheet" th:href="@{../css/templatemo-style.css}">
+        <!--
+            Product Admin CSS Template
+            https://templatemo.com/tm-524-product-admin
+        -->
+
+
+
+    </head>
+
+    <body>
+        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+
+        <div class="container-fluid height-full">
+            <div class="row ">
+                <div class="col-sm-3 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <a class="tm-product-delete-link" href="#" th:href="'/backoffice/products?id=' + ${product.id}" >
+                            <i class="far fa-arrow-alt-circle-left tm-product-delete-icon"></i>
+                        </a>
+                        <h2 th:text="'Produto: ' + ${product.name}" class="tm-block-title"/>
+                        <table class="table tm-table-small tm-product-table">
+                            <tbody>
+                                <tr th:each="productVariant : ${productVariants}">
+                                    <td th:text="${productVariant.name}" class="tm-product-name"/>
+                                    <td class="text-center">
+                                        <a href="#" class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <form action="#" th:action="@{/backoffice/products/product-variation}" method="post" class="tm-edit-product-form">
+                            <input name="id" th:value="${product.id}" hidden="true">
+                            <div class="form-group col-12">
+                                <label
+                                    for="variantName"
+                                    > Nome
+                                </label>
+                                <input
+                                    id="variantName"
+                                    name="variantName"
+                                    type="text"
+                                    class="form-control"
+                                    required="true"
+                                    />
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                                Salvar Variante
+                            </button>
+                        </form>
+                        <!-- table container -->
+                    </div>
+                </div>
+
+                <div th:each="productVariant : ${productVariants}" class="col-sm-3 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <h2 class="tm-block-title" th:text="${productVariant.name}"/>
+                        <table class="table tm-table-small tm-product-table">
+                            <tbody>
+                                <tr th:each="productVariantValue : ${productVariant.productVariantValues}">
+                                    <td th:text="${productVariantValue.name}" class="tm-product-name"/>
+                                    <td class="text-center">
+                                        <a href="#" class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <form action="#" th:action="@{/backoffice/products/product-variation-value}" method="post" class="tm-edit-product-form">
+                            <input name="id" th:value="${product.id}" hidden="true">
+                            <input name="variantName" th:value="${productVariant.name}" hidden="true">
+                            <div class="form-group col-12">
+                                <label
+                                    for="productVariantValue"
+                                    > Nome
+                                </label>
+                                <input
+                                    id="productVariantValue"
+                                    name="variantValue"
+                                    type="text"
+                                    class="form-control"
+                                    required="true"
+                                    />
+                            </div>
+                            <button th:text="'Cadastrar Novo(a) ' + ${productVariant.name}" type="submit" class="btn btn-primary btn-block text-uppercase mb-3"/>
+                        </form>
+                        <!-- table container -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2021</b> All rights reserved. 
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+                </p>
+            </div>
+        </footer> 
+        <script th:src="@{../js/ckeditor/ckeditor.js}"></script>
+        <script th:src="@{../js/ckeditor/plugins/base64image/plugin.js}"></script>
+        <script th:src="@{../js/jquery-3.3.1.min.js}"></script>
+        <!-- https://jquery.com/download/ -->
+        <script th:src="@{../jquery-ui-datepicker/jquery-ui.min.js}"></script>
+        <!-- https://jqueryui.com/download/ -->
+        <script th:src="@{../js/bootstrap.min.js}"></script>
+        <!-- https://getbootstrap.com/ -->
+
+        <script>
+
+            $(document).ready(function () {
+
+                if ($('#imageid').val()) {
+                    console.log("ready!");
+                    $.get("/images/download/" + $('#imageid').val())
+                            .done(function (data) {
+                                $('#imageBox').empty().prepend('<img id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="data:image/png;base64,' + data.imageData.data + '" />');
+                            });
+                }
+            });
+
+
+            $("#enviarImagem").click(function (event) {
+                //https://mkyong.com/jquery/jquery-ajax-submit-a-multipart-form/
+
+                //stop submit the form, we will post it manually.
+                event.preventDefault();
+
+                // Get form
+                var form = $('#imageForm')[0];
+                // Create an FormData object 
+                var data = new FormData(form);
+                console.log(form.fileInput.value);
+                data.append("title", form.fileInput.value);
+
+                // disabled the submit button
+                $("#enviarImagem").prop("disabled", true);
+
+                $.ajax({
+                    type: "POST",
+                    enctype: 'multipart/form-data',
+                    url: "/images/upload",
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    timeout: 10000,
+                    success: function (data) {
+                        console.log("SUCCESS : ", data);
+                        $("#enviarImagem").prop("disabled", false);
+                        document.getElementById('imageid').setAttribute('value', data.id);
+                        $('#imageBox').empty().prepend('<img id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="data:image/png;base64,' + data.imageData.data + '" />');
+                    },
+                    error: function (e) {
+                        console.log("ERROR : ", e);
+                        $("#enviarImagem").prop("disabled", false);
+
+                    }
+                });
+
+            });
+
+        </script>
+
+        <script>
+            $(function () {
+                $("#expireDate").datepicker({dateFormat: 'dd/mm/yy'});
+            });
+        </script>
+
+        <script>
+
+            CKEDITOR.replace('description');
+            CKEDITOR.config.extraPlugins = "base64image";
+        </script>
+    </body>
+</html>

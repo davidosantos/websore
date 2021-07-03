@@ -5,7 +5,9 @@
  */
 package com.davidosantos.webstore.products;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,6 +40,7 @@ public class Product {
     private String providerName;
     private String providerUrl;
     private ProductCategory productCategory;
+    private List<ProductVariant> productVariants;
 
     public String getCode() {
         return code;
@@ -181,6 +184,17 @@ public class Product {
 
     public void setProductCategory(ProductCategory productCategory) {
         this.productCategory = productCategory;
+    }
+
+    public List<ProductVariant> getProductVariants() {
+        if(productVariants == null){
+            productVariants = new ArrayList<ProductVariant>();
+        }
+        return productVariants;
+    }
+
+    public void setProductVariants(List<ProductVariant> productVariants) {
+        this.productVariants = productVariants;
     }
 
 }
