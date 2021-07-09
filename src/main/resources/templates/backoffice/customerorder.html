@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Pedidos de clientes</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+            />
+        <!-- https://fonts.google.com/specimen/Roboto -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/fontawesome.min.css}" />
+        <!-- https://fontawesome.com/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
+        <!-- http://api.jqueryui.com/datepicker/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/bootstrap.min.css}" />
+        <!-- https://getbootstrap.com/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/templatemo-style.css}">
+        <!--
+            Product Admin CSS Template
+            https://templatemo.com/tm-524-product-admin
+        -->
+
+
+    <body  id="reportsPage">
+        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+    </head>
+    <div class="container-fluid height-full">
+
+        <ul  class="nav nav-tabs">
+            <li class="nav-item"><a  class="nav-link active" href="#customerDetails" data-toggle="tab">Cliente</a></li>
+            <li class="nav-item"><a class="nav-link" href="#orderItems" data-toggle="tab">Itens de Pedido</a></li>
+            <li class="nav-item"><a class="nav-link" href="#paymentItems" data-toggle="tab">Pagamentos</a></li>
+            <li class="nav-item"><a class="nav-link" href="#totalValues" data-toggle="tab">Totais</a></li>
+            <li class="nav-item"><a class="nav-link" href="#statusHistory" data-toggle="tab">Statuses</a></li>
+            <li class="nav-item"><a class="nav-link" href="#orderOpearetions" data-toggle="tab">Operações</a></li>
+            <li class="nav-item"><a class="nav-link" href="#supplierHistoryOrders" data-toggle="tab">Pedidos Fornecedor</a></li>
+            <li class="nav-item"><a class="nav-link" href="#supplierBuys" data-toggle="tab">Comprar no Fornecedor</a></li>
+        </ul>
+
+        <div class="tab-content clearfix">
+            <div class="tab-pane active" id="customerDetails">
+                <div class="col-sm-10 tm-col" style="padding-top: 20px" id="customerDetails">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="tm-block-title d-inline-block">Detalhes do Clientes</h2>
+                            </div>
+                        </div>
+                        <form action="#" th:action="@{/backoffice/customerorder/createOrder}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
+                            <div class="row tm-edit-product-row">
+                                <div class="col-xl-8 col-lg-8 col-md-8">  
+                                    <div class="form-group mb-3">
+                                        <input
+                                            id="id"                                            
+                                            name="id"
+                                            type="text"
+                                            th:field="*{id}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                        <input
+                                            id="customerid"                                            
+                                            name="customerid"
+                                            type="text"
+                                            th:value="${customerid}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="code"
+                                            >Código do Pedido
+                                        </label>
+                                        <input
+                                            id="code"
+                                            name="code"
+                                            th:field="*{code}"
+                                            type="text"
+                                            class="form-control validate"
+                                            readonly="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="customername"
+                                            >Nome
+                                        </label>
+                                        <input
+                                            id="customername"
+                                            name="customername"
+                                            th:field="${customerOrder.customer.name}"
+                                            type="text"
+                                            class="form-control validate"
+                                            readonly="true"
+                                            />
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-6">
+                                            <label
+                                                for="documentNumber"
+                                                >CPF
+                                            </label>
+                                            <input
+                                                placeholder="CPF"
+                                                id="documentNumber"
+                                                name="documentNumber"
+                                                th:field="${customerOrder.customer.documentNumber}"
+                                                type="text"
+                                                class="form-control validate"
+                                                readonly="true"
+                                                />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-12 col-12">
+                                            <label
+                                                for="selectedCustomerAddress"
+                                                >Endereço
+                                            </label>
+                                            <select
+                                                th:if="${id == '' and customerid != ''}"
+                                                id="customerAddress"
+                                                name="customerAddress"
+                                                type="text"
+                                                class="form-control validate"
+                                                readonly="true"
+                                                >
+                                                <option th:each="address : ${customer.addresses}" th:value="${address}" th:text="${address}"/>
+
+                                            </select>
+
+
+                                            <input
+                                                th:if="${id != '' and customerid == ''}"
+                                                th:value="${customerOrder.selectedCustomerAddress}"
+                                                id="customerAddress"
+                                                name="customerAddress"
+                                                type="text"
+                                                class="form-control validate"
+                                                readonly="true"
+                                                />
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="col-xl-6 col-lg-6 col-md-12">  
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-3">
+                                            <label
+                                                for="isActive"
+                                                >Ativo
+                                            </label>
+                                            <input
+                                                id="isActive"
+                                                name="isActive"
+                                                th:field="${customerOrder.customer.isActive}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                data-large-mode="true"
+                                                disabled="true"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-sm-3">
+                                            <label
+                                                for="isBlocked"
+                                                >Bloqueado
+                                            </label>
+                                            <input
+                                                id="isBlocked"
+                                                name="isBlocked"
+                                                th:field="${customerOrder.customer.isBlocked}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                 disabled="true"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-3">
+                                            <label
+                                                for="isEmailConformed"
+                                                >Email
+                                            </label>
+                                            <input
+                                                id="isEmailConformed"
+                                                name="isEmailConformed"
+                                                th:field="${customerOrder.customer.isEmailConformed}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                 disabled="true"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-4 col-3">
+                                            <label
+                                                for="offerOpted"
+                                                >Ofertas
+                                            </label>
+                                            <input
+                                                id="offerOpted"
+                                                name="offerOpted"
+                                                th:field="${customerOrder.customer.offerOpted}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                disabled="true"
+                                                />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                type="submit"
+                                th:if="${id == '' and customerid != ''}"
+                                href="/backoffice/customerorder/createOrder"
+                                class="btn btn-primary btn-block text-uppercase mb-3">Gerar Novo Pedido</button>
+                        </form>
+                        <a th:if="${id == '' and customerid == ''}"
+                           href="/backoffice/customerselect?redirectTo=/backoffice/customerorder/order"
+                           class="btn btn-primary btn-block text-uppercase mb-3">Selecionar Cliente</a>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="orderItems">
+                <div class="col-sm-10 tm-col">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
+                        <h2 class="tm-block-title">Itens de Pedido</h2>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Qtd. Fornecedor</th>
+                                    <th scope="col">Preço</th>
+                                    <th scope="col">Preço Fornecedor</th>
+                                    <th scope="col">Total Liquido</th>
+                                    <th scope="col">Total Bruto</th>
+                                    <th scope="col">Desconto</th>
+                                    <th scope="col">Frete</th>
+                                    <th scope="col">Fornecedor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><b>#122343</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Timmy Davis</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>218 km</b></td>
+                                    <td>12:00, 10 OCT 2018</td>
+                                    <td>08:00, 18 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122342</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Oscar Phyo</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>420 km</b></td>
+                                    <td>15:30, 06 OCT 2018</td>
+                                    <td>09:30, 16 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122341</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Charlie Brown</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>300 km</b></td>
+                                    <td>11:00, 10 OCT 2018</td>
+                                    <td>03:00, 14 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122340</b></th>
+                                    <td>
+                                        <div class="tm-status-circle cancelled">
+                                        </div>Cancelled
+                                    </td>
+                                    <td><b>Wilson Cookies</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>218 km</b></td>
+                                    <td>17:30, 12 OCT 2018</td>
+                                    <td>08:30, 22 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122339</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Richard Clamon</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>150 km</b></td>
+                                    <td>15:00, 12 OCT 2018</td>
+                                    <td>09:20, 26 OCT 2018</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a th:if="${id != ''}"
+                           th:href="'/backoffice/productselect?redirectTo=/backoffice/customerorder/productadd&method=post&id=' + ${id}"
+                           class="btn btn-primary btn-block text-uppercase mb-3">Incluir Novo Item</a>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="paymentItems">
+                <div class="col-10 tm-col" id="paymentItems">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
+                        <h2 class="tm-block-title">Itens de Pagamento</h2>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Qtd. Fornecedor</th>
+                                    <th scope="col">Preço</th>
+                                    <th scope="col">Preço Fornecedor</th>
+                                    <th scope="col">Total Liquido</th>
+                                    <th scope="col">Total Bruto</th>
+                                    <th scope="col">Desconto</th>
+                                    <th scope="col">Frete</th>
+                                    <th scope="col">Fornecedor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><b>#122349</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Oliver Trag</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>485 km</b></td>
+                                    <td>16:00, 12 NOV 2018</td>
+                                    <td>08:00, 18 NOV 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122348</b></th>
+                                    <td>
+                                        <div class="tm-status-circle pending">
+                                        </div>Pending
+                                    </td>
+                                    <td><b>Jacob Miller</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>360 km</b></td>
+                                    <td>11:00, 10 NOV 2018</td>
+                                    <td>04:00, 14 NOV 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122347</b></th>
+                                    <td>
+                                        <div class="tm-status-circle cancelled">
+                                        </div>Cancelled
+                                    </td>
+                                    <td><b>George Wilson</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>340 km</b></td>
+                                    <td>12:00, 22 NOV 2018</td>
+                                    <td>06:00, 28 NOV 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122346</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>William Aung</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>218 km</b></td>
+                                    <td>15:00, 10 NOV 2018</td>
+                                    <td>09:00, 14 NOV 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122345</b></th>
+                                    <td>
+                                        <div class="tm-status-circle pending">
+                                        </div>Pending
+                                    </td>
+                                    <td><b>Harry Ryan</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>280 km</b></td>
+                                    <td>15:00, 11 NOV 2018</td>
+                                    <td>09:00, 17 NOV 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122344</b></th>
+                                    <td>
+                                        <div class="tm-status-circle pending">
+                                        </div>Pending
+                                    </td>
+                                    <td><b>Michael Jones</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>218 km</b></td>
+                                    <td>18:00, 12 OCT 2018</td>
+                                    <td>06:00, 18 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122343</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Timmy Davis</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>218 km</b></td>
+                                    <td>12:00, 10 OCT 2018</td>
+                                    <td>08:00, 18 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122342</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Oscar Phyo</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>420 km</b></td>
+                                    <td>15:30, 06 OCT 2018</td>
+                                    <td>09:30, 16 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122341</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Charlie Brown</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>300 km</b></td>
+                                    <td>11:00, 10 OCT 2018</td>
+                                    <td>03:00, 14 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122340</b></th>
+                                    <td>
+                                        <div class="tm-status-circle cancelled">
+                                        </div>Cancelled
+                                    </td>
+                                    <td><b>Wilson Cookies</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>218 km</b></td>
+                                    <td>17:30, 12 OCT 2018</td>
+                                    <td>08:30, 22 OCT 2018</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><b>#122339</b></th>
+                                    <td>
+                                        <div class="tm-status-circle moving">
+                                        </div>Moving
+                                    </td>
+                                    <td><b>Richard Clamon</b></td>
+                                    <td><b>London, UK</b></td>
+                                    <td><b>150 km</b></td>
+                                    <td>15:00, 12 OCT 2018</td>
+                                    <td>09:20, 26 OCT 2018</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane" id="totalValues">
+                <div class="col-sm-10 tm-col" style="padding-top: 20px" id="totalValues">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="tm-block-title d-inline-block">Valores Totais</h2>
+                            </div>
+                        </div>
+                        <form action="#" th:action="@{/backoffice/customerorder/order}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
+                            <div class="row tm-edit-product-row">
+                                <div class="col-xl-8 col-lg-8 col-md-8">  
+                                    <div class="form-group mb-3">
+                                        <input
+                                            id="id"                                            
+                                            name="id"
+                                            type="text"
+                                            th:field="*{id}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="code"
+                                            >Código
+                                        </label>
+                                        <input
+                                            id="code"
+                                            name="code"
+                                            th:field="*{code}"
+                                            type="text"
+                                            class="form-control validate"
+                                            readonly="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="customername"
+                                            >Nome
+                                        </label>
+                                        <input
+                                            id="customername"
+                                            name="customername"
+                                            th:field="${customerOrder.customer.name}"
+                                            type="text"
+                                            class="form-control validate"
+                                            readonly="true"
+                                            />
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-6">
+                                            <label
+                                                for="documentNumber"
+                                                >CPF
+                                            </label>
+                                            <input
+                                                placeholder="CPF"
+                                                id="documentNumber"
+                                                name="documentNumber"
+                                                th:field="${customerOrder.customer.documentNumber}"
+                                                type="text"
+                                                class="form-control validate"
+                                                readonly="true"
+                                                />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group mb-12 col-12">
+                                            <label
+                                                for="selectedCustomerAddress"
+                                                >Endereço
+                                            </label>
+                                            <input
+                                                id="selectedCustomerAddress"
+                                                name="selectedCustomerAddress"
+                                                th:field="${customerOrder.selectedCustomerAddress}"
+                                                type="text"
+                                                class="form-control validate"
+                                                readonly="true"
+                                                />
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="col-xl-6 col-lg-6 col-md-12">  
+                                    <div class="row">
+                                        <div class="form-group mb-3 col-3">
+                                            <label
+                                                for="isActive"
+                                                >Ativo
+                                            </label>
+                                            <input
+                                                id="isActive"
+                                                name="isActive"
+                                                th:field="${customerOrder.customer.isActive}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                data-large-mode="true"
+                                                checked="true"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-sm-3">
+                                            <label
+                                                for="isBlocked"
+                                                >Bloqueado
+                                            </label>
+                                            <input
+                                                id="isBlocked"
+                                                name="isBlocked"
+                                                th:field="${customerOrder.customer.isBlocked}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-3 col-3">
+                                            <label
+                                                for="isEmailConformed"
+                                                >Email Confirmado
+                                            </label>
+                                            <input
+                                                id="isEmailConformed"
+                                                name="isEmailConformed"
+                                                th:field="${customerOrder.customer.isEmailConformed}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                        <div class="form-group mb-4 col-3">
+                                            <label
+                                                for="offerOpted"
+                                                >Ofertas
+                                            </label>
+                                            <input
+                                                id="offerOpted"
+                                                name="offerOpted"
+                                                th:field="${customerOrder.customer.offerOpted}"
+                                                type="checkbox"
+                                                class="form-control validate"
+                                                />
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="statusHistory">
+            <div class="col-10 tm-col" id="statusHistory">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
+                    <h2 class="tm-block-title">Historico de Status</h2>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Codigo</th>
+                                <th scope="col">Nome</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Quantidade</th>
+                                <th scope="col">Qtd. Fornecedor</th>
+                                <th scope="col">Preço</th>
+                                <th scope="col">Preço Fornrcedor</th>
+                                <th scope="col">Total Liquido</th>
+                                <th scope="col">Total Bruto</th>
+                                <th scope="col">Desconto</th>
+                                <th scope="col">Frete</th>
+                                <th scope="col">Fornecedor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><b>#122349</b></th>
+                                <td>
+                                    <div class="tm-status-circle moving">
+                                    </div>Moving
+                                </td>
+                                <td><b>Oliver Trag</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>485 km</b></td>
+                                <td>16:00, 12 NOV 2018</td>
+                                <td>08:00, 18 NOV 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122348</b></th>
+                                <td>
+                                    <div class="tm-status-circle pending">
+                                    </div>Pending
+                                </td>
+                                <td><b>Jacob Miller</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>360 km</b></td>
+                                <td>11:00, 10 NOV 2018</td>
+                                <td>04:00, 14 NOV 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122347</b></th>
+                                <td>
+                                    <div class="tm-status-circle cancelled">
+                                    </div>Cancelled
+                                </td>
+                                <td><b>George Wilson</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>340 km</b></td>
+                                <td>12:00, 22 NOV 2018</td>
+                                <td>06:00, 28 NOV 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122346</b></th>
+                                <td>
+                                    <div class="tm-status-circle moving">
+                                    </div>Moving
+                                </td>
+                                <td><b>William Aung</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>218 km</b></td>
+                                <td>15:00, 10 NOV 2018</td>
+                                <td>09:00, 14 NOV 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122345</b></th>
+                                <td>
+                                    <div class="tm-status-circle pending">
+                                    </div>Pending
+                                </td>
+                                <td><b>Harry Ryan</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>280 km</b></td>
+                                <td>15:00, 11 NOV 2018</td>
+                                <td>09:00, 17 NOV 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122344</b></th>
+                                <td>
+                                    <div class="tm-status-circle pending">
+                                    </div>Pending
+                                </td>
+                                <td><b>Michael Jones</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>218 km</b></td>
+                                <td>18:00, 12 OCT 2018</td>
+                                <td>06:00, 18 OCT 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122343</b></th>
+                                <td>
+                                    <div class="tm-status-circle moving">
+                                    </div>Moving
+                                </td>
+                                <td><b>Timmy Davis</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>218 km</b></td>
+                                <td>12:00, 10 OCT 2018</td>
+                                <td>08:00, 18 OCT 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122342</b></th>
+                                <td>
+                                    <div class="tm-status-circle moving">
+                                    </div>Moving
+                                </td>
+                                <td><b>Oscar Phyo</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>420 km</b></td>
+                                <td>15:30, 06 OCT 2018</td>
+                                <td>09:30, 16 OCT 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122341</b></th>
+                                <td>
+                                    <div class="tm-status-circle moving">
+                                    </div>Moving
+                                </td>
+                                <td><b>Charlie Brown</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>300 km</b></td>
+                                <td>11:00, 10 OCT 2018</td>
+                                <td>03:00, 14 OCT 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122340</b></th>
+                                <td>
+                                    <div class="tm-status-circle cancelled">
+                                    </div>Cancelled
+                                </td>
+                                <td><b>Wilson Cookies</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>218 km</b></td>
+                                <td>17:30, 12 OCT 2018</td>
+                                <td>08:30, 22 OCT 2018</td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><b>#122339</b></th>
+                                <td>
+                                    <div class="tm-status-circle moving">
+                                    </div>Moving
+                                </td>
+                                <td><b>Richard Clamon</b></td>
+                                <td><b>London, UK</b></td>
+                                <td><b>150 km</b></td>
+                                <td>15:00, 12 OCT 2018</td>
+                                <td>09:20, 26 OCT 2018</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="orderOpearetions">
+            <div class="col-sm-10 tm-col" style="padding-top: 20px" id="orderOpearetions">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Operações no Pedido</h2>
+                        </div>
+                    </div>
+                    <form action="#" th:action="@{/backoffice/customerorder/order}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
+                        <div class="row tm-edit-product-row">
+                            <div class="col-xl-8 col-lg-8 col-md-8">  
+                                <div class="form-group mb-3">
+                                    <input
+                                        id="id"                                            
+                                        name="id"
+                                        type="text"
+                                        th:field="*{id}"
+                                        class="form-control validate"
+                                        hidden="true"
+                                        />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label
+                                        for="code"
+                                        >Código
+                                    </label>
+                                    <input
+                                        id="code"
+                                        name="code"
+                                        th:field="*{code}"
+                                        type="text"
+                                        class="form-control validate"
+                                        readonly="true"
+                                        />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label
+                                        for="customername"
+                                        >Nome
+                                    </label>
+                                    <input
+                                        id="customername"
+                                        name="customername"
+                                        th:field="${customerOrder.customer.name}"
+                                        type="text"
+                                        class="form-control validate"
+                                        readonly="true"
+                                        />
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-6">
+                                        <label
+                                            for="documentNumber"
+                                            >CPF
+                                        </label>
+                                        <input
+                                            placeholder="CPF"
+                                            id="documentNumber"
+                                            name="documentNumber"
+                                            th:field="${customerOrder.customer.documentNumber}"
+                                            type="text"
+                                            class="form-control validate"
+                                            readonly="true"
+                                            />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-12 col-12">
+                                        <label
+                                            for="selectedCustomerAddress"
+                                            >Endereço
+                                        </label>
+                                        <input
+                                            id="selectedCustomerAddress"
+                                            name="selectedCustomerAddress"
+                                            th:field="${customerOrder.selectedCustomerAddress}"
+                                            type="text"
+                                            class="form-control validate"
+                                            readonly="true"
+                                            />
+                                    </div>
+                                </div>
+                            </div>  
+                            <div class="col-xl-6 col-lg-6 col-md-12">  
+                                <div class="row">
+                                    <div class="form-group mb-3 col-3">
+                                        <label
+                                            for="isActive"
+                                            >Ativo
+                                        </label>
+                                        <input
+                                            id="isActive"
+                                            name="isActive"
+                                            th:field="${customerOrder.customer.isActive}"
+                                            type="checkbox"
+                                            class="form-control validate"
+                                            data-large-mode="true"
+                                            checked="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3 col-sm-3">
+                                        <label
+                                            for="isBlocked"
+                                            >Bloqueado
+                                        </label>
+                                        <input
+                                            id="isBlocked"
+                                            name="isBlocked"
+                                            th:field="${customerOrder.customer.isBlocked}"
+                                            type="checkbox"
+                                            class="form-control validate"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3 col-3">
+                                        <label
+                                            for="isEmailConformed"
+                                            >Email Confirmado
+                                        </label>
+                                        <input
+                                            id="isEmailConformed"
+                                            name="isEmailConformed"
+                                            th:field="${customerOrder.customer.isEmailConformed}"
+                                            type="checkbox"
+                                            class="form-control validate"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-4 col-3">
+                                        <label
+                                            for="offerOpted"
+                                            >Ofertas
+                                        </label>
+                                        <input
+                                            id="offerOpted"
+                                            name="offerOpted"
+                                            th:field="${customerOrder.customer.offerOpted}"
+                                            type="checkbox"
+                                            class="form-control validate"
+                                            />
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="supplierHistoryOrders">
+        <div class="col-10 tm-col" id="supplierHistoryOrders">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
+                <h2 class="tm-block-title">Pedidos no Fornecedor</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Quantidade</th>
+                            <th scope="col">Qtd. Fornecedor</th>
+                            <th scope="col">Preço</th>
+                            <th scope="col">Preço Fornecedor</th>
+                            <th scope="col">Total Liquido</th>
+                            <th scope="col">Total Bruto</th>
+                            <th scope="col">Desconto</th>
+                            <th scope="col">Frete</th>
+                            <th scope="col">Fornecedor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row"><b>#122349</b></th>
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Moving
+                            </td>
+                            <td><b>Oliver Trag</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>485 km</b></td>
+                            <td>16:00, 12 NOV 2018</td>
+                            <td>08:00, 18 NOV 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122348</b></th>
+                            <td>
+                                <div class="tm-status-circle pending">
+                                </div>Pending
+                            </td>
+                            <td><b>Jacob Miller</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>360 km</b></td>
+                            <td>11:00, 10 NOV 2018</td>
+                            <td>04:00, 14 NOV 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122347</b></th>
+                            <td>
+                                <div class="tm-status-circle cancelled">
+                                </div>Cancelled
+                            </td>
+                            <td><b>George Wilson</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>340 km</b></td>
+                            <td>12:00, 22 NOV 2018</td>
+                            <td>06:00, 28 NOV 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122346</b></th>
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Moving
+                            </td>
+                            <td><b>William Aung</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>218 km</b></td>
+                            <td>15:00, 10 NOV 2018</td>
+                            <td>09:00, 14 NOV 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122345</b></th>
+                            <td>
+                                <div class="tm-status-circle pending">
+                                </div>Pending
+                            </td>
+                            <td><b>Harry Ryan</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>280 km</b></td>
+                            <td>15:00, 11 NOV 2018</td>
+                            <td>09:00, 17 NOV 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122344</b></th>
+                            <td>
+                                <div class="tm-status-circle pending">
+                                </div>Pending
+                            </td>
+                            <td><b>Michael Jones</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>218 km</b></td>
+                            <td>18:00, 12 OCT 2018</td>
+                            <td>06:00, 18 OCT 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122343</b></th>
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Moving
+                            </td>
+                            <td><b>Timmy Davis</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>218 km</b></td>
+                            <td>12:00, 10 OCT 2018</td>
+                            <td>08:00, 18 OCT 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122342</b></th>
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Moving
+                            </td>
+                            <td><b>Oscar Phyo</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>420 km</b></td>
+                            <td>15:30, 06 OCT 2018</td>
+                            <td>09:30, 16 OCT 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122341</b></th>
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Moving
+                            </td>
+                            <td><b>Charlie Brown</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>300 km</b></td>
+                            <td>11:00, 10 OCT 2018</td>
+                            <td>03:00, 14 OCT 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122340</b></th>
+                            <td>
+                                <div class="tm-status-circle cancelled">
+                                </div>Cancelled
+                            </td>
+                            <td><b>Wilson Cookies</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>218 km</b></td>
+                            <td>17:30, 12 OCT 2018</td>
+                            <td>08:30, 22 OCT 2018</td>
+                        </tr>
+                        <tr>
+                            <th scope="row"><b>#122339</b></th>
+                            <td>
+                                <div class="tm-status-circle moving">
+                                </div>Moving
+                            </td>
+                            <td><b>Richard Clamon</b></td>
+                            <td><b>London, UK</b></td>
+                            <td><b>150 km</b></td>
+                            <td>15:00, 12 OCT 2018</td>
+                            <td>09:20, 26 OCT 2018</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane" id="supplierBuys"> 
+        <div class="col-sm-10 tm-col"  style="padding-top: 20px">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="tm-block-title d-inline-block">Cadastro de Compras no Fornecedor</h2>
+                    </div>
+                </div>
+                <form action="#" th:action="@{/backoffice/customerorder/order}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
+                    <div class="row tm-edit-product-row">
+                        <div class="col-xl-8 col-lg-8 col-md-8">  
+                            <div class="form-group mb-3">
+                                <input
+                                    id="id"                                            
+                                    name="id"
+                                    type="text"
+                                    th:field="*{id}"
+                                    class="form-control validate"
+                                    hidden="true"
+                                    />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label
+                                    for="code"
+                                    >Código
+                                </label>
+                                <input
+                                    id="code"
+                                    name="code"
+                                    th:field="*{code}"
+                                    type="text"
+                                    class="form-control validate"
+                                    readonly="true"
+                                    />
+                            </div>
+                            <div class="form-group mb-3">
+                                <label
+                                    for="customername"
+                                    >Nome
+                                </label>
+                                <input
+                                    id="customername"
+                                    name="customername"
+                                    th:field="${customerOrder.customer.name}"
+                                    type="text"
+                                    class="form-control validate"
+                                    readonly="true"
+                                    />
+                            </div>
+                            <div class="row">
+                                <div class="form-group mb-3 col-6">
+                                    <label
+                                        for="documentNumber"
+                                        >CPF
+                                    </label>
+                                    <input
+                                        placeholder="CPF"
+                                        id="documentNumber"
+                                        name="documentNumber"
+                                        th:field="${customerOrder.customer.documentNumber}"
+                                        type="text"
+                                        class="form-control validate"
+                                        readonly="true"
+                                        />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group mb-12 col-12">
+                                    <label
+                                        for="selectedCustomerAddress"
+                                        >Endereço
+                                    </label>
+                                    <input
+                                        id="selectedCustomerAddress"
+                                        name="selectedCustomerAddress"
+                                        th:field="${customerOrder.selectedCustomerAddress}"
+                                        type="text"
+                                        class="form-control validate"
+                                        readonly="true"
+                                        />
+                                </div>
+                            </div>
+                        </div>  
+                        <div class="col-xl-6 col-lg-6 col-md-12">  
+                            <div class="row">
+                                <div class="form-group mb-3 col-3">
+                                    <label
+                                        for="isActive"
+                                        >Ativo
+                                    </label>
+                                    <input
+                                        id="isActive"
+                                        name="isActive"
+                                        th:field="${customerOrder.customer.isActive}"
+                                        type="checkbox"
+                                        class="form-control validate"
+                                        data-large-mode="true"
+                                        checked="true"
+                                        />
+                                </div>
+                                <div class="form-group mb-3 col-sm-3">
+                                    <label
+                                        for="isBlocked"
+                                        >Bloqueado
+                                    </label>
+                                    <input
+                                        id="isBlocked"
+                                        name="isBlocked"
+                                        th:field="${customerOrder.customer.isBlocked}"
+                                        type="checkbox"
+                                        class="form-control validate"
+                                        />
+                                </div>
+                                <div class="form-group mb-3 col-3">
+                                    <label
+                                        for="isEmailConformed"
+                                        >Email Confirmado
+                                    </label>
+                                    <input
+                                        id="isEmailConformed"
+                                        name="isEmailConformed"
+                                        th:field="${customerOrder.customer.isEmailConformed}"
+                                        type="checkbox"
+                                        class="form-control validate"
+                                        />
+                                </div>
+                                <div class="form-group mb-4 col-3">
+                                    <label
+                                        for="offerOpted"
+                                        >Ofertas
+                                    </label>
+                                    <input
+                                        id="offerOpted"
+                                        name="offerOpted"
+                                        th:field="${customerOrder.customer.offerOpted}"
+                                        type="checkbox"
+                                        class="form-control validate"
+                                        />
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+<footer class="tm-footer row tm-mt-small">
+    <div class="col-12 font-weight-light">
+        <p class="text-center text-white mb-0 px-4 small">
+            Copyright &copy; <b>2021</b> All rights reserved. 
+            Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+        </p>
+    </div>
+</footer> 
+
+<script th:src="@{/backoffice/js/jquery-3.3.1.min.js}"></script>
+<!-- https://jquery.com/download/ -->
+<script th:src="@{/backoffice/jquery-ui-datepicker/jquery-ui.min.js}"></script>
+<!-- https://jqueryui.com/download/ -->
+<script th:src="@{/backoffice/js/bootstrap.min.js}"></script>
+<!-- https://getbootstrap.com/ -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+
+<script>
+    $(function () {
+        $("#birthDate").datepicker({dateFormat: 'dd/mm/yy'});
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Product Page - Admin HTML Template</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+            />
+        <!-- https://fonts.google.com/specimen/Roboto -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/fontawesome.min.css}" />
+        <!-- https://fontawesome.com/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/bootstrap.min.css}" />
+        <!-- https://getbootstrap.com/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/templatemo-style.css}">
+        <!--
+            Product Admin CSS Template
+            https://templatemo.com/tm-524-product-admin
+        -->
+    </head>
+
+    <body  id="reportsPage">
+        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+        <div class="container-fluid height-full">
+            <div class="row tm-content-row">
+                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 tm-block-col">
+                    <div class="tm-bg-primary-dark tm-block tm-block-products">
+                        <div class="tm-product-table-container">
+
+                            <table class="table table-hover tm-table-small tm-product-table">
+                                <thead>
+                                    <tr class="filters">
+                                <form method="GET" action="/backoffice/productselect">
+                                     <input  name="redirectTo" type="text" th:value="${redirectTo}" hidden="true">
+                                     <input  name="method" type="text" th:value="${method}" hidden="true">
+                                     <input  name="id" type="text" th:value="${id}" hidden="true">
+                                    <th><input class="mb-4" name="code" type="text" placeholder="Filtro por Codigo" ></th>
+                                    <th><input class="mb-4" name="name" type="text" placeholder="Filtro por Nome" ></th>
+                                    <th><input class="mb-4" name="providerName" type="text" placeholder="Filtro por Fornecedor" ></th>
+                                    <th><button class="btn btn-primary btn-block text-uppercase mb-1" type="submit" >Aplicar Filtros</button> </th>
+                                </form>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Selecionar</th>
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Fornecedor</th>
+                                    <th scope="col">Categoria</th>
+                                    <th scope="col">Preço</th>
+                                    <th scope="col">Preço Fornec.</th>
+                                    <th scope="col">Qdt. Disp.</th>
+                                    <th scope="col">&nbsp;</th>
+                                </tr>
+
+                                </thead>
+                                <tbody>
+
+                                    <tr th:each="product : ${productPage.content}">
+                                        <td>
+                                            <a th:if="${method} == 'get'" th:href="${redirectTo}+ '?id=' + ${id} +'&productid='+ ${product.id}" class="tm-product-delete-link">
+                                                <i class="far fa-hand-paper tm-product-delete-icon"></i>
+                                            </a>
+                                            <form th:if="${method} == 'post'" th:action="${redirectTo}+ '?id=' + ${id} +'&productid='+ ${product.id}" th:method="${method}">
+                                                <button type="submit" class="tm-product-delete-link">
+                                                    <i class="far fa-hand-paper tm-product-delete-icon"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                        <td th:text="${product.code}" class="tm-product-name"/>
+                                        <td th:text="${product.name}" />
+                                        <td th:text="${product.providerName}" />
+                                <th:block th:if="${product.productCategory != null}">
+                                    <td th:text="${product.productCategory.name}" />
+                                </th:block>
+                                <td th:if="${product.productCategory == null}" >**Sem Categoria**</td>
+
+                                <td th:text="${product.price}" />
+                                <td th:text="${product.supplierPrice}" />
+                                <td th:text="${product.availableQuantity}" />
+                                <td>
+                                    <a th:href="'/backoffice/products?id=' +${product.id}" class="tm-product-delete-link">
+                                        <i class="far fa-edit tm-product-delete-icon"></i>
+                                    </a>
+                                </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <nav th:if="${productPage.totalPages > 0}" aria-label="Paginação">
+                                <ul  class="pagination pagination-sm">
+                                    <li 
+                                        th:each="pageNumber : ${pageNumbers}" 
+                                        class="page-item"
+                                        th:classappend="${pageNumber==productPage.number} ? active"
+                                        >
+                                        <a
+                                            class="page-link"
+                                            th:href="@{/backoffice/productselect(size=${productPage.size}, page=${pageNumber}, redirectTo=${redirectTo}, method=${method}, id=${id})}"
+                                            th:text="${pageNumber} +1"
+                                            th:style="${pageNumber==productPage.number} ? 'background-color:darkcyan;' : 'background-color:powderblue;'"
+                                            />
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <!-- table container -->
+                        <a
+                            href="/backoffice/products"
+                            class="btn btn-primary btn-block text-uppercase mb-3">Cadastrar Novo Produto</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2018</b> All rights reserved. 
+
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+                </p>
+            </div>
+        </footer>
+
+        <script th:src="@{/backoffice/js/jquery-3.3.1.min.js}"></script>
+        <!-- https://jquery.com/download/ -->
+        <script th:src="@{/backoffice/js/bootstrap.min.js}"></script>
+        <!-- https://getbootstrap.com/ -->
+    </body>
+</html>
