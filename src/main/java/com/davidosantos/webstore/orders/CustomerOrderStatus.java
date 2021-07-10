@@ -11,6 +11,7 @@ package com.davidosantos.webstore.orders;
  */
 public enum CustomerOrderStatus {
     Created,
+    Cancelled,
     PaymentWait,
     Paid,
     SupplierOrderCreated,

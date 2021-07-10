@@ -5,6 +5,8 @@
  */
 package com.davidosantos.webstore.products;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,8 +26,10 @@ public class Product {
     private String code;
     private String name;
     private String description;
-    private double price;
-    private double supplierPrice;
+    private BigDecimal price;
+    private BigDecimal supplierPrice;
+    private BigDecimal discount;
+    private BigDecimal freight;
     private int availableQuantity;
     private int totalSupplierQuantity;
     private int lockedQuantity;
@@ -57,15 +61,6 @@ public class Product {
     public void setDescription(String description) {
         this.description = description;
     }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     public int getAvailableQuantity() {
         return availableQuantity;
     }
@@ -170,14 +165,6 @@ public class Product {
         this.id = id;
     }
 
-    public double getSupplierPrice() {
-        return supplierPrice;
-    }
-
-    public void setSupplierPrice(double supplierPrice) {
-        this.supplierPrice = supplierPrice;
-    }
-
     public ProductCategory getProductCategory() {
         return productCategory;
     }
@@ -195,6 +182,38 @@ public class Product {
 
     public void setProductVariants(List<ProductVariant> productVariants) {
         this.productVariants = productVariants;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+    public BigDecimal getSupplierPrice() {
+        return supplierPrice;
+    }
+
+    public void setSupplierPrice(BigDecimal supplierPrice) {
+        this.supplierPrice = supplierPrice.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+    public BigDecimal getFreight() {
+        return freight;
+    }
+
+    public void setFreight(BigDecimal freight) {
+        this.freight = freight.setScale(2, RoundingMode.HALF_EVEN);
     }
 
 }

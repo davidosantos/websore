@@ -34,6 +34,7 @@
             <li class="nav-item"><a class="nav-link" href="#paymentItems" data-toggle="tab">Pagamentos</a></li>
             <li class="nav-item"><a class="nav-link" href="#totalValues" data-toggle="tab">Totais</a></li>
             <li class="nav-item"><a class="nav-link" href="#statusHistory" data-toggle="tab">Statuses</a></li>
+            <li class="nav-item"><a class="nav-link" href="#auditHistory" data-toggle="tab">Auditoria</a></li>
             <li class="nav-item"><a class="nav-link" href="#orderOpearetions" data-toggle="tab">Operações</a></li>
             <li class="nav-item"><a class="nav-link" href="#supplierHistoryOrders" data-toggle="tab">Pedidos Fornecedor</a></li>
             <li class="nav-item"><a class="nav-link" href="#supplierBuys" data-toggle="tab">Comprar no Fornecedor</a></li>
@@ -173,7 +174,7 @@
                                                 th:field="${customerOrder.customer.isBlocked}"
                                                 type="checkbox"
                                                 class="form-control validate"
-                                                 disabled="true"
+                                                disabled="true"
                                                 />
                                         </div>
                                         <div class="form-group mb-3 col-3">
@@ -187,7 +188,7 @@
                                                 th:field="${customerOrder.customer.isEmailConformed}"
                                                 type="checkbox"
                                                 class="form-control validate"
-                                                 disabled="true"
+                                                disabled="true"
                                                 />
                                         </div>
                                         <div class="form-group mb-4 col-3">
@@ -220,7 +221,7 @@
                 </div>
             </div>
             <div class="tab-pane" id="orderItems">
-                <div class="col-sm-10 tm-col">
+                <div class="col-12 tm-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
                         <h2 class="tm-block-title">Itens de Pedido</h2>
                         <table class="table">
@@ -230,76 +231,55 @@
                                     <th scope="col">Nome</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Quantidade</th>
-                                    <th scope="col">Qtd. Fornecedor</th>
                                     <th scope="col">Preço</th>
-                                    <th scope="col">Preço Fornecedor</th>
+                                    <th scope="col">Preço Fornec</th>
+                                    <th scope="col">Desconto</th>
+                                    <th scope="col">Desconto %</th>
+                                    <th scope="col">Frete</th>
                                     <th scope="col">Total Liquido</th>
                                     <th scope="col">Total Bruto</th>
-                                    <th scope="col">Desconto</th>
-                                    <th scope="col">Frete</th>
+                                    <th scope="col">Total Fornec</th>
+                                    <th scope="col">Lucro</th>
+                                    <th scope="col">Lucro %</th>
                                     <th scope="col">Fornecedor</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th scope="row"><b>#122343</b></th>
+                                <tr th:each="item,index : ${customerOrder.customerOrderItems}">
+                                    <th   scope="row"><b th:text="${item.product.code}">#122343</b></th>
+                                    <td><b th:text="${item.product.name}">Timmy Davis</b></td>
                                     <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        <span th:if="${item.status == 'active'}"> 
+                                            <a class="tm-status-circle moving"/>
+                                            <a th:text="${item.status}"> Moving</a>
+                                        </span>
+                                        <span th:if="${item.status != 'active'}"> 
+                                            <a class="tm-status-circle cancelled"/>
+                                            <a th:text="${item.status}"> Moving</a>
+                                        </span>
                                     </td>
-                                    <td><b>Timmy Davis</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>218 km</b></td>
-                                    <td>12:00, 10 OCT 2018</td>
-                                    <td>08:00, 18 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122342</b></th>
+                                    <td><b th:text="${item.quantity}"></b></td>
+                                    <td><b th:text="${item.product.price}"></b></td>
+                                    <td><b th:text="${item.product.supplierPrice}"></b></td>
+                                    <td><b th:text="${item.totalDiscount}"></b></td>
+                                    <td><b th:text="${item.discountPercent}"></b></td>
+                                    <td><b th:text="${item.totalFreight}"></b></td>
+                                    <td><b th:text="${item.liquidTotal}"></b></td>
+                                    <td><b th:text="${item.total}"></b></td>
+                                    <td><b th:text="${item.supplierTotal}"></b></td>
+                                    <td><b th:text="${item.profit}"></b></td>
+                                    <td><b th:text="${item.profitPercent}"></b></td>
+                                    <td><b th:text="${item.product.providerName}"></b></td>
                                     <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
+                                        <form  th:if="${item.status == 'active'}" action="/backoffice/customerorder/cancelItem" th:method="post">
+                                            <input name="id" th:value="${customerOrder.id}" hidden="true"/>
+                                            <input name="itemIndex" th:value="${index.index}" hidden="true"/>
+                                            <button type="submit" class="tm-product-delete-link">
+                                                <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                            </button>
+                                        </form>
                                     </td>
-                                    <td><b>Oscar Phyo</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>420 km</b></td>
-                                    <td>15:30, 06 OCT 2018</td>
-                                    <td>09:30, 16 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122341</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>Charlie Brown</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>300 km</b></td>
-                                    <td>11:00, 10 OCT 2018</td>
-                                    <td>03:00, 14 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122340</b></th>
-                                    <td>
-                                        <div class="tm-status-circle cancelled">
-                                        </div>Cancelled
-                                    </td>
-                                    <td><b>Wilson Cookies</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>218 km</b></td>
-                                    <td>17:30, 12 OCT 2018</td>
-                                    <td>08:30, 22 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122339</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>Richard Clamon</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>150 km</b></td>
-                                    <td>15:00, 12 OCT 2018</td>
-                                    <td>09:20, 26 OCT 2018</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -310,7 +290,7 @@
                 </div>
             </div>
             <div class="tab-pane" id="paymentItems">
-                <div class="col-10 tm-col" id="paymentItems">
+                <div class="col-12 tm-col" id="paymentItems">
                     <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
                         <h2 class="tm-block-title">Itens de Pagamento</h2>
                         <table class="table">
@@ -326,7 +306,10 @@
                                     <th scope="col">Total Liquido</th>
                                     <th scope="col">Total Bruto</th>
                                     <th scope="col">Desconto</th>
+                                    <th scope="col">Desconto %</th>
                                     <th scope="col">Frete</th>
+                                    <th scope="col">Lucro</th>
+                                    <th scope="col">Lucro %</th>
                                     <th scope="col">Fornecedor</th>
                                 </tr>
                             </thead>
@@ -615,158 +598,47 @@
             </div>
         </div>
         <div class="tab-pane" id="statusHistory">
-            <div class="col-10 tm-col" id="statusHistory">
+            <div class="col-12 tm-col">
                 <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
                     <h2 class="tm-block-title">Historico de Status</h2>
                     <table class="table">
                         <thead>
                             <tr>
-                                <th scope="col">Codigo</th>
-                                <th scope="col">Nome</th>
+                                <th scope="col">Index</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Quantidade</th>
-                                <th scope="col">Qtd. Fornecedor</th>
-                                <th scope="col">Preço</th>
-                                <th scope="col">Preço Fornrcedor</th>
-                                <th scope="col">Total Liquido</th>
-                                <th scope="col">Total Bruto</th>
-                                <th scope="col">Desconto</th>
-                                <th scope="col">Frete</th>
-                                <th scope="col">Fornecedor</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Responsável</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row"><b>#122349</b></th>
-                                <td>
-                                    <div class="tm-status-circle moving">
-                                    </div>Moving
-                                </td>
-                                <td><b>Oliver Trag</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>485 km</b></td>
-                                <td>16:00, 12 NOV 2018</td>
-                                <td>08:00, 18 NOV 2018</td>
+                            <tr th:each="status, iter : ${customerOrder.customerOrderStatusItems}">
+                                <td><b th:text="${iter.index}" /></td>
+                                <td><b th:text="${status.createdDate}" /></td>
+                                <td><b th:text="${status.customerOrderStatus}" /></td>
+                                <td><b th:text="${status.createdBy}" /></td>
                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="auditHistory">
+            <div class="col-12 tm-col">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
+                    <h2 class="tm-block-title">Histórico de Auditoria</h2>
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <th scope="row"><b>#122348</b></th>
-                                <td>
-                                    <div class="tm-status-circle pending">
-                                    </div>Pending
-                                </td>
-                                <td><b>Jacob Miller</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>360 km</b></td>
-                                <td>11:00, 10 NOV 2018</td>
-                                <td>04:00, 14 NOV 2018</td>
+                                <th scope="col">Data</th>
+                                <th scope="col">Responsável</th>
+                                <th scope="col">Descrição</th>
                             </tr>
-                            <tr>
-                                <th scope="row"><b>#122347</b></th>
-                                <td>
-                                    <div class="tm-status-circle cancelled">
-                                    </div>Cancelled
-                                </td>
-                                <td><b>George Wilson</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>340 km</b></td>
-                                <td>12:00, 22 NOV 2018</td>
-                                <td>06:00, 28 NOV 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122346</b></th>
-                                <td>
-                                    <div class="tm-status-circle moving">
-                                    </div>Moving
-                                </td>
-                                <td><b>William Aung</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>218 km</b></td>
-                                <td>15:00, 10 NOV 2018</td>
-                                <td>09:00, 14 NOV 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122345</b></th>
-                                <td>
-                                    <div class="tm-status-circle pending">
-                                    </div>Pending
-                                </td>
-                                <td><b>Harry Ryan</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>280 km</b></td>
-                                <td>15:00, 11 NOV 2018</td>
-                                <td>09:00, 17 NOV 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122344</b></th>
-                                <td>
-                                    <div class="tm-status-circle pending">
-                                    </div>Pending
-                                </td>
-                                <td><b>Michael Jones</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>218 km</b></td>
-                                <td>18:00, 12 OCT 2018</td>
-                                <td>06:00, 18 OCT 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122343</b></th>
-                                <td>
-                                    <div class="tm-status-circle moving">
-                                    </div>Moving
-                                </td>
-                                <td><b>Timmy Davis</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>218 km</b></td>
-                                <td>12:00, 10 OCT 2018</td>
-                                <td>08:00, 18 OCT 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122342</b></th>
-                                <td>
-                                    <div class="tm-status-circle moving">
-                                    </div>Moving
-                                </td>
-                                <td><b>Oscar Phyo</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>420 km</b></td>
-                                <td>15:30, 06 OCT 2018</td>
-                                <td>09:30, 16 OCT 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122341</b></th>
-                                <td>
-                                    <div class="tm-status-circle moving">
-                                    </div>Moving
-                                </td>
-                                <td><b>Charlie Brown</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>300 km</b></td>
-                                <td>11:00, 10 OCT 2018</td>
-                                <td>03:00, 14 OCT 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122340</b></th>
-                                <td>
-                                    <div class="tm-status-circle cancelled">
-                                    </div>Cancelled
-                                </td>
-                                <td><b>Wilson Cookies</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>218 km</b></td>
-                                <td>17:30, 12 OCT 2018</td>
-                                <td>08:30, 22 OCT 2018</td>
-                            </tr>
-                            <tr>
-                                <th scope="row"><b>#122339</b></th>
-                                <td>
-                                    <div class="tm-status-circle moving">
-                                    </div>Moving
-                                </td>
-                                <td><b>Richard Clamon</b></td>
-                                <td><b>London, UK</b></td>
-                                <td><b>150 km</b></td>
-                                <td>15:00, 12 OCT 2018</td>
-                                <td>09:20, 26 OCT 2018</td>
+                        </thead>
+                        <tbody>
+                            <tr th:each="audit : ${customerOrder.customerOrderUpdateHistorys}">
+                                <td><b th:text="${audit.updated}"/></td>
+                                <td><b th:text="${audit.UpdatedBy}"/></td>
+                                <td><b th:utext="${audit.descrition}"/></td>
                             </tr>
                         </tbody>
                     </table>
@@ -920,7 +792,7 @@
         </div>
     </div>
     <div class="tab-pane" id="supplierHistoryOrders">
-        <div class="col-10 tm-col" id="supplierHistoryOrders">
+        <div class="col-12 tm-col" id="supplierHistoryOrders">
             <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
                 <h2 class="tm-block-title">Pedidos no Fornecedor</h2>
                 <table class="table">

@@ -72,7 +72,12 @@
                                     <th scope="col">Qtd. Total Prds</th>
                                     <th scope="col">Total Frete</th>
                                     <th scope="col">Total Desconto</th>
-                                    <th scope="col">Total Geral</th>
+                                    <th scope="col">Total Desconto %</th>
+                                    <th scope="col">Total Liquido</th>
+                                    <th scope="col">Total Bruto</th>
+                                    <th scope="col">Total Fornc</th>
+                                    <th scope="col">Total Lucro</th>
+                                    <th scope="col">Total Lucro %</th>
                                     <th scope="col"></th>
                                     <th scope="col"></th>
                                 </tr>
@@ -90,12 +95,25 @@
                                         <td th:text="${order.totalQuantity}" />
                                         <td th:text="${order.totalFreight}" />
                                         <td th:text="${order.totalDiscount}" />
+                                        <td th:text="${order.totalDiscountPercent}" />
+                                        <td th:text="${order.totalLiquid}" />
                                         <td th:text="${order.totalAmount}" />
+                                        <td th:text="${order.supplierTotalAmount}" />
+                                        <td th:text="${order.totalProfit}" />
+                                        <td th:text="${order.totalProfitPercent}" />
                                         <td>
                                             <a th:href="'/backoffice/customerorder/order?id=' +${order.id}" class="tm-product-delete-link">
                                                 <i class="far fa-list-alt tm-product-delete-icon"></i>
                                             </a>
                                         </td>
+                                        <td>
+                                        <form  th:if="${order.lastCustomerOrderStatus.name()  != 'Cancelled'}" action="/backoffice/customerorder/cancelOrder" th:method="post" onSubmit="return confirm('Tem certeza que quer cancelar o pedido? Não será possível retomar este pedido?');">
+                                            <input name="id" th:value="${order.id}" hidden="true"/>
+                                            <button type="submit" class="tm-product-delete-link">
+                                                <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                            </button>
+                                        </form>
+                                    </td>
                                     </tr>
                                 </tbody>
                             </table>

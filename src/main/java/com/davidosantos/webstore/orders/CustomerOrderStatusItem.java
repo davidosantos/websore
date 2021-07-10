@@ -14,17 +14,33 @@ import java.util.Date;
 public class CustomerOrderStatusItem {
 
     private CustomerOrderStatus customerOrderStatus;
-    Date CreatedDate;
-    String CreatedBy;
+    private Date createdDate;
+    private String createdBy;
 
     public CustomerOrderStatus getCustomerOrderStatus() {
         return customerOrderStatus;
     }
 
     public void setCustomerOrderStatus(CustomerOrderStatus customerOrderStatus, String createdBy) {
-        this.CreatedDate = new Date();
+        this.createdDate = new Date();
         this.customerOrderStatus = customerOrderStatus;
-        this.CreatedBy = createdBy;
+        this.createdBy = createdBy;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
 }

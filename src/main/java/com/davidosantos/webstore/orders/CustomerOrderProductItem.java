@@ -7,20 +7,30 @@ package com.davidosantos.webstore.orders;
 
 import com.davidosantos.webstore.products.Product;
 import com.davidosantos.webstore.products.ProductVariant;
+import java.math.BigDecimal;
+import org.springframework.data.annotation.Id;
 
 /**
  *
  * @author david
  */
 public class CustomerOrderProductItem {
+    @Id
+    private String id;
     private Product product;
     private ProductVariant selectedproductVariant;
     private String status;
-    private double quantity;
-    private double discount;
-    private double freight;
-    private double liquidTotal;
-    private double total;
+    private BigDecimal quantity;
+    private BigDecimal unitDiscount;
+    private BigDecimal totalDiscount;
+    private BigDecimal discountPercent;
+    private BigDecimal unitFreight;
+    private BigDecimal totalFreight;
+    private BigDecimal liquidTotal;
+    private BigDecimal total;
+    private BigDecimal supplierTotal;
+    private BigDecimal profit;
+    private BigDecimal profitPercent;
 
     public Product getProduct() {
         return product;
@@ -46,44 +56,103 @@ public class CustomerOrderProductItem {
         this.status = status;
     }
 
-    public double getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(double quantity) {
+    public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
     }
 
-    public double getDiscount() {
-        return discount;
+    public void incrementQuantityBy(BigDecimal quantity) {
+        this.quantity = this.quantity.add(quantity);
+    }
+    public BigDecimal getDiscountPercent() {
+        return discountPercent;
     }
 
-    public void setDiscount(double discount) {
-        this.discount = discount;
+    public void setDiscountPercent(BigDecimal discountPercent) {
+        this.discountPercent = discountPercent;
     }
 
-    public double getFreight() {
-        return freight;
-    }
-
-    public void setFreight(double freight) {
-        this.freight = freight;
-    }
-
-    public double getLiquidTotal() {
+    public BigDecimal getLiquidTotal() {
         return liquidTotal;
     }
 
-    public void setLiquidTotal(double liquidTotal) {
+    public void setLiquidTotal(BigDecimal liquidTotal) {
         this.liquidTotal = liquidTotal;
     }
 
-    public double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public BigDecimal getProfit() {
+        return profit;
+    }
+
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
+    }
+
+    public BigDecimal getProfitPercent() {
+        return profitPercent;
+    }
+
+    public void setProfitPercent(BigDecimal profitPercent) {
+        this.profitPercent = profitPercent;
+    }
+
+    public BigDecimal getUnitDiscount() {
+        return unitDiscount;
+    }
+
+    public void setUnitDiscount(BigDecimal unitDiscount) {
+        this.unitDiscount = unitDiscount;
+    }
+
+    public BigDecimal getTotalDiscount() {
+        return totalDiscount;
+    }
+
+    public void setTotalDiscount(BigDecimal totalDiscount) {
+        this.totalDiscount = totalDiscount;
+    }
+
+    public BigDecimal getUnitFreight() {
+        return unitFreight;
+    }
+
+    public void setUnitFreight(BigDecimal unitFreight) {
+        this.unitFreight = unitFreight;
+    }
+
+    public BigDecimal getTotalFreight() {
+        return totalFreight;
+    }
+
+    public void setTotalFreight(BigDecimal totalFreight) {
+        this.totalFreight = totalFreight;
+    }
+
+    public BigDecimal getSupplierTotal() {
+        return supplierTotal;
+    }
+
+    public void setSupplierTotal(BigDecimal supplierTotal) {
+        this.supplierTotal = supplierTotal;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

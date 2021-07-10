@@ -7,6 +7,7 @@ package com.davidosantos.webstore.orders;
 
 import com.davidosantos.webstore.customers.Customer;
 import com.davidosantos.webstore.customers.CustomerAddress;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,16 +26,22 @@ public class CustomerOrder {
     private String code;
     private Customer customer;
     private CustomerAddress selectedCustomerAddress;
-    private double totalQuantity;
-    private double totalFreight;
-    private double totalDiscount;
-    private double totalAmount;
+    private BigDecimal totalQuantity;
+    private BigDecimal totalFreight;
+    private BigDecimal totalDiscount;
+    private BigDecimal totalDiscountPercent;
+    private BigDecimal totalLiquid;
+    private BigDecimal totalAmount;
+    private BigDecimal supplierTotalAmount;
+    private BigDecimal totalProfit;
+    private BigDecimal totalProfitPercent;
     private Date createdDate;
     private Date updatedDate;
     private CustomerOrderStatus lastCustomerOrderStatus;
     private List<CustomerOrderStatusItem> customerOrderStatusItems;
     private List<CustomerOrderProductItem> customerOrderItems;
     private List<CustomerOrderPaymentItem> customerOrderPaymentItems;
+    private List<CustomerOrderUpdateHistory> customerOrderUpdateHistorys;
 
     public String getId() {
         return id;
@@ -69,7 +76,7 @@ public class CustomerOrder {
     }
 
     public List<CustomerOrderProductItem> getCustomerOrderItems() {
-        if(customerOrderItems == null){
+        if (customerOrderItems == null) {
             customerOrderItems = new ArrayList<CustomerOrderProductItem>();
         }
         return customerOrderItems;
@@ -78,31 +85,7 @@ public class CustomerOrder {
     public void setCustomerOrderItems(List<CustomerOrderProductItem> customerOrderItems) {
         this.customerOrderItems = customerOrderItems;
     }
-
-    public double getTotalQuantity() {
-        return totalQuantity;
-    }
-
-    public void setTotalQuantity(double totalQuantity) {
-        this.totalQuantity = totalQuantity;
-    }
-
-    public double getTotalDiscount() {
-        return totalDiscount;
-    }
-
-    public void setTotalDiscount(double totalDiscount) {
-        this.totalDiscount = totalDiscount;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
+    
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -143,13 +126,87 @@ public class CustomerOrder {
         this.customerOrderPaymentItems = customerOrderPaymentItems;
     }
 
-    public double getTotalFreight() {
+    public List<CustomerOrderUpdateHistory> getCustomerOrderUpdateHistorys() {
+        if (customerOrderUpdateHistorys == null) {
+            customerOrderUpdateHistorys = new ArrayList<CustomerOrderUpdateHistory>();
+        }
+        return customerOrderUpdateHistorys;
+    }
+
+    public void setCustomerOrderUpdateHistorys(List<CustomerOrderUpdateHistory> customerOrderUpdateHistorys) {
+        this.customerOrderUpdateHistorys = customerOrderUpdateHistorys;
+    }
+
+    public BigDecimal getTotalQuantity() {
+        return totalQuantity;
+    }
+
+    public void setTotalQuantity(BigDecimal totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+    public BigDecimal getTotalFreight() {
         return totalFreight;
     }
 
-    public void setTotalFreight(double totalFreight) {
+    public void setTotalFreight(BigDecimal totalFreight) {
         this.totalFreight = totalFreight;
     }
-    
+
+    public BigDecimal getTotalDiscount() {
+        return totalDiscount;
+    }
+
+    public void setTotalDiscount(BigDecimal totalDiscount) {
+        this.totalDiscount = totalDiscount;
+    }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public BigDecimal getTotalDiscountPercent() {
+        return totalDiscountPercent;
+    }
+
+    public void setTotalDiscountPercent(BigDecimal totalDiscountPercent) {
+        this.totalDiscountPercent = totalDiscountPercent;
+    }
+
+    public BigDecimal getTotalProfit() {
+        return totalProfit;
+    }
+
+    public void setTotalProfit(BigDecimal totalProfit) {
+        this.totalProfit = totalProfit;
+    }
+
+    public BigDecimal getTotalProfitPercent() {
+        return totalProfitPercent;
+    }
+
+    public void setTotalProfitPercent(BigDecimal totalProfitPercent) {
+        this.totalProfitPercent = totalProfitPercent;
+    }
+
+    public BigDecimal getSupplierTotalAmount() {
+        return supplierTotalAmount;
+    }
+
+    public void setSupplierTotalAmount(BigDecimal supplierTotalAmount) {
+        this.supplierTotalAmount = supplierTotalAmount;
+    }
+
+    public BigDecimal getTotalLiquid() {
+        return totalLiquid;
+    }
+
+    public void setTotalLiquid(BigDecimal totalLiquid) {
+        this.totalLiquid = totalLiquid;
+    }
 
 }

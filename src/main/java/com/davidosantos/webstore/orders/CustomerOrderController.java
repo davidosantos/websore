@@ -120,9 +120,32 @@ public class CustomerOrderController {
             String productid,
             Model model) {
 
-        customerOrderService.addProduct(id,productid);
+        customerOrderService.addProduct(id,productid,"Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
+
+    }
+
+    @RequestMapping(value = "cancelItem", method = RequestMethod.POST)
+    public String OrderCancelProduct(
+            String id,
+            int itemIndex,
+            Model model) {
+
+        customerOrderService.cancelItem(id, itemIndex,"Backoffice");
+
+        return "redirect:/backoffice/customerorder/order?id=" + id;
+
+    }
+
+    @RequestMapping(value = "cancelOrder", method = RequestMethod.POST)
+    public String OrderCancelOrder(
+            String id,
+            Model model) {
+
+        customerOrderService.cancelOrder(id,"Backoffice");
+
+        return "redirect:/backoffice/customerorder/customerorderlist";
 
     }
 
