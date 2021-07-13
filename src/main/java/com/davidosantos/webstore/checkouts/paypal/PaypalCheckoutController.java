@@ -1,4 +1,4 @@
-package com.davidosantos.webstore;
+package com.davidosantos.webstore.checkouts.paypal;
 
 import com.braintreegateway.BraintreeGateway;
 import com.braintreegateway.CreditCard;

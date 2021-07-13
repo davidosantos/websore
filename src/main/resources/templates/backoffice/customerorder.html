@@ -36,8 +36,8 @@
             <li class="nav-item"><a class="nav-link" href="#statusHistory" data-toggle="tab">Statuses</a></li>
             <li class="nav-item"><a class="nav-link" href="#auditHistory" data-toggle="tab">Auditoria</a></li>
             <li class="nav-item"><a class="nav-link" href="#orderOpearetions" data-toggle="tab">Operações</a></li>
-            <li class="nav-item"><a class="nav-link" href="#supplierHistoryOrders" data-toggle="tab">Pedidos Fornecedor</a></li>
             <li class="nav-item"><a class="nav-link" href="#supplierBuys" data-toggle="tab">Comprar no Fornecedor</a></li>
+            <li class="nav-item"><a class="nav-link" href="#supplierHistoryOrders" data-toggle="tab">Pedidos Fornecedor</a></li>
         </ul>
 
         <div class="tab-content clearfix">
@@ -224,24 +224,24 @@
                 <div class="col-12 tm-col">
                     <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
                         <h2 class="tm-block-title">Itens de Pedido</h2>
-                        <table class="table">
+                        <table class="table" id="itemstable">
                             <thead>
                                 <tr>
                                     <th scope="col">Codigo</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Qtd.</th>
                                     <th scope="col">Preço</th>
-                                    <th scope="col">Preço Fornec</th>
-                                    <th scope="col">Desconto</th>
-                                    <th scope="col">Desconto %</th>
-                                    <th scope="col">Frete</th>
+                                    <th scope="col">Pç Fornec Est/Efe</th>
+                                    <th scope="col">Dscnt</th>
+                                    <th scope="col">Dscnt %</th>
+                                    <th scope="col">Frete Est/Efe</th>
                                     <th scope="col">Total Liquido</th>
                                     <th scope="col">Total Bruto</th>
-                                    <th scope="col">Total Fornec</th>
+                                    <th scope="col">Total Fornec Est/Efe </th>
+                                    <th scope="col">Dscnt Fornec</th>
                                     <th scope="col">Lucro</th>
                                     <th scope="col">Lucro %</th>
-                                    <th scope="col">Fornecedor</th>
                                     <th scope="col"></th>
                                 </tr>
                             </thead>
@@ -261,16 +261,16 @@
                                     </td>
                                     <td><b th:text="${item.quantity}"></b></td>
                                     <td><b th:text="${item.product.price}"></b></td>
-                                    <td><b th:text="${item.product.supplierPrice}"></b></td>
+                                    <td><b th:text="${item.product.supplierPrice} + '/' + ${item.supplierPoweredPrice}"></b></td>
                                     <td><b th:text="${item.totalDiscount}"></b></td>
                                     <td><b th:text="${item.discountPercent}"></b></td>
-                                    <td><b th:text="${item.totalFreight}"></b></td>
+                                    <td><b th:text="${item.supplierEstimatedFreight} + '/' + ${item.supplierPoweredFreight}"></b></td>
                                     <td><b th:text="${item.liquidTotal}"></b></td>
                                     <td><b th:text="${item.total}"></b></td>
-                                    <td><b th:text="${item.supplierTotal}"></b></td>
+                                    <td><b th:text="${item.supplierEstimatedTotal} + '/' + ${item.supplierPoweredTotal}"></b></td>
+                                    <td><b th:text="${item.supplierPoweredDiscount}"></b></td>
                                     <td><b th:text="${item.profit}"></b></td>
                                     <td><b th:text="${item.profitPercent}"></b></td>
-                                    <td><b th:text="${item.product.providerName}"></b></td>
                                     <td>
                                         <form  th:if="${item.status == 'active'}" action="/backoffice/customerorder/cancelItem" th:method="post">
                                             <input name="id" th:value="${customerOrder.id}" hidden="true"/>
@@ -287,6 +287,98 @@
                            th:href="'/backoffice/productselect?redirectTo=/backoffice/customerorder/productadd&method=post&id=' + ${id}"
                            class="btn btn-primary btn-block text-uppercase mb-3">Incluir Novo Item</a>
                     </div>
+
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
+                        <h2 class="tm-block-title">Variações dos Itens </h2>
+                        <table class="table" id="itemstable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Codigo</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Variante</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item,index : ${customerOrder.customerOrderItems}">
+                                    <td><b th:text="${item.product.code}"/></td>
+                                    <td><b th:text="${item.product.name}"/></td>
+                                    <td>
+                                        <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
+                                            <h2 class="tm-block-title">Variações</h2>
+                                            <div class="tm-product-table-container">
+                                            <table class="table tm-table-small tm-product-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Variante</th>
+                                                        <th scope="col">Valor</th>
+                                                        <th scope="col"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="itemVariant : ${item.customerOrderItemVariants}">
+                                                        <td style="background-color:  #50697f;" th:text="${itemVariant.name}"/>
+                                                        <td style="background-color:  #50697f;" th:text="${itemVariant.value}"/>
+                                                        <td style="background-color:  #50697f;">
+                                                            <form  action="/backoffice/customerorder/cancelItem" th:method="post">
+                                                                <input name="id" th:value="${customerOrder.id}" hidden="true"/>
+                                                                <input name="itemIndex" th:value="${index.index}" hidden="true"/>
+                                                                <button type="submit" class="tm-product-delete-link">
+                                                                    <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                                                </button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            </div>
+                                            <form  action="/backoffice/customerorder/variantadd" th:method="post">
+                                                <input name="id" th:value="${customerOrder.id}" hidden="true"/>
+                                                <input name="productid" th:value="${item.product.id}" hidden="true"/>
+                                                <div class="row">
+                                                    <div class="form-group col-5">
+                                                        <label
+                                                            for="name"
+                                                            >Variante
+                                                        </label>
+                                                        <input
+                                                            id="name"
+                                                            name="name"
+                                                            type="text"
+                                                            class="form-control validate"
+                                                            required="true"
+                                                            />
+                                                    </div>
+                                                    <div class="form-group col-5">
+                                                        <label
+                                                            for="name"
+                                                            >Valor
+                                                        </label>
+                                                        <input
+                                                            id="value"
+                                                            name="value"
+                                                            type="text"
+                                                            class="form-control validate"
+                                                            required="true"
+                                                            />
+                                                    </div>
+                                                    <div class="form-group col-2">
+                                                        <label
+                                                            for="name"
+                                                            >◦
+                                                        </label>
+                                                        <button type="submit" class="btn btn-primary btn-block text-uppercase">Salvar</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <a th:if="${id != ''}"
+                           th:href="'/backoffice/productselect?redirectTo=/backoffice/customerorder/productadd&method=post&id=' + ${id}"
+                           class="btn btn-primary btn-block text-uppercase mb-3">Incluir Novo Item</a>
+                    </div>                
                 </div>
             </div>
             <div class="tab-pane" id="paymentItems">
@@ -951,147 +1043,202 @@
         </div>
     </div>
     <div class="tab-pane" id="supplierBuys"> 
-        <div class="col-sm-10 tm-col"  style="padding-top: 20px">
+        <div class="col-sm-12 tm-col"  style="padding-top: 20px">
             <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="tm-block-title d-inline-block">Cadastro de Compras no Fornecedor</h2>
+                        <h2 class="tm-block-title d-inline-block">Comprar no Fornecedor</h2>
                     </div>
                 </div>
-                <form action="#" th:action="@{/backoffice/customerorder/order}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
+                <form action="#" th:action="@{/backoffice/customerorder/supplierorderadd}" th:object="${supplierOrder}" method="post" class="tm-edit-product-form">
                     <div class="row tm-edit-product-row">
-                        <div class="col-xl-8 col-lg-8 col-md-8">  
+
+                        <div class="col-xl-12 col-lg-12 col-md-12">  
+                            <div class="row col-12">
+                                <div class="form-group mb-3">
+                                    <input
+                                        id="supplierOrderid"                                            
+                                        name="supplierOrderid"
+                                        type="text"
+                                        class="form-control validate"
+                                        hidden="true"
+                                        />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <input
+                                        id="customerorderid"                                            
+                                        name="id"
+                                        type="text"
+                                        class="form-control validate"
+                                        hidden="true"
+                                        th:value="${customerOrder.id}"
+                                        />
+                                </div>
+                                <div class="form-group mb-3 col-4">
+                                    <label
+                                        for="supplierid"
+                                        >Forncedor
+                                    </label>
+                                    <select
+                                        id="suppliers"
+                                        name="supplierid"
+                                        type="text"
+                                        class="form-control validate"
+                                        required="true"
+                                        >
+                                        <option th:each="supplier : ${customerOrder.suppliers}" th:value="${supplier.id}" th:text="${supplier.name}"/>
+                                    </select>
+                                    <div >
+                                        <a th:if="${id != '' and customerid == ''}"
+                                           th:href="@{/backoffice/supplier/select(redirectTo='/backoffice/customerorder/supplieradd', method='post', id=${customerOrder.id})}"
+                                           class="btn btn-primary  btn-block text-uppercase mb-3 col-12">Incluir Novo Fornecedor no Pedido</a>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3 col-4">
+                                    <label
+                                        for="code"
+                                        >Codigo
+                                    </label>
+                                    <input
+                                        id="code"
+                                        name="code"
+                                        th:field="*{code}"
+                                        type="text"
+                                        class="form-control validate"
+                                        >
+                                </div>
+                            </div>
                             <div class="form-group mb-3">
+                                <label
+                                    for="notes"
+                                    >Notas
+                                </label>
                                 <input
-                                    id="id"                                            
-                                    name="id"
+                                    id="notes"
+                                    name="notes"
+                                    th:field="*{notes}"
                                     type="text"
-                                    th:field="*{id}"
                                     class="form-control validate"
+                                    />
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Codigo</th>
+                                        <th scope="col">Nome</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Qtd.</th>
+                                        <th scope="col">Total Estimado</th>
+                                        <th scope="col">Frete Estimado</th>
+                                        <th scope="col">Qtd. Comprada</th>
+                                        <th scope="col">Qtd. Pendente</th>
+                                        <th scope="col">Qtd. Nesta Compra</th>
+                                        <th scope="col">Preço Pago</th>
+                                        <th scope="col">Vlr. Frete</th>
+                                        <th scope="col">Desconto</th>
+                                        <th scope="col">Cod. Rastreio</th>
+                                        <th scope="col">Notas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="itemToBuy, iter : ${customerOrder.customerOrderItems}">
+                                        <td scope="row"><b th:text="${iter.index}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.product.code}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.product.name}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.status}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.quantity}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.supplierEstimatedTotal}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.supplierEstimatedFreight}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.product.providerName}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.product.providerName}" /></td>
+                                <input
+                                    type="text"
+                                    th:name="'supplierOrderItems[' + ${iter.index} + '].productId'"
+                                    th:value="${itemToBuy.product.id}"
                                     hidden="true"
                                     />
-                            </div>
-                            <div class="form-group mb-3">
-                                <label
-                                    for="code"
-                                    >Código
-                                </label>
-                                <input
-                                    id="code"
-                                    name="code"
-                                    th:field="*{code}"
-                                    type="text"
-                                    class="form-control validate"
-                                    readonly="true"
-                                    />
-                            </div>
-                            <div class="form-group mb-3">
-                                <label
-                                    for="customername"
-                                    >Nome
-                                </label>
-                                <input
-                                    id="customername"
-                                    name="customername"
-                                    th:field="${customerOrder.customer.name}"
-                                    type="text"
-                                    class="form-control validate"
-                                    readonly="true"
-                                    />
-                            </div>
-                            <div class="row">
-                                <div class="form-group mb-3 col-6">
-                                    <label
-                                        for="documentNumber"
-                                        >CPF
-                                    </label>
-                                    <input
-                                        placeholder="CPF"
-                                        id="documentNumber"
-                                        name="documentNumber"
-                                        th:field="${customerOrder.customer.documentNumber}"
-                                        type="text"
-                                        class="form-control validate"
-                                        readonly="true"
-                                        />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group mb-12 col-12">
-                                    <label
-                                        for="selectedCustomerAddress"
-                                        >Endereço
-                                    </label>
-                                    <input
-                                        id="selectedCustomerAddress"
-                                        name="selectedCustomerAddress"
-                                        th:field="${customerOrder.selectedCustomerAddress}"
-                                        type="text"
-                                        class="form-control validate"
-                                        readonly="true"
-                                        />
-                                </div>
-                            </div>
-                        </div>  
-                        <div class="col-xl-6 col-lg-6 col-md-12">  
-                            <div class="row">
-                                <div class="form-group mb-3 col-3">
-                                    <label
-                                        for="isActive"
-                                        >Ativo
-                                    </label>
-                                    <input
-                                        id="isActive"
-                                        name="isActive"
-                                        th:field="${customerOrder.customer.isActive}"
-                                        type="checkbox"
-                                        class="form-control validate"
-                                        data-large-mode="true"
-                                        checked="true"
-                                        />
-                                </div>
-                                <div class="form-group mb-3 col-sm-3">
-                                    <label
-                                        for="isBlocked"
-                                        >Bloqueado
-                                    </label>
-                                    <input
-                                        id="isBlocked"
-                                        name="isBlocked"
-                                        th:field="${customerOrder.customer.isBlocked}"
-                                        type="checkbox"
-                                        class="form-control validate"
-                                        />
-                                </div>
-                                <div class="form-group mb-3 col-3">
-                                    <label
-                                        for="isEmailConformed"
-                                        >Email Confirmado
-                                    </label>
-                                    <input
-                                        id="isEmailConformed"
-                                        name="isEmailConformed"
-                                        th:field="${customerOrder.customer.isEmailConformed}"
-                                        type="checkbox"
-                                        class="form-control validate"
-                                        />
-                                </div>
-                                <div class="form-group mb-4 col-3">
-                                    <label
-                                        for="offerOpted"
-                                        >Ofertas
-                                    </label>
-                                    <input
-                                        id="offerOpted"
-                                        name="offerOpted"
-                                        th:field="${customerOrder.customer.offerOpted}"
-                                        type="checkbox"
-                                        class="form-control validate"
-                                        />
-                                </div>
-                            </div>
+                                <td>
+                                    <div class="form-group mb-3">
+                                        <input
+                                            type="number"
+                                            class="form-control validate"
+                                            step=".01"
+                                            th:field="*{supplierOrderItems[__${iter.index}__].quantity}"
+                                            />
+                                    </div>
+
+                                </td>
+                                <td>
+
+                                    <div class="form-group mb-3">
+                                        <input
+                                            type="number"
+                                            class="form-control validate"
+                                            step=".01"
+                                            th:field="*{supplierOrderItems[__${iter.index}__].price}"
+                                            />
+                                    </div>
+
+                                </td>
+                                <td>
+
+                                    <div class="form-group mb-3">
+                                        <input
+                                            type="number"
+                                            class="form-control validate"
+                                            step=".01"
+                                            th:field="*{supplierOrderItems[__${iter.index}__].freight}"
+                                            />
+                                    </div>
+
+                                </td>
+                                <td>
+
+                                    <div class="form-group mb-3">
+                                        <input
+                                            type="number"
+                                            class="form-control validate"
+                                            step=".01"
+                                            th:field="*{supplierOrderItems[__${iter.index}__].discount}"
+                                            />
+                                    </div>
+
+                                </td>
+                                <td>
+
+                                    <div class="form-group mb-3">
+                                        <input
+                                            type="text"
+                                            class="form-control validate"
+                                            th:field="*{supplierOrderItems[__${iter.index}__].trackingCode}"
+                                            />
+                                    </div>
+
+                                </td>
+                                <td>
+
+                                    <div class="form-group mb-3">
+                                        <input
+                                            type="text"
+                                            class="form-control validate"
+                                            th:field="*{supplierOrderItems[__${iter.index}__].notes}"
+                                            />
+                                    </div>
+
+                                </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
                         </div>
+                    </div>
+                    <button th:if="${id != '' and customerid == ''}"
+                            type="submit"
+                            th:href="@{/backoffice/supplier/select(redirectTo='/backoffice/customerorder/supplieradd', method='post', id=${customerOrder.id})}"
+                            class="btn btn-primary btn-block text-uppercase mb-3" >Salver Pedido</button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -1117,10 +1264,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-<script>
-    $(function () {
-        $("#birthDate").datepicker({dateFormat: 'dd/mm/yy'});
-    });
-</script>
 </body>
 </html>

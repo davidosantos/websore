@@ -6,31 +6,57 @@
 package com.davidosantos.webstore.orders;
 
 import com.davidosantos.webstore.products.Product;
-import com.davidosantos.webstore.products.ProductVariant;
+import com.davidosantos.webstore.supplier.SupplierOrder;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
  *
  * @author david
  */
 public class CustomerOrderProductItem {
+
     @Id
     private String id;
     private Product product;
-    private ProductVariant selectedproductVariant;
+    private List<CustomerOrderItemVariant> customerOrderItemVariants;
     private String status;
     private BigDecimal quantity;
     private BigDecimal unitDiscount;
     private BigDecimal totalDiscount;
     private BigDecimal discountPercent;
     private BigDecimal unitFreight;
-    private BigDecimal totalFreight;
+    private BigDecimal supplierEstimatedFreight;
+    private BigDecimal supplierEstimatedTotal;
     private BigDecimal liquidTotal;
     private BigDecimal total;
-    private BigDecimal supplierTotal;
+    private BigDecimal supplierPoweredPrice;
+    private BigDecimal supplierPoweredFreight;
+    private BigDecimal supplierPoweredDiscount;
+    private BigDecimal supplierPoweredTotal;
+
     private BigDecimal profit;
     private BigDecimal profitPercent;
+    @DBRef
+    private List<SupplierOrder> supplierOrders;
+
+    public BigDecimal getSupplierPoweredDiscount() {
+        return supplierPoweredDiscount;
+    }
+
+    public void setSupplierPoweredDiscount(BigDecimal supplierPoweredDiscount) {
+        this.supplierPoweredDiscount = supplierPoweredDiscount;
+    }
+    public BigDecimal getSupplierPoweredTotal() {
+        return supplierPoweredTotal;
+    }
+
+    public void setSupplierPoweredTotal(BigDecimal supplierPoweredTotal) {
+        this.supplierPoweredTotal = supplierPoweredTotal;
+    }
 
     public Product getProduct() {
         return product;
@@ -38,14 +64,6 @@ public class CustomerOrderProductItem {
 
     public void setProduct(Product product) {
         this.product = product;
-    }
-
-    public ProductVariant getSelectedproductVariant() {
-        return selectedproductVariant;
-    }
-
-    public void setSelectedproductVariant(ProductVariant selectedproductVariant) {
-        this.selectedproductVariant = selectedproductVariant;
     }
 
     public String getStatus() {
@@ -67,6 +85,7 @@ public class CustomerOrderProductItem {
     public void incrementQuantityBy(BigDecimal quantity) {
         this.quantity = this.quantity.add(quantity);
     }
+
     public BigDecimal getDiscountPercent() {
         return discountPercent;
     }
@@ -131,28 +150,66 @@ public class CustomerOrderProductItem {
         this.unitFreight = unitFreight;
     }
 
-    public BigDecimal getTotalFreight() {
-        return totalFreight;
-    }
-
-    public void setTotalFreight(BigDecimal totalFreight) {
-        this.totalFreight = totalFreight;
-    }
-
-    public BigDecimal getSupplierTotal() {
-        return supplierTotal;
-    }
-
-    public void setSupplierTotal(BigDecimal supplierTotal) {
-        this.supplierTotal = supplierTotal;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<CustomerOrderItemVariant> getCustomerOrderItemVariants() {
+        if (customerOrderItemVariants == null) {
+            customerOrderItemVariants = new ArrayList<CustomerOrderItemVariant>();
+        }
+        return customerOrderItemVariants;
+    }
+
+    public void setCustomerOrderItemVariants(List<CustomerOrderItemVariant> customerOrderItemVariants) {
+        this.customerOrderItemVariants = customerOrderItemVariants;
+    }
+
+    public BigDecimal getSupplierEstimatedTotal() {
+        return supplierEstimatedTotal;
+    }
+
+    public void setSupplierEstimatedTotal(BigDecimal supplierEstimatedTotal) {
+        this.supplierEstimatedTotal = supplierEstimatedTotal;
+    }
+
+    public List<SupplierOrder> getSupplierOrders() {
+        if(supplierOrders == null){
+            supplierOrders = new ArrayList<SupplierOrder>();
+        }
+        return supplierOrders;
+    }
+
+    public void setSupplierOrders(List<SupplierOrder> supplierOrders) {
+        this.supplierOrders = supplierOrders;
+    }
+
+    public BigDecimal getSupplierEstimatedFreight() {
+        return supplierEstimatedFreight;
+    }
+
+    public void setSupplierEstimatedFreight(BigDecimal supplierEstimatedFreight) {
+        this.supplierEstimatedFreight = supplierEstimatedFreight;
+    }
+
+    public BigDecimal getSupplierPoweredPrice() {
+        return supplierPoweredPrice;
+    }
+
+    public void setSupplierPoweredPrice(BigDecimal supplierPoweredPrice) {
+        this.supplierPoweredPrice = supplierPoweredPrice;
+    }
+
+    public BigDecimal getSupplierPoweredFreight() {
+        return supplierPoweredFreight;
+    }
+
+    public void setSupplierPoweredFreight(BigDecimal supplierPoweredFreight) {
+        this.supplierPoweredFreight = supplierPoweredFreight;
     }
 
 }

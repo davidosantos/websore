@@ -8,6 +8,7 @@ package com.davidosantos.webstore.orders;
 import com.davidosantos.webstore.customers.Customer;
 import com.davidosantos.webstore.customers.CustomerService;
 import com.davidosantos.webstore.products.ProductService;
+import com.davidosantos.webstore.supplier.SupplierOrder;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -91,11 +92,13 @@ public class CustomerOrderController {
             customerOrder = new CustomerOrder();
         }
 
+        SupplierOrder supplierOrder = new SupplierOrder();
+
         model.addAttribute("id", id);
         model.addAttribute("customerid", customerid);
         model.addAttribute("customer", customer);
         model.addAttribute("customerOrder", customerOrder);
-
+        model.addAttribute("supplierOrder", supplierOrder);
         return "/backoffice/customerorder";
     }
 
@@ -120,7 +123,33 @@ public class CustomerOrderController {
             String productid,
             Model model) {
 
-        customerOrderService.addProduct(id,productid,"Backoffice");
+        customerOrderService.addProduct(id, productid, "Backoffice");
+
+        return "redirect:/backoffice/customerorder/order?id=" + id;
+
+    }
+
+    @RequestMapping(value = "supplieradd", method = RequestMethod.POST)
+    public String OrderAddSupplier(
+            String id,
+            String supplierid,
+            Model model) {
+
+        customerOrderService.addSupplier(id, supplierid, "Backoffice");
+
+        return "redirect:/backoffice/customerorder/order?id=" + id;
+
+    }
+    
+    @RequestMapping(value = "variantadd", method = RequestMethod.POST)
+    public String OrderAddVariant(
+            String id,
+            String productid,
+            String name,
+            String value,
+            Model model) {
+
+        customerOrderService.addVariant(id, name,value,productid, "Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 
@@ -132,7 +161,7 @@ public class CustomerOrderController {
             int itemIndex,
             Model model) {
 
-        customerOrderService.cancelItem(id, itemIndex,"Backoffice");
+        customerOrderService.cancelItem(id, itemIndex, "Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 
@@ -143,9 +172,22 @@ public class CustomerOrderController {
             String id,
             Model model) {
 
-        customerOrderService.cancelOrder(id,"Backoffice");
+        customerOrderService.cancelOrder(id, "Backoffice");
 
         return "redirect:/backoffice/customerorder/customerorderlist";
+
+    }
+
+    @RequestMapping(value = "supplierorderadd", method = RequestMethod.POST)
+    public String SuppllierOrderAddOrder(
+            String id,
+            String supplierid,
+            SupplierOrder supplierOrder,
+            Model model) {
+
+        customerOrderService.SupplierOrderAdd(id, supplierid, supplierOrder,"Backoffice");
+
+        return "redirect:/backoffice/customerorder/order?id=" + id;
 
     }
 

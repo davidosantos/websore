@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en"xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Cadastro de clientes</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+            />
+        <!-- https://fonts.google.com/specimen/Roboto -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/fontawesome.min.css}" />
+        <!-- https://fontawesome.com/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
+        <!-- http://api.jqueryui.com/datepicker/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/bootstrap.min.css}" />
+        <!-- https://getbootstrap.com/ -->
+        <link rel="stylesheet" th:href="@{/backoffice/css/templatemo-style.css}">
+        <!--
+            Product Admin CSS Template
+            https://templatemo.com/tm-524-product-admin
+        -->
+
+
+
+    </head>
+
+    <body>
+        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+        <div class="container-fluid height-full">
+            <div class="row ">
+                <div class="col-sm-6 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <div class="row">
+                            <div class="col-12">
+                                <h2 class="tm-block-title d-inline-block">Edição de Forncedor</h2>
+                            </div>
+                        </div>
+
+                        <form action="#" th:action="@{/backoffice/supplier/edit}" th:object="${supplier}" method="post" class="tm-edit-product-form">
+                            <div class="row tm-edit-product-row">
+                                <div class="col-xl-6 col-lg-6 col-md-12">  
+                                    <div class="form-group mb-3">
+                                        <input
+                                            id="id"
+                                            name="id"
+                                            type="text"
+                                            th:field="*{id}"
+                                            class="form-control validate"
+                                            hidden="true"
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label
+                                            for="name"
+                                            >Nome
+                                        </label>
+                                        <input
+                                            id="name"
+                                            name="name"
+                                            th:field="*{name}"
+                                            type="text"
+                                            class="form-control validate"
+                                            required
+                                            />
+                                    </div>
+                                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                        <label
+                                            for="isActive"
+                                            >Ativo
+                                        </label>
+                                        <input
+                                            id="isActive"
+                                            name="isActive"
+                                            th:field="*{isActive}"
+                                            type="checkbox"
+                                            class="form-control validate"
+                                            data-large-mode="true"
+                                            checked="true"
+                                            />
+                                    </div>
+                                    <textarea 
+                                        class="table tm-table-small tm-product-table"  
+                                        th:field="*{notes}"
+                                        style="height: 130px;">Teste
+                                    </textarea>
+                                </div>  
+                                <div class="col-xl-6 col-lg-6 col-md-12">  
+                                    <div class="row">
+                                        <!<!-- Empty column for later use -->
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group mb-3 col-xs-12 col-sm-12">
+                                        <label
+                                            for="url"
+                                            >URL
+                                        </label>
+                                        <input
+                                            id="url"
+                                            name="url"
+                                            th:field="*{url}"
+                                            type="text"
+                                            class="form-control validate"
+                                            />
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary btn-block text-uppercase">SALVAR CADASTRO</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-sm-3 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <h2 class="tm-block-title">Telefones do Fornecedor</h2>
+                        <table class="table tm-table-small tm-product-table">
+                            <tbody>
+                                <tr th:each="phone : ${supplier.phones}">
+                                    <td th:text="${phone}" class="tm-product-name"/>
+                                    <td class="text-center">
+                                        <a href="#" class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+                        <form action="#" th:action="@{/backoffice/supplier/phone}" method="post" class="tm-edit-product-form">
+                            <div class="row">
+                                <div class="form-group col-7">
+                                    <input
+                                        id="id"
+                                        name="id"
+                                        type="text"
+                                        th:value="${supplier.id}"
+                                        class="form-control validate"
+                                        hidden="true"
+                                        />
+                                    <label
+                                        for="phone"
+                                        > Novo Telefone
+                                    </label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        type="text"
+                                        placeholder="(00) 0000-0000"
+                                        class="form-control"
+                                        required="true"
+                                        />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                                Cadastrar Novo Telefone
+                            </button>
+                        </form>
+
+                        <!-- table container -->
+                    </div>
+                </div>
+
+                <div class="col-sm-3 tm-col" style="padding-top: 20px">
+                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                        <h2 class="tm-block-title">Emails do Fornecedor</h2>
+                        <table class="table tm-table-small tm-product-table">
+                            <tbody>
+                                <tr th:each="email : ${supplier.emails}">
+                                    <td th:text="${email}" class="tm-product-name"/>
+                                    <td class="text-center">
+                                        <a href="#" class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
+                        <form action="#" th:action="@{/backoffice/supplier/email}" method="post" class="tm-edit-product-form">
+                            <div class="row">
+                                <div class="form-group col-12">
+                                    <input
+                                        id="id"
+                                        name="id"
+                                        type="text"
+                                        th:value="${supplier.id}"
+                                        class="form-control validate"
+                                        hidden="true"
+                                        />
+                                    <label
+                                        for="email"
+                                        > Novo Email
+                                    </label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="text"
+                                        placeholder="exemplo@provedor.com"
+                                        class="form-control"
+                                        required="true"
+                                        />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                                Cadastrar Novo Email
+                            </button>
+                        </form>
+
+                        <!-- table container -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <footer class="tm-footer row tm-mt-small">
+            <div class="col-12 font-weight-light">
+                <p class="text-center text-white mb-0 px-4 small">
+                    Copyright &copy; <b>2021</b> All rights reserved. 
+                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+                </p>
+            </div>
+        </footer> 
+
+        <script th:src="@{/backoffice/js/jquery-3.3.1.min.js}"></script>
+        <!-- https://jquery.com/download/ -->
+        <script th:src="@{/backoffice/jquery-ui-datepicker/jquery-ui.min.js}"></script>
+        <!-- https://jqueryui.com/download/ -->
+        <script th:src="@{/backoffice/js/bootstrap.min.js}"></script>
+        <!-- https://getbootstrap.com/ -->
+
+    </body>
+</html>

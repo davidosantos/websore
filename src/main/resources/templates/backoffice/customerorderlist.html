@@ -70,12 +70,12 @@
                                     <th scope="col">Status</th>
                                     <th scope="col">Dt. Abertura</th>
                                     <th scope="col">Qtd. Total Prds</th>
-                                    <th scope="col">Total Frete</th>
+                                    <th scope="col">Total Frete Est.</th>
                                     <th scope="col">Total Desconto</th>
                                     <th scope="col">Total Desconto %</th>
                                     <th scope="col">Total Liquido</th>
                                     <th scope="col">Total Bruto</th>
-                                    <th scope="col">Total Fornc</th>
+                                    <th scope="col">Total Est. Fornc</th>
                                     <th scope="col">Total Lucro</th>
                                     <th scope="col">Total Lucro %</th>
                                     <th scope="col"></th>
@@ -93,12 +93,12 @@
                                         <td th:text="${order.lastCustomerOrderStatus}" />
                                         <td th:text="${order.createdDate}" />
                                         <td th:text="${order.totalQuantity}" />
-                                        <td th:text="${order.totalFreight}" />
+                                        <td th:text="${order.totalEstimatedFreight}" />
                                         <td th:text="${order.totalDiscount}" />
                                         <td th:text="${order.totalDiscountPercent}" />
                                         <td th:text="${order.totalLiquid}" />
                                         <td th:text="${order.totalAmount}" />
-                                        <td th:text="${order.supplierTotalAmount}" />
+                                        <td th:text="${order.supplierTotalEstimatedAmount}" />
                                         <td th:text="${order.totalProfit}" />
                                         <td th:text="${order.totalProfitPercent}" />
                                         <td>
