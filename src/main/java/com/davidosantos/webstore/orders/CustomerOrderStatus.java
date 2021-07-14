@@ -15,6 +15,7 @@ public enum CustomerOrderStatus {
     PaymentWait,
     Paid,
     SupplierOrderCreated,
+    SupplierPartiallyOrderCreated,
     Delivered
 
 }

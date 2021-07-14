@@ -24,7 +24,7 @@
 
 
     <body  id="reportsPage">
-        <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+        <div th:replace="backoffice/menu-fragment.html :: body"></div>
     </head>
     <div class="container-fluid height-full">
 
@@ -38,6 +38,7 @@
             <li class="nav-item"><a class="nav-link" href="#orderOpearetions" data-toggle="tab">Operações</a></li>
             <li class="nav-item"><a class="nav-link" href="#supplierBuys" data-toggle="tab">Comprar no Fornecedor</a></li>
             <li class="nav-item"><a class="nav-link" href="#supplierHistoryOrders" data-toggle="tab">Pedidos Fornecedor</a></li>
+            <li class="nav-item"><a class="nav-link" href="#orderNotes" data-toggle="tab">Anotações</a></li>
         </ul>
 
         <div class="tab-content clearfix">
@@ -46,7 +47,7 @@
                     <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
                         <div class="row">
                             <div class="col-12">
-                                <h2 class="tm-block-title d-inline-block">Detalhes do Clientes</h2>
+                                <h2 th:text="'Detalhes do Clientes - STATUS:   ' + ${customerOrder.lastCustomerOrderStatus}" class="tm-block-title d-inline-block">Detalhes do Clientes</h2>
                             </div>
                         </div>
                         <form action="#" th:action="@{/backoffice/customerorder/createOrder}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
@@ -230,14 +231,14 @@
                                     <th scope="col">Codigo</th>
                                     <th scope="col">Nome</th>
                                     <th scope="col">Status</th>
-                                    <th scope="col">Qtd.</th>
+                                    <th scope="col">Qtd./Qtd Cmpd</th>
                                     <th scope="col">Preço</th>
-                                    <th scope="col">Pç Fornec Est/Efe</th>
                                     <th scope="col">Dscnt</th>
                                     <th scope="col">Dscnt %</th>
                                     <th scope="col">Frete Est/Efe</th>
                                     <th scope="col">Total Liquido</th>
                                     <th scope="col">Total Bruto</th>
+                                    <th scope="col">Pç Fornec Est/Efe</th>
                                     <th scope="col">Total Fornec Est/Efe </th>
                                     <th scope="col">Dscnt Fornec</th>
                                     <th scope="col">Lucro</th>
@@ -259,20 +260,20 @@
                                             <a th:text="${item.status}"> Moving</a>
                                         </span>
                                     </td>
-                                    <td><b th:text="${item.quantity}"></b></td>
+                                    <td><b th:style="${item.supplierQuantityBought > item.quantity ? 'color: coral;' : ';'}"  th:text="${item.quantity}  + '/' + ${item.supplierQuantityBought}"></b></td>
                                     <td><b th:text="${item.product.price}"></b></td>
-                                    <td><b th:text="${item.product.supplierPrice} + '/' + ${item.supplierPoweredPrice}"></b></td>
                                     <td><b th:text="${item.totalDiscount}"></b></td>
                                     <td><b th:text="${item.discountPercent}"></b></td>
-                                    <td><b th:text="${item.supplierEstimatedFreight} + '/' + ${item.supplierPoweredFreight}"></b></td>
+                                    <td><b th:style="${item.supplierPoweredFreight > item.supplierEstimatedFreight ? 'color: coral;' : ';'}" th:text="${item.supplierEstimatedFreight} + '/' + ${item.supplierPoweredFreight}"></b></td>
                                     <td><b th:text="${item.liquidTotal}"></b></td>
                                     <td><b th:text="${item.total}"></b></td>
-                                    <td><b th:text="${item.supplierEstimatedTotal} + '/' + ${item.supplierPoweredTotal}"></b></td>
+                                    <td><b th:style="${item.supplierPoweredPrice > item.product.supplierPrice ? 'color: coral;' : ';'}" th:text="${item.product.supplierPrice} + '/' + ${item.supplierPoweredPrice}"></b></td>
+                                    <td><b th:style="${item.supplierPoweredTotal > item.supplierEstimatedTotal ? 'color: coral;' : ';'}" th:text="${item.supplierEstimatedTotal} + '/' + ${item.supplierPoweredTotal}"></b></td>
                                     <td><b th:text="${item.supplierPoweredDiscount}"></b></td>
-                                    <td><b th:text="${item.profit}"></b></td>
-                                    <td><b th:text="${item.profitPercent}"></b></td>
+                                    <td><b th:style="${item.profit <= 0 ? 'color: coral;' : ';'}" th:text="${item.profit}"></b></td>
+                                    <td><b th:style="${item.profitPercent <= 0 ? 'color: coral;' : ';'}" th:text="${item.profitPercent}"></b></td>
                                     <td>
-                                        <form  th:if="${item.status == 'active'}" action="/backoffice/customerorder/cancelItem" th:method="post">
+                                        <form  th:if="${item.status == 'active'}" action="/backoffice/customerorder/cancelItem" th:method="post" onSubmit="return confirm('Tem certeza que quer este item do pedido? Não será possível retornar este item!');">
                                             <input name="id" th:value="${customerOrder.id}" hidden="true"/>
                                             <input name="itemIndex" th:value="${index.index}" hidden="true"/>
                                             <button type="submit" class="tm-product-delete-link">
@@ -306,30 +307,30 @@
                                         <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll">
                                             <h2 class="tm-block-title">Variações</h2>
                                             <div class="tm-product-table-container">
-                                            <table class="table tm-table-small tm-product-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col">Variante</th>
-                                                        <th scope="col">Valor</th>
-                                                        <th scope="col"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr th:each="itemVariant : ${item.customerOrderItemVariants}">
-                                                        <td style="background-color:  #50697f;" th:text="${itemVariant.name}"/>
-                                                        <td style="background-color:  #50697f;" th:text="${itemVariant.value}"/>
-                                                        <td style="background-color:  #50697f;">
-                                                            <form  action="/backoffice/customerorder/cancelItem" th:method="post">
-                                                                <input name="id" th:value="${customerOrder.id}" hidden="true"/>
-                                                                <input name="itemIndex" th:value="${index.index}" hidden="true"/>
-                                                                <button type="submit" class="tm-product-delete-link">
-                                                                    <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                                                                </button>
-                                                            </form>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                                <table class="table tm-table-small tm-product-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Variante</th>
+                                                            <th scope="col">Valor</th>
+                                                            <th scope="col"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr th:each="itemVariant : ${item.customerOrderItemVariants}">
+                                                            <td style="background-color:  #50697f;" th:text="${itemVariant.name}"/>
+                                                            <td style="background-color:  #50697f;" th:text="${itemVariant.value}"/>
+                                                            <td style="background-color:  #50697f;">
+                                                                <form  action="/backoffice/customerorder/cancelItem" th:method="post">
+                                                                    <input name="id" th:value="${customerOrder.id}" hidden="true"/>
+                                                                    <input name="itemIndex" th:value="${index.index}" hidden="true"/>
+                                                                    <button type="submit" class="tm-product-delete-link">
+                                                                        <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                             <form  action="/backoffice/customerorder/variantadd" th:method="post">
                                                 <input name="id" th:value="${customerOrder.id}" hidden="true"/>
@@ -375,9 +376,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <a th:if="${id != ''}"
-                           th:href="'/backoffice/productselect?redirectTo=/backoffice/customerorder/productadd&method=post&id=' + ${id}"
-                           class="btn btn-primary btn-block text-uppercase mb-3">Incluir Novo Item</a>
                     </div>                
                 </div>
             </div>
@@ -417,126 +415,6 @@
                                     <td><b>485 km</b></td>
                                     <td>16:00, 12 NOV 2018</td>
                                     <td>08:00, 18 NOV 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122348</b></th>
-                                    <td>
-                                        <div class="tm-status-circle pending">
-                                        </div>Pending
-                                    </td>
-                                    <td><b>Jacob Miller</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>360 km</b></td>
-                                    <td>11:00, 10 NOV 2018</td>
-                                    <td>04:00, 14 NOV 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122347</b></th>
-                                    <td>
-                                        <div class="tm-status-circle cancelled">
-                                        </div>Cancelled
-                                    </td>
-                                    <td><b>George Wilson</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>340 km</b></td>
-                                    <td>12:00, 22 NOV 2018</td>
-                                    <td>06:00, 28 NOV 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122346</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>William Aung</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>218 km</b></td>
-                                    <td>15:00, 10 NOV 2018</td>
-                                    <td>09:00, 14 NOV 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122345</b></th>
-                                    <td>
-                                        <div class="tm-status-circle pending">
-                                        </div>Pending
-                                    </td>
-                                    <td><b>Harry Ryan</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>280 km</b></td>
-                                    <td>15:00, 11 NOV 2018</td>
-                                    <td>09:00, 17 NOV 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122344</b></th>
-                                    <td>
-                                        <div class="tm-status-circle pending">
-                                        </div>Pending
-                                    </td>
-                                    <td><b>Michael Jones</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>218 km</b></td>
-                                    <td>18:00, 12 OCT 2018</td>
-                                    <td>06:00, 18 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122343</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>Timmy Davis</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>218 km</b></td>
-                                    <td>12:00, 10 OCT 2018</td>
-                                    <td>08:00, 18 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122342</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>Oscar Phyo</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>420 km</b></td>
-                                    <td>15:30, 06 OCT 2018</td>
-                                    <td>09:30, 16 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122341</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>Charlie Brown</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>300 km</b></td>
-                                    <td>11:00, 10 OCT 2018</td>
-                                    <td>03:00, 14 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122340</b></th>
-                                    <td>
-                                        <div class="tm-status-circle cancelled">
-                                        </div>Cancelled
-                                    </td>
-                                    <td><b>Wilson Cookies</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>218 km</b></td>
-                                    <td>17:30, 12 OCT 2018</td>
-                                    <td>08:30, 22 OCT 2018</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row"><b>#122339</b></th>
-                                    <td>
-                                        <div class="tm-status-circle moving">
-                                        </div>Moving
-                                    </td>
-                                    <td><b>Richard Clamon</b></td>
-                                    <td><b>London, UK</b></td>
-                                    <td><b>150 km</b></td>
-                                    <td>15:00, 12 OCT 2018</td>
-                                    <td>09:20, 26 OCT 2018</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -885,157 +763,34 @@
     </div>
     <div class="tab-pane" id="supplierHistoryOrders">
         <div class="col-12 tm-col" id="supplierHistoryOrders">
-            <div class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
-                <h2 class="tm-block-title">Pedidos no Fornecedor</h2>
+            <div th:each="supplierOrder : ${customerOrder.supplierOrders}" class="tm-bg-primary-dark tm-block tm-block-h-auto tm-block-scroll ">
+                <h2 th:text="'Fornecedor: ' + ${supplierOrder.supplier.name} + '      ' + pedido + ': ' + ${supplierOrder.code} " class="tm-block-title">Pedidos no Fornecedor</h2>
+                <h2 th:text="'Notas: ' + ${supplierOrder.notes}" class="tm-block-title">Notas</h2>
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Codigo</th>
-                            <th scope="col">Nome</th>
-                            <th scope="col">Status</th>
+                            <th scope="col">#</th>
+                            <th scope="col">Produto</th>
                             <th scope="col">Quantidade</th>
-                            <th scope="col">Qtd. Fornecedor</th>
                             <th scope="col">Preço</th>
-                            <th scope="col">Preço Fornecedor</th>
-                            <th scope="col">Total Liquido</th>
-                            <th scope="col">Total Bruto</th>
-                            <th scope="col">Desconto</th>
                             <th scope="col">Frete</th>
-                            <th scope="col">Fornecedor</th>
+                            <th scope="col">Desconto</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Cod. Rastreio</th>
+                            <th scope="col">Notas</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row"><b>#122349</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Oliver Trag</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>485 km</b></td>
-                            <td>16:00, 12 NOV 2018</td>
-                            <td>08:00, 18 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122348</b></th>
-                            <td>
-                                <div class="tm-status-circle pending">
-                                </div>Pending
-                            </td>
-                            <td><b>Jacob Miller</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>360 km</b></td>
-                            <td>11:00, 10 NOV 2018</td>
-                            <td>04:00, 14 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122347</b></th>
-                            <td>
-                                <div class="tm-status-circle cancelled">
-                                </div>Cancelled
-                            </td>
-                            <td><b>George Wilson</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>340 km</b></td>
-                            <td>12:00, 22 NOV 2018</td>
-                            <td>06:00, 28 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122346</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>William Aung</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>15:00, 10 NOV 2018</td>
-                            <td>09:00, 14 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122345</b></th>
-                            <td>
-                                <div class="tm-status-circle pending">
-                                </div>Pending
-                            </td>
-                            <td><b>Harry Ryan</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>280 km</b></td>
-                            <td>15:00, 11 NOV 2018</td>
-                            <td>09:00, 17 NOV 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122344</b></th>
-                            <td>
-                                <div class="tm-status-circle pending">
-                                </div>Pending
-                            </td>
-                            <td><b>Michael Jones</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>18:00, 12 OCT 2018</td>
-                            <td>06:00, 18 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122343</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Timmy Davis</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>12:00, 10 OCT 2018</td>
-                            <td>08:00, 18 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122342</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Oscar Phyo</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>420 km</b></td>
-                            <td>15:30, 06 OCT 2018</td>
-                            <td>09:30, 16 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122341</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Charlie Brown</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>300 km</b></td>
-                            <td>11:00, 10 OCT 2018</td>
-                            <td>03:00, 14 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122340</b></th>
-                            <td>
-                                <div class="tm-status-circle cancelled">
-                                </div>Cancelled
-                            </td>
-                            <td><b>Wilson Cookies</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>218 km</b></td>
-                            <td>17:30, 12 OCT 2018</td>
-                            <td>08:30, 22 OCT 2018</td>
-                        </tr>
-                        <tr>
-                            <th scope="row"><b>#122339</b></th>
-                            <td>
-                                <div class="tm-status-circle moving">
-                                </div>Moving
-                            </td>
-                            <td><b>Richard Clamon</b></td>
-                            <td><b>London, UK</b></td>
-                            <td><b>150 km</b></td>
-                            <td>15:00, 12 OCT 2018</td>
-                            <td>09:20, 26 OCT 2018</td>
+                        <tr th:each="supplierOrderItem, iter : ${supplierOrder.supplierOrderItems}" >
+                            <td><b th:text="${iter.index}"></b></th>
+                            <td><b th:text="${supplierOrderItem.productCode} + ' - ' + ${supplierOrderItem.productName}"></b></td>
+                            <td><b th:text="${supplierOrderItem.quantity}"></b></td>
+                            <td><b th:text="${supplierOrderItem.price}"></b></td>
+                            <td><b th:text="${supplierOrderItem.freight}"></b></td>
+                            <td><b th:text="${supplierOrderItem.discount}"></b></td>
+                            <td><b th:text="${supplierOrderItem.total}"></b></td>
+                            <td><b th:text="${supplierOrderItem.trackingCode}"></b></td>
+                            <td><b th:text="${supplierOrderItem.notes}"></b></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1077,7 +832,7 @@
                                 <div class="form-group mb-3 col-4">
                                     <label
                                         for="supplierid"
-                                        >Forncedor
+                                        >Fornecedor
                                     </label>
                                     <select
                                         id="suppliers"
@@ -1105,6 +860,7 @@
                                         th:field="*{code}"
                                         type="text"
                                         class="form-control validate"
+                                        required="true"
                                         >
                                 </div>
                             </div>
@@ -1142,7 +898,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="itemToBuy, iter : ${customerOrder.customerOrderItems}">
+                                    <tr th:each="itemToBuy, iter : ${customerOrder.customerOrderItems.?[status == 'active' and quantity - supplierQuantityBought > 0]}">
                                         <td scope="row"><b th:text="${iter.index}" /></td>
                                         <td scope="row"><b th:text="${itemToBuy.product.code}" /></td>
                                         <td scope="row"><b th:text="${itemToBuy.product.name}" /></td>
@@ -1150,8 +906,8 @@
                                         <td scope="row"><b th:text="${itemToBuy.quantity}" /></td>
                                         <td scope="row"><b th:text="${itemToBuy.supplierEstimatedTotal}" /></td>
                                         <td scope="row"><b th:text="${itemToBuy.supplierEstimatedFreight}" /></td>
-                                        <td scope="row"><b th:text="${itemToBuy.product.providerName}" /></td>
-                                        <td scope="row"><b th:text="${itemToBuy.product.providerName}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.supplierQuantityBought}" /></td>
+                                        <td scope="row"><b th:text="${itemToBuy.quantity} - ${itemToBuy.supplierQuantityBought}" /></td>
                                 <input
                                     type="text"
                                     th:name="'supplierOrderItems[' + ${iter.index} + '].productId'"
@@ -1163,8 +919,10 @@
                                         <input
                                             type="number"
                                             class="form-control validate"
-                                            step=".01"
+                                            step="1"
                                             th:field="*{supplierOrderItems[__${iter.index}__].quantity}"
+                                            required="true"
+                                            th:max="${itemToBuy.quantity - itemToBuy.supplierQuantityBought}"
                                             />
                                     </div>
 
@@ -1177,6 +935,8 @@
                                             class="form-control validate"
                                             step=".01"
                                             th:field="*{supplierOrderItems[__${iter.index}__].price}"
+                                            required="true"
+                                            min="0.01"
                                             />
                                     </div>
 
@@ -1189,6 +949,7 @@
                                             class="form-control validate"
                                             step=".01"
                                             th:field="*{supplierOrderItems[__${iter.index}__].freight}"
+                                            required="true"
                                             />
                                     </div>
 
@@ -1201,6 +962,7 @@
                                             class="form-control validate"
                                             step=".01"
                                             th:field="*{supplierOrderItems[__${iter.index}__].discount}"
+                                            required="true"
                                             />
                                     </div>
 
@@ -1236,13 +998,50 @@
                     <button th:if="${id != '' and customerid == ''}"
                             type="submit"
                             th:href="@{/backoffice/supplier/select(redirectTo='/backoffice/customerorder/supplieradd', method='post', id=${customerOrder.id})}"
-                            class="btn btn-primary btn-block text-uppercase mb-3" >Salver Pedido</button>
+                            class="btn btn-primary btn-block text-uppercase mb-3" >Salvar Pedido</button>
                 </form>
 
             </div>
         </div>
     </div>
-</div>
+    <div class="tab-pane" id="orderNotes"> 
+        <div class="col-sm-12 tm-col"  style="padding-top: 20px">
+            <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                <div class="row">
+                    <div class="col-12">
+                        <h2 class="tm-block-title d-inline-block">Anotações do pedido</h2>
+                    </div>
+                </div>
+                <form action="#" th:action="@{/backoffice/customerorder/notesadd}" th:object="${customerOrder}" method="post" class="tm-edit-product-form">
+                    <input
+                        id="id"                                            
+                        name="id"
+                        type="text"
+                        th:field="*{id}"
+                        class="form-control validate"
+                        hidden="true"
+                        />
+
+                    <div class="row tm-edit-product-row">
+
+                        <div class="form-group mb-3">
+                            <textarea id="notes"
+                                      name="notes"
+                                      th:field="*{notes}"
+                                      class="form-control validate"
+                                      rows="25"
+                                      cols="170"
+                                      required
+                                      ></textarea>
+                        </div>
+                    </div>
+                    <button th:if="${id != '' and customerid == ''}"
+                            type="submit"
+                            class="btn btn-primary btn-block text-uppercase mb-3" >Salvar Pedido</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 <footer class="tm-footer row tm-mt-small">

@@ -6,12 +6,10 @@
 package com.davidosantos.webstore.orders;
 
 import com.davidosantos.webstore.products.Product;
-import com.davidosantos.webstore.supplier.SupplierOrder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 /**
  *
@@ -25,6 +23,7 @@ public class CustomerOrderProductItem {
     private List<CustomerOrderItemVariant> customerOrderItemVariants;
     private String status;
     private BigDecimal quantity;
+    private BigDecimal supplierQuantityBought;
     private BigDecimal unitDiscount;
     private BigDecimal totalDiscount;
     private BigDecimal discountPercent;
@@ -40,9 +39,7 @@ public class CustomerOrderProductItem {
 
     private BigDecimal profit;
     private BigDecimal profitPercent;
-    @DBRef
-    private List<SupplierOrder> supplierOrders;
-
+    
     public BigDecimal getSupplierPoweredDiscount() {
         return supplierPoweredDiscount;
     }
@@ -176,18 +173,7 @@ public class CustomerOrderProductItem {
     public void setSupplierEstimatedTotal(BigDecimal supplierEstimatedTotal) {
         this.supplierEstimatedTotal = supplierEstimatedTotal;
     }
-
-    public List<SupplierOrder> getSupplierOrders() {
-        if(supplierOrders == null){
-            supplierOrders = new ArrayList<SupplierOrder>();
-        }
-        return supplierOrders;
-    }
-
-    public void setSupplierOrders(List<SupplierOrder> supplierOrders) {
-        this.supplierOrders = supplierOrders;
-    }
-
+    
     public BigDecimal getSupplierEstimatedFreight() {
         return supplierEstimatedFreight;
     }
@@ -210,6 +196,14 @@ public class CustomerOrderProductItem {
 
     public void setSupplierPoweredFreight(BigDecimal supplierPoweredFreight) {
         this.supplierPoweredFreight = supplierPoweredFreight;
+    }
+
+    public BigDecimal getSupplierQuantityBought() {
+        return supplierQuantityBought;
+    }
+
+    public void setSupplierQuantityBought(BigDecimal supplierQuantityBought) {
+        this.supplierQuantityBought = supplierQuantityBought;
     }
 
 }

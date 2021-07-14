@@ -28,6 +28,7 @@ public class CustomerOrder {
     private String id;
     private String code;
     private Customer customer;
+    private String notes;
     private CustomerAddress selectedCustomerAddress;
     private BigDecimal totalQuantity;
     private BigDecimal totalEstimatedFreight;
@@ -264,5 +265,14 @@ public class CustomerOrder {
     public void setSupplierPoweredDiscount(BigDecimal supplierPoweredDiscount) {
         this.supplierPoweredDiscount = supplierPoweredDiscount;
     }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
 
 }

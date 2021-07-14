@@ -11,7 +11,6 @@ import com.braintreegateway.ValidationError;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import springexample.BraintreeGatewayFactory;
 
-@Controller
-@RequestMapping("/paypal")
+//@Controller
+//@RequestMapping("/paypal")
 public class PaypalCheckoutController {
 
     private final BraintreeGateway gateway = BraintreeGatewayFactory.fromConfigFile(new File("config.properties"));

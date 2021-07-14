@@ -9,6 +9,7 @@ import com.davidosantos.webstore.products.Product;
 import com.davidosantos.webstore.products.ProductService;
 import com.davidosantos.webstore.supplier.Supplier;
 import com.davidosantos.webstore.supplier.SupplierOrder;
+import com.davidosantos.webstore.supplier.SupplierOrderItem;
 import com.davidosantos.webstore.supplier.SupplierOrderService;
 import com.davidosantos.webstore.supplier.SupplierService;
 import java.math.BigDecimal;
@@ -16,8 +17,6 @@ import java.math.RoundingMode;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.codec.binary.Base32;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -86,7 +85,16 @@ public class CustomerOrderService {
         return customerOrderRepository.save(customerOrder);
     }
 
-    private void changeOrderStatus(CustomerOrderStatus customerOrderStatus) {
+    private void changeOrderStatus(CustomerOrder customerOrder, CustomerOrderStatus customerOrderStatus, String updatedBy) {
+
+        customerOrder.setLastCustomerOrderStatus(customerOrderStatus);
+        CustomerOrderStatusItem customerOrderStatusItem = new CustomerOrderStatusItem();
+        customerOrderStatusItem.setCreatedBy(updatedBy);
+        customerOrderStatusItem.setCreatedDate(new Date());
+        customerOrderStatusItem.setCustomerOrderStatus(customerOrderStatus, updatedBy);
+        customerOrder.getCustomerOrderStatusItems().add(customerOrderStatusItem);
+        customerOrder.getCustomerOrderUpdateHistorys().add(new CustomerOrderUpdateHistory(updatedBy, "Alterado status do pedido para " + customerOrderStatus.name() + "."));
+        customerOrderRepository.save(customerOrder);
 
     }
 
@@ -140,11 +148,17 @@ public class CustomerOrderService {
             customerOrderProductItem.setUnitDiscount(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setDiscountPercent(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setSupplierEstimatedFreight(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
+            customerOrderProductItem.setSupplierEstimatedTotal(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setUnitFreight(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setTotal(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setLiquidTotal(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setProfit(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrderProductItem.setProfitPercent(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
+            customerOrderProductItem.setSupplierPoweredFreight(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
+            customerOrderProductItem.setSupplierPoweredDiscount(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
+            customerOrderProductItem.setSupplierPoweredPrice(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
+            customerOrderProductItem.setSupplierPoweredTotal(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
+            customerOrderProductItem.setSupplierQuantityBought(BigDecimal.ZERO.setScale(scalePrice, RoundingMode.HALF_UP));
             customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
             customerOrder.getCustomerOrderUpdateHistorys().add(new CustomerOrderUpdateHistory(updatedBy, "Adicionado Item " + product.getCode() + " - " + product.getName()));
         }
@@ -156,6 +170,7 @@ public class CustomerOrderService {
 
         recalculateItems(customerOrder);
 
+        CustomerOrderStatus lastCustomerOrderStatus = customerOrder.getLastCustomerOrderStatus();
         BigDecimal lastTotalQuantity = customerOrder.getTotalQuantity();
         BigDecimal lastTotalEstimatedFreight = customerOrder.getTotalEstimatedFreight();
         BigDecimal lastTotalDiscount = customerOrder.getTotalDiscount();
@@ -167,6 +182,7 @@ public class CustomerOrderService {
         BigDecimal lastTotalProfitPercent = customerOrder.getTotalProfitPercent();
 
         BigDecimal newTotalQuantity = new BigDecimal(customerOrder.getCustomerOrderItems().stream().filter(itemFilter -> itemFilter.getStatus().equals("active")).mapToDouble(productItem -> productItem.getQuantity().doubleValue()).sum()).setScale(scaleQuantity, RoundingMode.HALF_UP);
+        BigDecimal newTotalQuantityBought = new BigDecimal(customerOrder.getCustomerOrderItems().stream().filter(itemFilter -> itemFilter.getStatus().equals("active")).mapToDouble(productItem -> productItem.getSupplierQuantityBought().doubleValue()).sum()).setScale(scaleQuantity, RoundingMode.HALF_UP);
         BigDecimal newTotalEstimatedFreight = new BigDecimal(customerOrder.getCustomerOrderItems().stream().filter(itemFilter -> itemFilter.getStatus().equals("active")).mapToDouble(productItem -> productItem.getSupplierEstimatedFreight().doubleValue()).sum()).setScale(scaleTotalPrice, RoundingMode.HALF_UP);
         BigDecimal newTotalDiscount = new BigDecimal(customerOrder.getCustomerOrderItems().stream().filter(itemFilter -> itemFilter.getStatus().equals("active")).mapToDouble(productItem -> productItem.getTotalDiscount().doubleValue()).sum()).setScale(scaleTotalPrice, RoundingMode.HALF_UP);
         BigDecimal newTotalAmount = new BigDecimal(customerOrder.getCustomerOrderItems().stream().filter(itemFilter -> itemFilter.getStatus().equals("active")).mapToDouble(productItem -> productItem.getTotal().doubleValue()).sum()).setScale(scaleTotalPrice, RoundingMode.HALF_UP);
@@ -200,18 +216,28 @@ public class CustomerOrderService {
         customerOrder.setTotalProfit(newTotalProfit);
         customerOrder.setTotalProfitPercent(newTotalProfitPercent);
 
+        if (newTotalQuantityBought.compareTo(BigDecimal.ZERO) > 0 && newTotalQuantityBought.compareTo(newTotalQuantity) < 0) {
+            changeOrderStatus(customerOrder, CustomerOrderStatus.SupplierPartiallyOrderCreated, updatedBy);
+        } else if (newTotalQuantityBought.compareTo(newTotalQuantity) == 0) {
+            changeOrderStatus(customerOrder, CustomerOrderStatus.SupplierOrderCreated, updatedBy);
+        } else if(newTotalQuantity.compareTo(BigDecimal.ZERO) > 0 && !customerOrder.getLastCustomerOrderStatus().equals(CustomerOrderStatus.PaymentWait)){
+            changeOrderStatus(customerOrder, CustomerOrderStatus.PaymentWait, updatedBy);
+        }
+
         customerOrder.getCustomerOrderUpdateHistorys().add(
                 new CustomerOrderUpdateHistory(updatedBy,
                         "Recalculado <br />"
-                        + "lastTotalQuantity: " + lastTotalQuantity + " -> " + newTotalQuantity + "<br/>"
-                        + "lastTotalDiscount: " + lastTotalDiscount + " -> " + newTotalDiscount + "<br/>"
-                        + "lastTotalDiscountPercent: " + lastTotalDiscountPercent + " -> " + newTotalDiscountPercent + "<br/>"
-                        + "lastTotalEstimatedFreight: " + lastTotalEstimatedFreight + " -> " + newTotalEstimatedFreight + "<br/>"
-                        + "lastTotalLiquid: " + lastTotalLiquid + " -> " + newTotalLiquid + "<br/>"
-                        + "lastTotalAmount: " + lastTotalAmount + " -> " + newTotalAmount + "<br/>"
-                        + "lastSupplierTotalEstimatedAmount: " + lastSupplierTotalEstimatedAmount + " -> " + newSuppilerTotalEstimatedAmount + "<br/>"
-                        + "lastTotalProfit: " + lastTotalProfit + " -> " + newTotalProfit + "<br/>"
-                        + "lastTotalProfitPercent: " + lastTotalProfitPercent + " -> " + newTotalProfitPercent + "<br/>"
+                        + "CustomerOrderStatus: " + lastCustomerOrderStatus + " -> " + customerOrder.getLastCustomerOrderStatus() + "<br/>"
+                        + "TotalQuantity: " + lastTotalQuantity + " -> " + newTotalQuantity + "<br/>"
+                        + "TotalDiscount: " + lastTotalDiscount + " -> " + newTotalDiscount + "<br/>"
+                        + "TotalDiscountPercent: " + lastTotalDiscountPercent + " -> " + newTotalDiscountPercent + "<br/>"
+                        + "TotalEstimatedFreight: " + lastTotalEstimatedFreight + " -> " + newTotalEstimatedFreight + "<br/>"
+                        + "TotalLiquid: " + lastTotalLiquid + " -> " + newTotalLiquid + "<br/>"
+                        + "TotalAmount: " + lastTotalAmount + " -> " + newTotalAmount + "<br/>"
+                        + "TotalQuantityBought: " + newTotalQuantityBought + "<br/>"
+                        + "SupplierTotalEstimatedAmount: " + lastSupplierTotalEstimatedAmount + " -> " + newSuppilerTotalEstimatedAmount + "<br/>"
+                        + "TotalProfit: " + lastTotalProfit + " -> " + newTotalProfit + "<br/>"
+                        + "TotalProfitPercent: " + lastTotalProfitPercent + " -> " + newTotalProfitPercent + "<br/>"
                 ));
 
         customerOrderRepository.save(customerOrder);
@@ -219,118 +245,138 @@ public class CustomerOrderService {
 
     public void recalculateItems(CustomerOrder customerOrder) {
 
-        customerOrder.getCustomerOrderItems().forEach((orderItem) -> {
+        customerOrder.getCustomerOrderItems()
+                .stream()
+                .filter(predicate -> predicate.getStatus().equals("active"))
+                .forEach((customerOrderItem) -> {
 
-            if (orderItem.getSupplierOrders().size() > 0) {
-                //calculo das compras nos forneceres devem ser utilizado a media poderada,
-                //pois temos a possibilidade de comprar quantidades diferentes com preços diferentes
-                // mas medias ponderadas são para preço, frete, total e descontos no fornecedor.
-                //busca em todos os pedidos de fornecedor que não esteja cancelado
-                final Map<Double, Double> poweredPrice = new HashMap<>();
-                final Map<Double, Double> poweredFreight = new HashMap<>();
-                final Map<Double, Double> poweredTotal = new HashMap<>();
-                final Map<Double, Double> poweredDiscount = new HashMap<>();
-                orderItem.getSupplierOrders().forEach((supplierOrder) -> {
-                    supplierOrder.getSupplierOrderItems()
-                            .stream()
-                            .filter((supplierOrderItem) -> supplierOrderItem.getProductId().equals(orderItem.getProduct().getId()))
-                            .forEach(t -> {
-                                poweredPrice.put(t.getQuantity().doubleValue(), t.getPrice().doubleValue());
-                            });
-                    supplierOrder.getSupplierOrderItems()
-                            .stream()
-                            .filter((supplierOrderItem) -> supplierOrderItem.getProductId().equals(orderItem.getProduct().getId()))
-                            .forEach(t -> {
-                                poweredFreight.put(t.getQuantity().doubleValue(), t.getFreight().doubleValue());
-                            });
-                    supplierOrder.getSupplierOrderItems()
-                            .stream()
-                            .filter((supplierOrderItem) -> supplierOrderItem.getProductId().equals(orderItem.getProduct().getId()))
-                            .forEach(t -> {
-                                poweredTotal.put(t.getQuantity().doubleValue(), t.getTotal().doubleValue());
-                            });
-                    supplierOrder.getSupplierOrderItems()
-                            .stream()
-                            .filter((supplierOrderItem) -> supplierOrderItem.getProductId().equals(orderItem.getProduct().getId()))
-                            .forEach(t -> {
-                                poweredDiscount.put(t.getQuantity().doubleValue(), t.getDiscount().doubleValue());
-                            });
+                    customerOrderItem.setUnitDiscount(customerOrderItem.getProduct().getDiscount());
+                    customerOrderItem.setUnitFreight(customerOrderItem.getProduct().getFreight());
+
+                    customerOrderItem.setTotalDiscount(
+                            //Quantidade do item x desconto Unitario
+                            customerOrderItem.getQuantity().multiply(customerOrderItem.getUnitDiscount())
+                    );
+
+                    customerOrderItem.setSupplierEstimatedFreight(
+                            //Quantidade do item x frete Unitario
+                            customerOrderItem.getQuantity().multiply(customerOrderItem.getUnitFreight())
+                    );
+
+                    customerOrderItem.setLiquidTotal(
+                            //total do item x preço
+                            customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getPrice()));
+
+                    customerOrderItem.setSupplierEstimatedTotal(
+                            //total do item x preço forncedor
+                            customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getSupplierPrice()));
+
+                    customerOrderItem.setTotal(
+                            //total do item
+                            customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getPrice())
+                                    //mais total de frete
+                                    .add(customerOrderItem.getSupplierEstimatedFreight())
+                                    //menos total de descontos
+                                    .subtract(customerOrderItem.getTotalDiscount())
+                    );
+
+                    customerOrderItem.setDiscountPercent(
+                            customerOrderItem.getTotalDiscount()
+                                    //desconto dividido pelo total item
+                                    .divide(customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getPrice()), RoundingMode.HALF_UP)
+                                    //multiplicado por 100
+                                    .multiply(new BigDecimal(100))
+                    );
+                    double itemQtd = 0;
+                    for (SupplierOrder supplierOrder : customerOrder.getSupplierOrders()) {
+                        for (SupplierOrderItem supplierOrderItem : supplierOrder.getSupplierOrderItems()) {
+                            if (supplierOrderItem.getProductId().equals(customerOrderItem.getProduct().getId())
+                                    && customerOrderItem.getStatus().equals("active")) {
+                                itemQtd += 1;
+                            }
+                        }
+                    }
+
+                    if (itemQtd > 0) {
+                        //calculo das compras nos forneceres devem ser utilizado a media poderada,
+                        //pois temos a possibilidade de comprar quantidades diferentes com preços diferentes
+                        // mas medias ponderadas são para preço, frete, total e descontos no fornecedor.
+                        //busca em todos os pedidos de fornecedor que não esteja cancelado
+                        double quantitySum = 0;
+                        double totalSum = 0;
+                        double priceAvg = 0;
+                        double priceAvgtmp = 0;
+                        double freightSum = 0;
+                        double discountSum = 0;
+                        for (SupplierOrder supplierOrder : customerOrder.getSupplierOrders()) {
+                            for (SupplierOrderItem supplierOrderItem : supplierOrder.getSupplierOrderItems()) {
+                                if (supplierOrderItem.getProductId().equals(customerOrderItem.getProduct().getId())
+                                        && customerOrderItem.getStatus().equals("active")) {
+                                    quantitySum += supplierOrderItem.getQuantity().doubleValue();
+                                    priceAvgtmp += (supplierOrderItem.getQuantity().doubleValue() * supplierOrderItem.getPrice().doubleValue());
+                                    freightSum += (supplierOrderItem.getQuantity().doubleValue() * supplierOrderItem.getFreight().doubleValue());
+                                    discountSum += (supplierOrderItem.getQuantity().doubleValue() * supplierOrderItem.getDiscount().doubleValue());
+                                    totalSum += (supplierOrderItem.getQuantity().doubleValue() * supplierOrderItem.getPrice().doubleValue());
+                                }
+                            }
+                        }
+                        priceAvg = (priceAvgtmp / quantitySum);
+                        customerOrderItem.setSupplierQuantityBought(new BigDecimal(quantitySum));
+                        customerOrderItem.setSupplierPoweredPrice(new BigDecimal((priceAvg)).setScale(scalePrice, RoundingMode.HALF_UP));
+                        customerOrderItem.setSupplierPoweredFreight(new BigDecimal((freightSum)).setScale(scalePrice, RoundingMode.HALF_UP));
+                        customerOrderItem.setSupplierPoweredDiscount(new BigDecimal((discountSum)).setScale(scalePrice, RoundingMode.HALF_UP));
+                        customerOrderItem.setSupplierPoweredTotal(new BigDecimal(totalSum).setScale(scalePrice, RoundingMode.HALF_UP));
+
+                        customerOrderItem.setProfit(
+                                new BigDecimal(
+                                        //total do item vendido
+                                        customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getPrice()).doubleValue()
+                                        //menos total no fornecedor
+                                        - (quantitySum * priceAvg)
+                                        // menos total de descontos
+                                        - customerOrderItem.getTotalDiscount().doubleValue()
+                                        //mais diferença do frete cobrado e o pago para o fornecedor
+                                        + (customerOrderItem.getSupplierEstimatedFreight().doubleValue() - freightSum)
+                                        + discountSum
+                                ).setScale(scalePrice, RoundingMode.HALF_UP)
+                        );
+
+                        customerOrderItem.setProfitPercent(
+                                customerOrderItem.getProfit()
+                                        //lucro dividido pelo total do item no forncedor
+                                        .divide(new BigDecimal(quantitySum * priceAvg), RoundingMode.HALF_UP)
+                                        //multiplicado por 100
+                                        .multiply(new BigDecimal(100)).setScale(scalePrice, RoundingMode.HALF_UP)
+                        );
+
+                    } else {
+
+                        customerOrderItem.setSupplierQuantityBought(BigDecimal.ZERO);
+                        customerOrderItem.setSupplierPoweredPrice(BigDecimal.ZERO);
+                        customerOrderItem.setSupplierPoweredFreight(BigDecimal.ZERO);
+                        customerOrderItem.setSupplierPoweredDiscount(BigDecimal.ZERO);
+                        customerOrderItem.setSupplierPoweredTotal(BigDecimal.ZERO);
+
+                        customerOrderItem.setProfit(
+                                //total do item vendido
+                                customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getPrice())
+                                        //menos total no fornecedor
+                                        .subtract(customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getSupplierPrice()))
+                                        // menos total de descontos
+                                        .subtract(customerOrderItem.getTotalDiscount())
+                        );
+
+                        customerOrderItem.setProfitPercent(
+                                customerOrderItem.getProfit()
+                                        //lucro dividido pelo total do item no forncedor
+                                        .divide(customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getSupplierPrice()), RoundingMode.HALF_UP)
+                                        //multiplicado por 100
+                                        .multiply(new BigDecimal(100))
+                        );
+                    }
+
                 });
-                orderItem.setSupplierPoweredPrice(new BigDecimal(calculateWeightedAverage(poweredPrice)).setScale(scalePrice, RoundingMode.HALF_UP));
-                orderItem.setSupplierPoweredFreight(new BigDecimal(calculateWeightedAverage(poweredFreight)).setScale(scalePrice, RoundingMode.HALF_UP));
-                orderItem.setSupplierPoweredTotal(new BigDecimal(calculateWeightedAverage(poweredTotal)).setScale(scalePrice, RoundingMode.HALF_UP));
-                orderItem.setSupplierPoweredDiscount(new BigDecimal(calculateWeightedAverage(poweredDiscount)).setScale(scalePrice, RoundingMode.HALF_UP));
-            }
-            //fim do calculo das médias ponderadas de fornecedor
 
-            orderItem.setUnitDiscount(orderItem.getProduct().getDiscount());
-            orderItem.setUnitFreight(orderItem.getProduct().getFreight());
-
-            orderItem.setTotalDiscount(
-                    //Quantidade do item x desconto Unitario
-                    orderItem.getQuantity().multiply(orderItem.getUnitDiscount())
-            );
-
-            orderItem.setSupplierEstimatedFreight(
-                    //Quantidade do item x frete Unitario
-                    orderItem.getQuantity().multiply(orderItem.getUnitFreight())
-            );
-
-            orderItem.setLiquidTotal(
-                    //total do item x preço
-                    orderItem.getQuantity().multiply(orderItem.getProduct().getPrice()));
-
-            orderItem.setSupplierEstimatedTotal(
-                    //total do item x preço forncedor
-                    orderItem.getQuantity().multiply(orderItem.getProduct().getSupplierPrice()));
-
-            orderItem.setTotal(
-                    //total do item
-                    orderItem.getQuantity().multiply(orderItem.getProduct().getPrice())
-                            //mais total de frete
-                            .add(orderItem.getSupplierEstimatedFreight())
-                            //menos total de descontos
-                            .subtract(orderItem.getTotalDiscount())
-            );
-
-            orderItem.setProfit(
-                    //total do item vendido
-                    orderItem.getQuantity().multiply(orderItem.getProduct().getPrice())
-                            //menos total no fornecedor
-                            .subtract(orderItem.getQuantity().multiply(orderItem.getProduct().getSupplierPrice()))
-                            // menos total de descontos
-                            .subtract(orderItem.getTotalDiscount())
-            );
-
-            orderItem.setProfitPercent(
-                    orderItem.getProfit()
-                            //lucro dividido pelo total do item no forncedor
-                            .divide(orderItem.getQuantity().multiply(orderItem.getProduct().getSupplierPrice()), RoundingMode.HALF_UP)
-                            //multiplicado por 100
-                            .multiply(new BigDecimal(100))
-            );
-
-            orderItem.setDiscountPercent(
-                    orderItem.getTotalDiscount()
-                            //desconto dividido pelo total item
-                            .divide(orderItem.getQuantity().multiply(orderItem.getProduct().getPrice()), RoundingMode.HALF_UP)
-                            //multiplicado por 100
-                            .multiply(new BigDecimal(100))
-            );
-        });
-
-    }
-
-    static Double calculateWeightedAverage(Map<Double, Double> map) throws ArithmeticException {
-        //ref https://newbedev.com/calculate-weighted-average-with-java-8-streams
-        double num = 0;
-        double denom = 0;
-        for (Map.Entry<Double, Double> entry : map.entrySet()) {
-            num += entry.getKey() * entry.getValue();
-            denom += entry.getValue();
-        }
-
-        return num / denom;
     }
 
     void addSupplier(String id, String supplierid, String updatedBy) {
@@ -358,11 +404,22 @@ public class CustomerOrderService {
                     customerOrder.getCustomerOrderItems().stream()
                             .filter(product -> product.getProduct().getId().equals(supplierOrderItem.getProductId()))
                             .findFirst().get().getProduct().getCode()).append(" - ");
+
             sb.append(
                     customerOrder.getCustomerOrderItems().stream()
                             .filter(product -> product.getProduct().getId().equals(supplierOrderItem.getProductId()))
-                            .findFirst().get().getProduct().getCode()).append("<br/>");
+                            .findFirst().get().getProduct().getName()).append("<br/>");
+
             supplierOrderItem.setTotal(supplierOrderItem.getQuantity().multiply(supplierOrderItem.getPrice()));
+
+            supplierOrderItem.setProductCode(customerOrder.getCustomerOrderItems().stream()
+                    .filter(product -> product.getProduct().getId().equals(supplierOrderItem.getProductId()))
+                    .findFirst().get().getProduct().getCode());
+
+            supplierOrderItem.setProductName(customerOrder.getCustomerOrderItems().stream()
+                    .filter(product -> product.getProduct().getId().equals(supplierOrderItem.getProductId()))
+                    .findFirst().get().getProduct().getName());
+
             sb.append("Qtd Comprada: ").append(supplierOrderItem.getQuantity()).append("<br/>");
             sb.append("Preço: ").append(supplierOrderItem.getPrice()).append("<br/>");
             sb.append("Frete: ").append(supplierOrderItem.getFreight()).append("<br/>");
@@ -381,32 +438,27 @@ public class CustomerOrderService {
                 ));
 
         supplierOrder.setId(null);
-        final SupplierOrder supplierOrderCreated = supplierOrderService.createOrder(supplierOrder);
-        customerOrder.getSupplierOrders().add(supplierOrder);
-
-        //adiciona essa ordem a cada item que esta ordem atende.
-        customerOrder.getCustomerOrderItems()
-                .forEach((customerOrderItem) -> {
-                    supplierOrderCreated.getSupplierOrderItems().forEach((supplierOrderItem) -> {
-                        if (supplierOrderItem.getProductId().equals(customerOrderItem.getProduct().getId())) {
-                            customerOrderItem.getSupplierOrders().add(supplierOrderCreated);
-                        }
-                    });
-                });
-
+        customerOrder.getSupplierOrders().add(supplierOrderService.createOrder(supplierOrder));
         recalculateOrder(customerOrder, updatedBy);
         customerOrderRepository.save(customerOrder);
     }
 
     void addVariant(String id, String productid, String name, String value, String updatedBy) {
         CustomerOrder customerOrder = customerOrderRepository.findById(id).get();
-        customerOrder.getCustomerOrderItems().stream().filter(product -> product.getProduct().getId().equals(productid))
+        customerOrder.getCustomerOrderItems()
+                .stream()
+                .filter(product -> product.getProduct().getId().equals(productid))
                 .forEach((item) -> {
                     CustomerOrderItemVariant customerOrderItemVariant = new CustomerOrderItemVariant();
                     customerOrderItemVariant.setName(name);
                     customerOrderItemVariant.setValue(value);
                     item.getCustomerOrderItemVariants().add(customerOrderItemVariant);
                 });
+        customerOrderRepository.save(customerOrder);
+    }
+    void addNotes(String id, String notes, String updatedBy) {
+        CustomerOrder customerOrder = customerOrderRepository.findById(id).get();
+        customerOrder.setNotes(notes);
         customerOrderRepository.save(customerOrder);
     }
 }

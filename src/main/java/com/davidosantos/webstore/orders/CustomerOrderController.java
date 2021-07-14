@@ -69,7 +69,7 @@ public class CustomerOrderController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        return "/backoffice/customerorderlist";
+        return "backoffice/customerorderlist";
     }
 
     @RequestMapping("order")
@@ -149,7 +149,18 @@ public class CustomerOrderController {
             String value,
             Model model) {
 
-        customerOrderService.addVariant(id, name,value,productid, "Backoffice");
+        customerOrderService.addVariant(id, productid,name,value, "Backoffice");
+
+        return "redirect:/backoffice/customerorder/order?id=" + id;
+
+    }
+    @RequestMapping(value = "notesadd", method = RequestMethod.POST)
+    public String OrderAddNotes(
+            String id,
+            String notes,
+            Model model) {
+
+        customerOrderService.addNotes(id, notes,"Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 

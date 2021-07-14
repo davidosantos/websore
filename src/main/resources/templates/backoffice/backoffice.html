@@ -20,7 +20,7 @@
 </head>
 
 <body id="reportsPage">
-    <div th:replace="/backoffice/menu-fragment.html :: body"></div>
+    <div th:replace="backoffice/menu-fragment.html :: body"></div>
     <div class="" id="home">
         <div class="container">
             <div class="row">
@@ -294,15 +294,15 @@
         </footer>
     </div>
 
-    <script th:src="@{backoffice/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/backoffice/js/jquery-3.3.1.min.js}"></script>
     <!-- https://jquery.com/download/ -->
-    <script th:src="@{backoffice/js/moment.min.js}"></script>
+    <script th:src="@{/backoffice/js/moment.min.js}"></script>
     <!-- https://momentjs.com/ -->
-    <script th:src="@{backoffice/js/Chart.min.js}"></script>
+    <script th:src="@{/backoffice/js/Chart.min.js}"></script>
     <!-- http://www.chartjs.org/docs/latest/ -->
-    <script th:src="@{backoffice/js/bootstrap.min.js}"></script>
+    <script th:src="@{/backoffice/js/bootstrap.min.js}"></script>
     <!-- https://getbootstrap.com/ -->
-    <script th:src="@{backoffice/js/tooplate-scripts.js}"></script>
+    <script th:src="@{/backoffice/js/tooplate-scripts.js}"></script>
     <script>
         Chart.defaults.global.defaultFontColor = 'white';
         let ctxLine,
