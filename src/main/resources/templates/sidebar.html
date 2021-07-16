@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Sidebar 02</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" th:href="@{sidebar/css/style.css}">
+    </head>
+    <body>
+        <div class="wrapper d-flex align-items-stretch" th:fragment="insertAtContent(content)">
+            <nav id="sidebar">
+                <div class="custom-menu">
+                    <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                        <i class="fa fa-bars"></i>
+                        <span class="sr-only">Toggle Menu</span>
+                    </button>
+                </div>
+                <div class="p-4 pt-5">
+                    <h2 class="components mb-5"><b>Categorias</b></h2>
+                    <ul class="list-unstyled components mb-5"  >
+                        <li th:each="productCategory : ${productCategories}">
+                            <a href="#" th:text="${productCategory.name}">About</a>
+                        </li>
+                        <li>
+
+                        </li>
+                        <li>
+                            <a href="#">Portfolio</a>
+                        </li>
+                        <li>
+                            <a href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Page Content  -->
+            <div id="content" class="p-4 p-md-5 pt-5">
+                <div th:replace="${content}"></div>
+            </div>
+
+            <script th:src="@{/sidebar/js/jquery.min.js}"></script>
+            <script th:src="@{/sidebar/js/popper.js}"></script>
+            <script th:src="@{/sidebar/js/bootstrap.min.js}"></script>
+            <script th:src="@{/sidebar/js/main.js}"></script>
+    </body>
+</html>

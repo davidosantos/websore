@@ -5,7 +5,10 @@
  */
 package com.davidosantos.webstore.products;
 
+import com.davidosantos.webstore.images.Image;
 import com.davidosantos.webstore.images.ImageService;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,14 +17,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -48,30 +55,27 @@ public class ProductController {
     }
 
     @RequestMapping("/productslist")
-    public String backofficeListProductsPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "7") int size,
-            @RequestParam(defaultValue = "") String code,
-            @RequestParam(defaultValue = "") String name,
-            @RequestParam(defaultValue = "") String providerName,
+    public String backofficeListProductsPage(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "7") int size, @RequestParam(defaultValue = "") String code,
+            @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String providerName,
             Model model) {
-//https://www.baeldung.com/spring-thymeleaf-pagination
+        // https://www.baeldung.com/spring-thymeleaf-pagination
 
         Pageable paging = PageRequest.of(page, size);
         Page productPage;
         if (code.equals("") && name.equals("") && providerName.equals("")) {
             productPage = productRepository.findAll(paging);
         } else {
-            productPage = productRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCaseAndProviderNameContainingIgnoreCase(code, name, providerName, paging);
+            productPage = productRepository
+                    .findByCodeContainingIgnoreCaseAndNameContainingIgnoreCaseAndProviderNameContainingIgnoreCase(code,
+                            name, providerName, paging);
         }
 
         model.addAttribute("productPage", productPage);
 
         int totalPages = productPage.getTotalPages();
         if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
@@ -79,17 +83,11 @@ public class ProductController {
     }
 
     @RequestMapping("/productselect")
-    public String backofficeListSelectProductsPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "7") int size,
-            @RequestParam(defaultValue = "") String code,
-            @RequestParam(defaultValue = "") String name,
-            @RequestParam(defaultValue = "") String providerName,
-            String redirectTo,
-            String method,
-            String id,
-            Model model) {
-//https://www.baeldung.com/spring-thymeleaf-pagination
+    public String backofficeListSelectProductsPage(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "7") int size, @RequestParam(defaultValue = "") String code,
+            @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String providerName,
+            String redirectTo, String method, String id, Model model) {
+        // https://www.baeldung.com/spring-thymeleaf-pagination
 
         Pageable paging = PageRequest.of(page, size);
         Page productPage;
@@ -106,9 +104,7 @@ public class ProductController {
 
         int totalPages = productPage.getTotalPages();
         if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
@@ -130,7 +126,7 @@ public class ProductController {
 
         ProductCategory productCategory;
         if (product.getProductCategory() == null) {
-            //for new category
+            // for new category
             productCategory = new ProductCategory();
         } else {
             productCategory = product.getProductCategory();
@@ -172,7 +168,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products/product-variation", method = RequestMethod.POST)
-    public String backofficeSaveProductsVariatonPage(@RequestParam(defaultValue = "") String id, String variantName, Model model) {
+    public String backofficeSaveProductsVariatonPage(@RequestParam(defaultValue = "") String id, String variantName,
+            Model model) {
         Product product;
         if (id.equals("")) {
             product = new Product();
@@ -196,10 +193,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products/product-variation-value", method = RequestMethod.POST)
-    public String backofficeSaveProductsVariatonValuePage(
-            @RequestParam(defaultValue = "") String id,
-            @RequestParam(defaultValue = "") String variantName,
-            @RequestParam(defaultValue = "") String variantValue,
+    public String backofficeSaveProductsVariatonValuePage(@RequestParam(defaultValue = "") String id,
+            @RequestParam(defaultValue = "") String variantName, @RequestParam(defaultValue = "") String variantValue,
             Model model) {
         Product product;
         if (id.equals("")) {
@@ -212,7 +207,8 @@ public class ProductController {
         productVariantValue.setIsActive(true);
         productVariantValue.setName(variantValue);
 
-        product.getProductVariants().stream().filter(variant -> variant.getName().equals(variantName)).findFirst().get().getProductVariantValues().add(productVariantValue);
+        product.getProductVariants().stream().filter(variant -> variant.getName().equals(variantName)).findFirst().get()
+                .getProductVariantValues().add(productVariantValue);
 
         productService.saveProduct(product);
 
@@ -220,7 +216,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products", method = RequestMethod.POST)
-    public String backofficeSaveProductsPage(@Validated @ModelAttribute Product product, BindingResult errors, Model model) {
+    public String backofficeSaveProductsPage(@Validated @ModelAttribute Product product, BindingResult errors,
+            Model model) {
         errors.getFieldErrors().stream().forEach((error) -> {
             System.out.println("Erro: " + error.toString());
         });
@@ -239,7 +236,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products/category", method = RequestMethod.POST)
-    public String backofficeSaveProductsCategoryPage(@Validated @ModelAttribute ProductCategory productCategory, BindingResult errors, Model model) {
+    public String backofficeSaveProductsCategoryPage(@Validated @ModelAttribute ProductCategory productCategory,
+            BindingResult errors, Model model) {
         errors.getFieldErrors().stream().forEach((error) -> {
             System.out.println("Erro: " + error.toString());
         });
@@ -251,6 +249,16 @@ public class ProductController {
         productCategory = productService.saveProduct(productCategory);
         model.addAttribute("productCategory", productCategory);
         return "redirect:/backoffice/products";
+    }
+
+    @PostMapping("/productimage")
+    public ResponseEntity<Image> uploadImage(@RequestParam("id") String id, @RequestParam("title") String title,
+            @RequestParam("image") MultipartFile image) throws IOException {
+        Image uploadedImage = imageService.uploadImage(title, image);
+        productService.saveImage(id, uploadedImage.getId());
+        return new ResponseEntity<>(
+            uploadedImage,
+                 HttpStatus.OK);
     }
 
 }

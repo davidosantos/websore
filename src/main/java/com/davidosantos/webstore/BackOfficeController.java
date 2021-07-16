@@ -6,11 +6,18 @@
 package com.davidosantos.webstore;
 
 import com.davidosantos.webstore.customers.CustomerService;
+import com.davidosantos.webstore.images.Image;
+import com.davidosantos.webstore.images.ImageService;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -20,20 +27,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/backoffice")
 public class BackOfficeController {
 
-
     @Autowired
     CustomerService customerService;
-    
 
-    @RequestMapping
+    @Autowired
+    ImageService imageService;
+
+    @PostMapping("/images/upload")
+    public String uploadImage(@RequestParam("title") String title, @RequestParam("redirectTo") String redirectTo,
+            @RequestParam("image") MultipartFile image) throws IOException {
+        imageService.uploadImage(title, image);
+        return "redirect:" + redirectTo;
+    }
+
+    @RequestMapping(value = "")
     public String backofficePage(Model model) {
         model.addAttribute("attribute", "value");
         return "backoffice/backoffice";
     }
-    
-    
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({ Exception.class })
     public String databaseError() {
         return "error-view-name";
     }

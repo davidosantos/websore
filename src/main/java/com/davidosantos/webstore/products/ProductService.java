@@ -6,6 +6,9 @@
 package com.davidosantos.webstore.products;
 
 import java.util.List;
+
+import com.davidosantos.webstore.images.ImageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,9 @@ public class ProductService {
 
     @Autowired
     ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    ImageService imageService;
 
     public List<Product> getHomeProducts() {
 
@@ -53,5 +59,17 @@ public class ProductService {
     public Product getById(String productid) {
        return productRepository.findById(productid).get();
     }
+
+    public Product saveImage(String productid, String imageId) {
+        Product product = productRepository.findById(productid).get();
+
+        if(product.getImageId() != null && !product.getImageId().equals("")){
+            imageService.delete(product.getImageId());
+        }
+
+        product.setImageId(imageId);
+        
+        return productRepository.save(product);
+     }
 
 }

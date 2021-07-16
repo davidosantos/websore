@@ -34,7 +34,7 @@
                             </div>
                         </div>
 
-                        <form id="imageForm" method="POST" action="images/upload" enctype="multipart/form-data" style="display: none">
+                        <form id="imageForm" method="POST" action="/backoffice/productimage" enctype="multipart/form-data" style="display: none">
                             <!-- <input type="text" name="title" style="display: none" required="true"/> -->
                             <input id="fileInput" type="file" name="image" accept="image/*" style="display: none" required="true"/>
                             <input id="fileInputSubmit" type="submit" value="Upload" style="display: none"/>
@@ -158,12 +158,12 @@
                                                 th:each="category :  ${productCategory}"
                                                 th:value="${category.id}"
                                                 th:text="#{${'selected.label.' + category.name}}"
-                                                />
+                                                >
                                             <option 
                                                 th:each="category :  ${productCategories}"
                                                 th:value="${category.id}"
                                                 th:text="${category.name}"
-                                                />
+                                                >
 
                                         </select>
                                     </div>
@@ -411,7 +411,7 @@
                 $.ajax({
                     type: "POST",
                     enctype: 'multipart/form-data',
-                    url: "/images/upload",
+                    url: "/backoffice/productimage",
                     data: data,
                     processData: false,
                     contentType: false,

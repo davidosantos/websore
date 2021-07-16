@@ -5,24 +5,28 @@
  */
 package com.davidosantos.webstore;
 
+import com.davidosantos.webstore.carousel.Carousel;
+import com.davidosantos.webstore.carousel.CarouselService;
 import com.davidosantos.webstore.images.Image;
 import com.davidosantos.webstore.images.ImageService;
 import com.davidosantos.webstore.products.Product;
+import com.davidosantos.webstore.products.ProductCategory;
+import com.davidosantos.webstore.products.ProductCategoryRepository;
 import com.davidosantos.webstore.products.ProductRepository;
 import com.davidosantos.webstore.products.ProductService;
-import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.CacheControl;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -38,31 +42,45 @@ public class WebStoreController {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    CarouselService carouselService;
+
     @RequestMapping("/")
     public String homePage(Model model) {
-        List<Product> products =  productRepository.findByIsActiveAndDisplayInHome(true,true);
+        List<Product> products = productRepository.findByIsActiveAndDisplayInHome(true, true);
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
+        List<Carousel> carouselItems = carouselService.getDefault();
+
         model.addAttribute("products", products);
+        model.addAttribute("productCategories", productCategories);
         model.addAttribute("imageService", imageService);
+        model.addAttribute("carouselItems", carouselItems);
         return "index";
     }
-
-    
 
     @ExceptionHandler({Exception.class})
     public String databaseError() {
         return "error-view-name";
     }
 
-    @PostMapping("/images/upload")
-    public ResponseEntity<Image> uploadImage(@RequestParam("title") String title, @RequestParam("image") MultipartFile image) throws IOException {
-        return ResponseEntity.ok().body(imageService.uploadImage(title, image));
-    }
 
-    @GetMapping("/images/download/{id}")
-    public ResponseEntity<Image> downloadImage(@PathVariable String id) {
 
-        return ResponseEntity.ok().body(imageService.downloadImage(id));
+    @GetMapping("/images/downloadDecoded/{id}")
+    public ResponseEntity<byte[]> getImageDecoded(@PathVariable String id) {
+        HttpHeaders headers = new HttpHeaders();
 
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+
+        return new ResponseEntity<>(
+                Base64.getDecoder()
+                        .decode(
+                                imageService
+                                        .downloadImage(id)
+                                        .getImageData()),
+                headers, HttpStatus.OK);
     }
 
 }

@@ -5,7 +5,6 @@
  */
 package com.davidosantos.webstore.images;
 
-import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,7 +19,7 @@ public class Image {
     @Id
     private String id;
     private String title;
-    private Binary imageData;
+    private String imageData;
 
     public String getTitle() {
         return title;
@@ -30,16 +29,16 @@ public class Image {
         this.title = title;
     }
 
-    public Binary getImageData() {
+    public String getId() {
+        return id;
+    }
+
+    public String getImageData() {
         return imageData;
     }
 
-    public void setImageData(Binary imageData) {
+    public void setImageData(String imageData) {
         this.imageData = imageData;
-    }
-
-    public String getId() {
-        return id;
     }
 
 }
