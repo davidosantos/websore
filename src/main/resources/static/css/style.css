@@ -1569,7 +1569,7 @@ input[type="radio"] .styled:checked+label::after {
 position: absolute;
 margin-bottom: -111px;
 z-index: 999;
-background: #ff0000;
+background: #000000;
 width: 100%;
 position: relative;}
 .location_icon_bottum::before {
@@ -1630,21 +1630,21 @@ font-weight: 500;
 .banner-main .carousel-caption .buynow  {
 text-transform: uppercase;
 border: #fff solid 1px;
-background: #fff;
+background: rgb(0, 0, 0);
 width: 196px;
 padding: 12px 0;
 display: inline-block;
 font-weight: 500;
 font-size: 17px;
 line-height: 30px;
-color: #f00;
+color: rgb(255, 255, 255);
 text-align: center;
 border-radius: 30px;
 }
 
 .banner-main .carousel-caption .buynow:hover {
-     border: #ff0000 solid 1px;
-     background: #ff0000;
+     border: #ffffff solid 1px;
+     background: #000000;
      color: #fff;
 }
 
@@ -1656,6 +1656,8 @@ border-radius: 30px;
      width: 70px;
      height: 70px;
      border-radius: 35px;
+     background-color:#000000;
+     color:#ffffff;
 }
 
 #myCarousel a.carousel-control-prev {
@@ -1665,6 +1667,8 @@ border-radius: 30px;
      width: 70px;
      height: 70px;
      border-radius: 35px;
+     background-color:#000000;
+     color:#ffffff;
 }
 
 ul.social_icon {
@@ -1673,7 +1677,7 @@ ul.social_icon {
 }
 ul.social_icon li {
      float: left;
-color: #fff;
+color: rgb(15, 15, 15);
 align-items: center;
 padding-right: 10px;
 margin-top: 17px;
@@ -1682,7 +1686,7 @@ ul.social_icon li:last-child {
      padding-right: 0px;
 }
 ul.social_icon li a {
-color: #fff;
+color: rgb(0, 0, 0);
 width: 40px;
 height: 40px;
 border: solid #fff 1px;
@@ -1694,8 +1698,8 @@ font-size: 18px;
 } 
 
 ul.social_icon li a:hover {
-     background: #ff0000;
-border: solid #ff0000 1px;        
+     background: #000000;
+border: solid #ffffff 1px;        
 color: #fff;
 }
 /** end banner **/
@@ -1776,7 +1780,7 @@ display: block
 }
 
 .clients_red {
-     background: #ff0000;
+     background: #000000;
      padding-top: 90px;
      padding-bottom:110px;
 } 
@@ -1838,11 +1842,11 @@ border-radius: 50px;
 /** brand **/
 .brand {
      padding-top: 60px;
-     border-top: #db0000 solid 6px;}
+     border-top: #db0000 solid 6px;
+}
 
 .brand-bg {
      background: #ebebeb;
-     padding: 90px 0px;
      font-family: Myriad Pro;
 }
 
@@ -1851,11 +1855,74 @@ border-radius: 50px;
 }
 
 
-.brand-bg .brand_box {
+.brand-b {
      background: #fff;
      text-align: center;
      padding: 80px 0px 30px 0px ;
 }
+
+.brand_box {
+     background: rgb(255, 255, 255);
+     border-style: groove;
+     border-width: 1px;
+     text-align: center;
+     padding: 10px 20px 20px 20px ;
+     border-radius: 13px;
+     max-height: 500px;
+     min-height: 500px;
+}
+
+.brand_box_product {
+     background: rgb(255, 255, 255);
+     text-align: center;
+     padding: 0px 10px 10px 10px ;
+     max-width: auto;
+     max-height: 300px;
+     min-height: 300px;
+}
+
+.brand_box_product_details {
+     background: rgb(255, 255, 255);
+     text-align: center;
+     padding: 0px 10px 10px 10px ;
+     max-width: auto;
+     max-height: 200px;
+     min-height: 200px;
+}
+
+.spanQuantity {cursor:pointer; }
+		
+		.minus, .plus{
+			width:25px;
+			height:25px;
+			background:#000000;
+               color:rgb(255, 255, 255);
+			border-radius:50%;
+			font-weight: bold;
+               font-size: 15px;
+               font-family: poppins;
+      display: inline-block;
+      vertical-align: middle;
+      text-align: center;
+		}
+		.inputQuantity{
+	 height:25px;
+      width: 50px;
+      text-align: center;
+      
+			border:1px solid #ddd;
+			border-radius:4px;
+      display: inline-block;
+      vertical-align: middle;
+          }
+			
+
+.bottom-border {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: #f3eded;
+}
+
 .brand-bg .brand_box > img {
     height: 200px;
     width: auto;
@@ -1870,6 +1937,13 @@ border-radius: 50px;
 .red {
      color: #ff0000;
 }
+
+.center {
+     display: block;
+     margin-left: auto;
+     margin-right: auto;
+     width: 50%;
+   }
 
 .brand-bg .brand_box span {
      display: block;
@@ -1899,7 +1973,7 @@ margin-top: 40px
 }
 
 .read-more:hover {
-     background: #ff0000;
+     background: #776f6f;
 }
 
 /** end brand **/
@@ -1928,7 +2002,7 @@ margin-top: 40px
 } 
 
 .form-control {
-     border: #ff0000 solid 2px;
+     border: #000000 solid 2px;
      border-radius: inherit;
      margin-bottom: 30px;
      padding: 13px 20px;
@@ -1941,7 +2015,7 @@ margin-top: 40px
 
 .textarea {
      font-family: poppins;
-     border: #ff0000 solid 2px;
+     border: #000000 solid 2px;
      margin-bottom: 30px;
      padding: 13px 20px;
      width: 100%;
@@ -2084,6 +2158,14 @@ ul.location_icon span {
 
 /*--------------------------------------------------------------------- inner_page css ---------------------------------------------------------------------*/
 
+.default_content_box {
+     background: #fff;
+     border-radius: 13px;
+     border-style: groove;
+     border-width: 1px;
+
+}
+
 .brand_color {
      background-color: #ddd;
 }
@@ -2124,7 +2206,7 @@ ul.location_icon span {
 #myCarousel .carousel-control-next:hover,
 #myCarousel .carousel-control-prev:focus,
 #myCarousel .carousel-control-next:focus {
-     background: #ff0000 ;
+     background: #686565 ;
      color: #fff;
 }
 

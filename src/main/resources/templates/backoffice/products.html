@@ -1,449 +1,330 @@
 <!DOCTYPE html>
-<html lang="en"xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>Cadastro de produtos</title>
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:400,700"
-            />
-        <!-- https://fonts.google.com/specimen/Roboto -->
-        <link rel="stylesheet" th:href="@{css/fontawesome.min.css}" />
-        <!-- https://fontawesome.com/ -->
-        <link rel="stylesheet" th:href="@{jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
-        <!-- http://api.jqueryui.com/datepicker/ -->
-        <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
-        <!-- https://getbootstrap.com/ -->
-        <link rel="stylesheet" th:href="@{css/templatemo-style.css}">
-        <!--
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Cadastro de produtos</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700" />
+    <!-- https://fonts.google.com/specimen/Roboto -->
+    <link rel="stylesheet" th:href="@{css/fontawesome.min.css}" />
+    <!-- https://fontawesome.com/ -->
+    <link rel="stylesheet" th:href="@{jquery-ui-datepicker/jquery-ui.min.css}" type="text/css" />
+    <!-- http://api.jqueryui.com/datepicker/ -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}" />
+    <!-- https://getbootstrap.com/ -->
+    <link rel="stylesheet" th:href="@{css/templatemo-style.css}">
+    <!--
             Product Admin CSS Template
             https://templatemo.com/tm-524-product-admin
         -->
-    </head>
-    <body>
-        <div th:replace="backoffice/menu-fragment.html :: body"></div>
-        <div class="container-fluid height-full">
-            <div class="row ">
-                <div class="col-sm-8 tm-col" style="padding-top: 20px">
-                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-                        <div class="row">
+</head>
+
+<body>
+    <div th:replace="backoffice/menu-fragment.html :: body"></div>
+    <div class="container-fluid height-full">
+        <div class="row ">
+            <div class="col-sm-8 tm-col" style="padding-top: 20px">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2 class="tm-block-title d-inline-block">Cadastro de produto</h2>
+                        </div>
+                    </div>
+
+                    <form id="imageForm" method="POST" action="/backoffice/productimage" enctype="multipart/form-data"
+                        style="display: none">
+                        <!-- <input type="text" name="title" style="display: none" required="true"/> -->
+                        <input id="fileInput" type="file" name="image" accept="image/*" style="display: none"
+                            required="true" />
+                        <input type="text" name="id" th:value="${product.id}" style="display: none" />
+                        <input id="fileInputSubmit" type="submit" value="Upload" style="display: none" />
+                    </form>
+
+                    <form action="#" th:action="@{/backoffice/products}" th:object="${product}" method="post"
+                        class="tm-edit-product-form">
+                        <div class="row tm-edit-product-row">
+                            <div class="col-xl-6 col-lg-6 col-md-12">
+                                <div class="form-group mb-3">
+                                    <input id="id" name="id" type="text" th:field="*{id}" class="form-control validate"
+                                        hidden="true" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label for="code">Codigo do produto
+                                    </label>
+                                    <input id="code" name="code" th:field="*{code}" type="text"
+                                        class="form-control validate" required />
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                        <label for="isActive">Ativo
+                                        </label>
+                                        <input id="isActive" name="isActive" th:field="*{isActive}" type="checkbox"
+                                            class="form-control validate" data-large-mode="true" checked="true" />
+                                    </div>
+                                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                        <label for="displayInHome">Mostre Na Home
+                                        </label>
+                                        <input id="displayInHome" name="displayInHome" th:field="*{displayInHome}"
+                                            type="checkbox" class="form-control validate" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label for="name">Nome
+                                    </label>
+                                    <input id="name" name="name" th:field="*{name}" type="text"
+                                        class="form-control validate" required />
+                                </div>
+
+                                <!--Inicio Quantidades-->
+                                <div class="row">
+                                    <div class="form-group mb-3 col-xs-12 col-sm-4">
+                                        <label for="availableQuantity">Qtd. Disp. p/ Vender
+                                        </label>
+                                        <input id="availableQuantity" name="availableQuantity"
+                                            th:field="*{availableQuantity}" type="number" class="form-control validate"
+                                            required />
+                                    </div>
+                                    <div class="form-group mb-3 col-xs-12 col-sm-4">
+                                        <label for="totalSupplierQuantity">Qtd. Disp. no Fornec.
+                                        </label>
+                                        <input id="totalSupplierQuantity" name="totalSupplierQuantity"
+                                            th:field="*{totalSupplierQuantity}" type="number"
+                                            class="form-control validate" required />
+                                    </div>
+                                </div>
+                                <!--fim quantidades-->
+                                <div class="form-group mb-3">
+                                    <label for="category">Categoria</label>
+                                    <select class="custom-select tm-select-accounts" id="category"
+                                        th:field="*{productCategory}">
+                                        <option th:each="category :  ${productCategory}" th:value="${category.id}"
+                                            th:text="#{${'selected.label.' + category.name}}">
+                                        <option th:each="category :  ${productCategories}" th:value="${category.id}"
+                                            th:text="${category.name}">
+
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                        <label for="price">Preço
+                                        </label>
+                                        <input id="price" name="price" th:field="*{price}" type="number"
+                                            class="form-control validate" step=".01" required />
+                                    </div>
+                                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                        <label for="discount">Desconto
+                                        </label>
+                                        <!--  th:field="*{expireDate}" -->
+                                        <input id="discount" name="discount" th:field="*{discount}" type="text"
+                                            class="form-control validate" data-large-mode="true" required="true" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-xs-6 col-sm-6">
+                                        <label for="supplierPrice">Preço Fornec.
+                                        </label>
+                                        <input id="supplierPrice" name="supplierPrice" th:field="*{supplierPrice}"
+                                            type="number" class="form-control validate" step=".01" required />
+                                    </div>
+                                    <div class="form-group mb-3 col-xs-6 col-sm-6">
+                                        <label for="supplierPrice">Frete
+                                        </label>
+                                        <input id="freight" name="freight" th:field="*{freight}" type="number"
+                                            class="form-control validate" step=".01" required />
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label for="providerName">Nome do Fornecedor
+                                        </label>
+                                        <input id="providerName" name="providerName" th:field="*{providerName}"
+                                            type="text" class="form-control" required="true" />
+                                    </div>
+                                    <div class="form-group mb-3 col-xs-12 col-sm-6">
+                                        <label for="expireDate">Remv. site em
+                                        </label>
+                                        <!--  th:field="*{expireDate}" -->
+                                        <input id="expireDate" name="expireDate" th:field="*{expireDate}" type="text"
+                                            class="form-control validate" data-large-mode="true" required="true" />
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
+
+                                <div id="imageBox" th:if="${product.imageId == null}"
+                                    class="tm-product-img-dummy mx-auto"
+                                    onclick="document.getElementById('fileInput').click();">
+                                    <i class="fas fa-cloud-upload-alt tm-upload-icon"></i>
+                                </div>
+
+                                <div id="imageBox" class="tm-product-img-dummy mx-auto">
+                                    <img th:if="${product.imageId != null}"
+                                        style="height: -webkit-fill-available; width: -webkit-fill-available"
+                                        th:src="'/images/downloadDecoded/' + ${product.imageId}"
+                                        onclick="document.getElementById('fileInput').click();" />
+                                </div>
+
+
+                                <div class="custom-file mt-3 mb-3">
+                                    <input type="text" id="imageid" name="imageid" th:field="*{imageId}"
+                                        hidden="true" />
+                                    <input id="enviarImagem" type="button" class="btn btn-primary btn-block mx-auto"
+                                        value="ENVIAR IMAGEM" />
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group col-12">
+                                <label for="urlsupplyer">URL do Fornecedor
+                                </label>
+                                <input id="urlsupplyer" name="urlsupplyer" th:field="*{providerUrl}" type="text"
+                                    class="form-control" />
+                            </div>
+                            <div class="form-group col-12">
+                                <label for="description">Descrição</label>
+                                <textarea id="description" name="description" th:field="*{description}"
+                                    class="form-control validate" rows="3" required></textarea>
+                            </div>
                             <div class="col-12">
-                                <h2 class="tm-block-title d-inline-block">Cadastro de produto</h2>
+                                <button type="submit" class="btn btn-primary btn-block text-uppercase">SALVAR
+                                    PRODUTO</button>
                             </div>
                         </div>
-
-                        <form id="imageForm" method="POST" action="/backoffice/productimage" enctype="multipart/form-data" style="display: none">
-                            <!-- <input type="text" name="title" style="display: none" required="true"/> -->
-                            <input id="fileInput" type="file" name="image" accept="image/*" style="display: none" required="true"/>
-                            <input id="fileInputSubmit" type="submit" value="Upload" style="display: none"/>
-                        </form>
-
-                        <form action="#" th:action="@{/backoffice/products}" th:object="${product}" method="post" class="tm-edit-product-form">
-                            <div class="row tm-edit-product-row">
-                                <div class="col-xl-6 col-lg-6 col-md-12">  
-                                    <div class="form-group mb-3">
-                                        <input
-                                            id="id"
-                                            name="id"
-                                            type="text"
-                                            th:field="*{id}"
-                                            class="form-control validate"
-                                            hidden="true"
-                                            />
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <label
-                                            for="code"
-                                            >Codigo do produto
-                                        </label>
-                                        <input
-                                            id="code"
-                                            name="code"
-                                            th:field="*{code}"
-                                            type="text"
-                                            class="form-control validate"
-                                            required
-                                            />
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                                            <label
-                                                for="isActive"
-                                                >Ativo
-                                            </label>
-                                            <input
-                                                id="isActive"
-                                                name="isActive"
-                                                th:field="*{isActive}"
-                                                type="checkbox"
-                                                class="form-control validate"
-                                                data-large-mode="true"
-                                                checked="true"
-                                                />
-                                        </div>
-                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                                            <label
-                                                for="displayInHome"
-                                                >Mostre Na Home
-                                            </label>
-                                            <input
-                                                id="displayInHome"
-                                                name="displayInHome"
-                                                th:field="*{displayInHome}"
-                                                type="checkbox"
-                                                class="form-control validate"
-                                                />
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label
-                                            for="name"
-                                            >Nome
-                                        </label>
-                                        <input
-                                            id="name"
-                                            name="name"
-                                            th:field="*{name}"
-                                            type="text"
-                                            class="form-control validate"
-                                            required
-                                            />
-                                    </div>
-
-                                    <!--Inicio Quantidades-->
-                                    <div class="row">
-                                        <div class="form-group mb-3 col-xs-12 col-sm-4">
-                                            <label
-                                                for="availableQuantity"
-                                                >Qtd. Disp. p/ Vender
-                                            </label>
-                                            <input
-                                                id="availableQuantity"
-                                                name="availableQuantity"
-                                                th:field="*{availableQuantity}"
-                                                type="number"
-                                                class="form-control validate"
-                                                required
-                                                />
-                                        </div>
-                                        <div class="form-group mb-3 col-xs-12 col-sm-4">
-                                            <label
-                                                for="totalSupplierQuantity"
-                                                >Qtd. Disp. no Fornec.
-                                            </label>
-                                            <input
-                                                id="totalSupplierQuantity"
-                                                name="totalSupplierQuantity"
-                                                th:field="*{totalSupplierQuantity}"
-                                                type="number"
-                                                class="form-control validate"
-                                                required
-                                                />
-                                        </div>
-                                    </div>
-                                    <!--fim quantidades-->
-                                    <div class="form-group mb-3">
-                                        <label
-                                            for="category"
-                                            >Categoria</label>
-                                        <select
-                                            class="custom-select tm-select-accounts"
-                                            id="category"
-                                            th:field="*{productCategory}">
-                                            <option 
-                                                th:each="category :  ${productCategory}"
-                                                th:value="${category.id}"
-                                                th:text="#{${'selected.label.' + category.name}}"
-                                                >
-                                            <option 
-                                                th:each="category :  ${productCategories}"
-                                                th:value="${category.id}"
-                                                th:text="${category.name}"
-                                                >
-
-                                        </select>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                                            <label
-                                                for="price"
-                                                >Preço
-                                            </label>
-                                            <input
-                                                id="price"
-                                                name="price"
-                                                th:field="*{price}"
-                                                type="number"
-                                                class="form-control validate"
-                                                step=".01"
-                                                required
-                                                />
-                                        </div>
-                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                                            <label
-                                                for="discount"
-                                                >Desconto
-                                            </label>
-                                            <!--  th:field="*{expireDate}" -->
-                                            <input
-                                                id="discount"
-                                                name="discount"
-                                                th:field="*{discount}"
-                                                type="text"
-                                                class="form-control validate"
-                                                data-large-mode="true"
-                                                required="true"
-                                                />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group mb-3 col-xs-6 col-sm-6">
-                                            <label
-                                                for="supplierPrice"
-                                                >Preço Fornec.
-                                            </label>
-                                            <input
-                                                id="supplierPrice"
-                                                name="supplierPrice"
-                                                th:field="*{supplierPrice}"
-                                                type="number"
-                                                class="form-control validate"
-                                                step=".01"
-                                                required
-                                                />
-                                        </div>
-                                        <div class="form-group mb-3 col-xs-6 col-sm-6">
-                                            <label
-                                                for="supplierPrice"
-                                                >Frete
-                                            </label>
-                                            <input
-                                                id="freight"
-                                                name="freight"
-                                                th:field="*{freight}"
-                                                type="number"
-                                                class="form-control validate"
-                                                step=".01"
-                                                required
-                                                />
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label
-                                                for="providerName"
-                                                >Nome do Fornecedor
-                                            </label>
-                                            <input
-                                                id="providerName"
-                                                name="providerName"
-                                                th:field="*{providerName}"
-                                                type="text"
-                                                class="form-control"
-                                                required="true"
-                                                />
-                                        </div>
-                                        <div class="form-group mb-3 col-xs-12 col-sm-6">
-                                            <label
-                                                for="expireDate"
-                                                >Remv. site em
-                                            </label>
-                                            <!--  th:field="*{expireDate}" -->
-                                            <input
-                                                id="expireDate"
-                                                name="expireDate"
-                                                th:field="*{expireDate}"
-                                                type="text"
-                                                class="form-control validate"
-                                                data-large-mode="true"
-                                                required="true"
-                                                />
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
-                                    <div id="imageBox" class="tm-product-img-dummy mx-auto"
-                                         onclick="document.getElementById('fileInput').click();">
-                                        <i    class="fas fa-cloud-upload-alt tm-upload-icon"></i>
-                                    </div>
-                                    <div class="custom-file mt-3 mb-3">
-                                        <input  type="text" id="imageid" name="imageid" th:field="*{imageId}" hidden="true"/>
-                                        <input id="enviarImagem" type="button" class="btn btn-primary btn-block mx-auto" value="ENVIAR IMAGEM"/>
-                                    </div>
-                                </div>
-
-
-
-                                <div class="form-group col-12">
-                                    <label
-                                        for="urlsupplyer"
-                                        >URL do Fornecedor
-                                    </label>
-                                    <input
-                                        id="urlsupplyer"
-                                        name="urlsupplyer"
-                                        th:field="*{providerUrl}"
-                                        type="text"
-                                        class="form-control"
-                                        />
-                                </div>
-                                <div class="form-group col-12">
-                                    <label  for="description">Descrição</label>
-                                    <textarea id="description"
-                                              name="description"
-                                              th:field="*{description}"
-                                              class="form-control validate"
-                                              rows="3"
-                                              required
-                                              ></textarea>
-                                </div>    
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary btn-block text-uppercase">SALVAR PRODUTO</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                    </form>
                 </div>
+            </div>
 
-                <div class="col-sm-4 tm-col" style="padding-top: 20px">
-                    <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
-                        <h2 class="tm-block-title">Product Categories</h2>
-                        <table class="table tm-table-small tm-product-table">
-                            <tbody>
-                                <tr th:each="productCategory : ${productCategories}">
-                                    <td th:text="${productCategory.name}" class="tm-product-name"/>
-                                    <td class="text-center">
-                                        <a href="#" class="tm-product-delete-link">
+            <div class="col-sm-4 tm-col" style="padding-top: 20px">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                    <h2 class="tm-block-title">Categorias de produtos</h2>
+                    <table class="table tm-table-small tm-product-table">
+                        <tbody>
+                            <tr th:each="productCategory : ${productCategories}">
+                                <td th:text="${productCategory.name}" class="tm-product-name" >
+                                <td class="text-center">
+                                    <form method="post" action="/backoffice/products/category/delete">
+                                        <input type="text" name="id" hidden="true" th:value="${product.id}">
+                                        <input type="text" name="categoryId" hidden="true"
+                                            th:value="${productCategory.id}">
+                                        <button href="#" type="submit" class="tm-product-delete-link">
                                             <i class="far fa-trash-alt tm-product-delete-icon"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <form action="#" th:action="@{/backoffice/products/category}" th:object="${productCategorynew}" method="post" class="tm-edit-product-form">
-                            <div class="form-group col-12">
-                                <label
-                                    for="categoryName"
-                                    > Nova Categoria
-                                </label>
-                                <input
-                                    id="categoryName"
-                                    name="categoryName"
-                                    th:field="*{name}"
-                                    type="text"
-                                    class="form-control"
-                                    required="true"
-                                    />
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
-                                Cadastrar Nova Categoria
-                            </button>
-                        </form>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <form action="#" th:action="@{/backoffice/products/category}" th:object="${productCategorynew}"
+                        method="post" class="tm-edit-product-form">
+                        <div class="form-group col-12">
+                            <label for="categoryName"> Nova Categoria
+                            </label>
+                            <input id="categoryName" name="categoryName" th:field="*{name}" type="text"
+                                class="form-control" required="true" />
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                            Cadastrar Nova Categoria
+                        </button>
+                    </form>
 
-                        <form action="#" th:action="@{/backoffice/products/product-variation}" method="get" class="tm-edit-product-form">
-                            <input name="id" th:value="${product.id}">
+                    <form action="#" th:action="@{/backoffice/products/product-variation}" method="get"
+                        class="tm-edit-product-form">
+                        <input name="id" th:value="${product.id}" hidden="true">
 
-                            <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
-                                Cadastrar Variações
-                            </button>
-                        </form>
+                        <button type="submit" class="btn btn-primary btn-block text-uppercase mb-3">
+                            Cadastrar Variações
+                        </button>
+                    </form>
 
-                        <!-- table container -->
-                    </div>
+                    <!-- table container -->
                 </div>
             </div>
         </div>
-        <footer class="tm-footer row tm-mt-small">
-            <div class="col-12 font-weight-light">
-                <p class="text-center text-white mb-0 px-4 small">
-                    Copyright &copy; <b>2021</b> All rights reserved. 
-                    Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
-                </p>
-            </div>
-        </footer> 
-        <script th:src="@{js/ckeditor/ckeditor.js}"></script>
-        <script th:src="@{js/ckeditor/plugins/base64image/plugin.js}"></script>
-        <script th:src="@{js/jquery-3.3.1.min.js}"></script>
-        <!-- https://jquery.com/download/ -->
-        <script th:src="@{jquery-ui-datepicker/jquery-ui.min.js}"></script>
-        <!-- https://jqueryui.com/download/ -->
-        <script th:src="@{js/bootstrap.min.js}"></script>
-        <!-- https://getbootstrap.com/ -->
+    </div>
+    <footer class="tm-footer row tm-mt-small">
+        <div class="col-12 font-weight-light">
+            <p class="text-center text-white mb-0 px-4 small">
+                Copyright &copy; <b>2021</b> All rights reserved.
+                Design: <a rel="nofollow noopener" href="https://templatemo.com" class="tm-footer-link">Template Mo</a>
+            </p>
+        </div>
+    </footer>
+    <script th:src="@{js/ckeditor/ckeditor.js}"></script>
+    <script th:src="@{js/ckeditor/plugins/base64image/plugin.js}"></script>
+    <script th:src="@{js/jquery-3.3.1.min.js}"></script>
+    <!-- https://jquery.com/download/ -->
+    <script th:src="@{jquery-ui-datepicker/jquery-ui.min.js}"></script>
+    <!-- https://jqueryui.com/download/ -->
+    <script th:src="@{js/bootstrap.min.js}"></script>
+    <!-- https://getbootstrap.com/ -->
 
-        <script>
+    <script>
 
-            $(document).ready(function () {
 
-                if ($('#imageid').val()) {
-                    console.log("ready!");
-                    $.get("/images/download/" + $('#imageid').val())
-                            .done(function (data) {
-                                $('#imageBox').empty().prepend('<img id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="data:image/png;base64,' + data.imageData.data + '" />');
-                            });
+        $("#enviarImagem").click(function (event) {
+            //https://mkyong.com/jquery/jquery-ajax-submit-a-multipart-form/
+
+            //stop submit the form, we will post it manually.
+            event.preventDefault();
+
+            // Get form
+            var form = $('#imageForm')[0];
+            // Create an FormData object 
+            var data = new FormData(form);
+            console.log(form.fileInput.value);
+            data.append("title", form.fileInput.value);
+
+            // disabled the submit button
+            $("#enviarImagem").prop("disabled", true);
+
+            $.ajax({
+                type: "POST",
+                enctype: 'multipart/form-data',
+                url: "/backoffice/productimage",
+                data: data,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 10000,
+                success: function (data) {
+                    console.log("SUCCESS : ", data);
+                    $("#enviarImagem").prop("disabled", false);
+                    document.getElementById('imageid').setAttribute('value', data.id);
+                    $('#imageBox')
+                        .empty()
+                        .prepend('<img onclick="document.getElementById(\'fileInput\').click();" id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="/images/downloadDecoded/' + data.id + '" />');
+                },
+                error: function (e) {
+                    console.log("ERROR : ", e);
+                    $("#enviarImagem").prop("disabled", false);
+
                 }
             });
 
+        });
 
-            $("#enviarImagem").click(function (event) {
-                //https://mkyong.com/jquery/jquery-ajax-submit-a-multipart-form/
+    </script>
 
-                //stop submit the form, we will post it manually.
-                event.preventDefault();
+    <script>
+        $(function () {
+            $("#expireDate").datepicker({ dateFormat: 'dd/mm/yy' });
+        });
+    </script>
 
-                // Get form
-                var form = $('#imageForm')[0];
-                // Create an FormData object 
-                var data = new FormData(form);
-                console.log(form.fileInput.value);
-                data.append("title", form.fileInput.value);
+    <script>
 
-                // disabled the submit button
-                $("#enviarImagem").prop("disabled", true);
+        CKEDITOR.replace('description');
+        CKEDITOR.config.extraPlugins = "base64image";
+    </script>
+</body>
 
-                $.ajax({
-                    type: "POST",
-                    enctype: 'multipart/form-data',
-                    url: "/backoffice/productimage",
-                    data: data,
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                    timeout: 10000,
-                    success: function (data) {
-                        console.log("SUCCESS : ", data);
-                        $("#enviarImagem").prop("disabled", false);
-                        document.getElementById('imageid').setAttribute('value', data.id);
-                        $('#imageBox').empty().prepend('<img id="theImg" style="height: -webkit-fill-available; width: -webkit-fill-available" src="data:image/png;base64,' + data.imageData.data + '" />');
-                    },
-                    error: function (e) {
-                        console.log("ERROR : ", e);
-                        $("#enviarImagem").prop("disabled", false);
-
-                    }
-                });
-
-            });
-
-        </script>
-
-        <script>
-            $(function () {
-                $("#expireDate").datepicker({dateFormat: 'dd/mm/yy'});
-            });
-        </script>
-
-        <script>
-
-            CKEDITOR.replace('description');
-            CKEDITOR.config.extraPlugins = "base64image";
-        </script>
-    </body>
 </html>

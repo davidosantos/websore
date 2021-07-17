@@ -1,0 +1,52 @@
+<div class="container-fluid p-5">
+    <div class="row">
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 margin default_content_box">
+
+            <div class="row">
+                <img class="center" th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
+            </div>
+            <div class="row ">
+
+            </div>
+
+        </div>
+        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-6 margin default_content_box">
+            <div class="col-md-12 bottom-border">
+                <h4 th:text="${product.name}"></h4>
+            </div>
+
+            <div class="col-md-12 bottom-border">
+                <h3>R$ <strong th:text="${product.price}" class="red">
+                    </strong></h3>
+                <span th:text="${'Desconto ' + product.discount}"></span>
+            </div>
+            <form th:action="@{/}" method="post" th:object="${product}">
+                <div class="col-md-12 bottom-border" th:each="variants : ${product.productVariants}">                    
+                        <strong name="cers" th:text="'Selecione uma opção: ' + ${variants.name}"></strong><br />
+                    <th:block th:each="variant : ${variants.productVariantValues}">
+                        <input type="radio" th:name="${variants.name}" th:value="${variant.name}" />
+                        <label th:text="${variant.name}"></label>
+                    </th:block>
+                </div>
+                <div class="col-md-12 bottom-border">
+                    <strong>Quantidade:</strong><br />
+                    <div class="numberQuantity">
+                        <span class="minus spanQuantity">-</span>
+                        <input type="number" class="inputQuantity" value="1"/>
+                        <span class="plus spanQuantity" >+</span>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </div>
+    <div class="div row">
+        <div class="div col-9 default_content_box">
+            <img class="center" th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
+        </div>
+        <div class="div col-3 default_content_box">
+            <img class="center" th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
+        </div>
+    </div>
+</div>

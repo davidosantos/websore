@@ -23,23 +23,14 @@
                     <h2 class="components mb-5"><b>Categorias</b></h2>
                     <ul class="list-unstyled components mb-5"  >
                         <li th:each="productCategory : ${productCategories}">
-                            <a href="#" th:text="${productCategory.name}">About</a>
-                        </li>
-                        <li>
-
-                        </li>
-                        <li>
-                            <a href="#">Portfolio</a>
-                        </li>
-                        <li>
-                            <a href="#">Contact</a>
+                            <a href="#" > <b th:text="${productCategory.name}"></b></a>
                         </li>
                     </ul>
                 </div>
             </nav>
 
             <!-- Page Content  -->
-            <div id="content" class="p-4 p-md-5 pt-5">
+            <div id="content" class="brand-bg">
                 <div th:replace="${content}"></div>
             </div>
 

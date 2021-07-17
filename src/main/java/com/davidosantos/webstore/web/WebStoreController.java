@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.davidosantos.webstore;
+package com.davidosantos.webstore.web;
 
 import com.davidosantos.webstore.carousel.Carousel;
 import com.davidosantos.webstore.carousel.CarouselService;
-import com.davidosantos.webstore.images.Image;
 import com.davidosantos.webstore.images.ImageService;
 import com.davidosantos.webstore.products.Product;
 import com.davidosantos.webstore.products.ProductCategory;
@@ -60,6 +59,9 @@ public class WebStoreController {
         model.addAttribute("carouselItems", carouselItems);
         return "index";
     }
+
+   
+
 
     @ExceptionHandler({Exception.class})
     public String databaseError() {

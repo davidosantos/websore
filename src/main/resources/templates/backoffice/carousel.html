@@ -96,11 +96,11 @@
 
                             <div class="tm-product-img-dummy mx-auto">
                                 <img th:if="${carousel.imageId != null}"
-                                style="height: -webkit-fill-available; width: -webkit-fill-available"
-                                th:src="'/images/downloadDecoded/' + ${carousel.imageId}"
-                                onclick="document.getElementById('fileBtn').click();" />
+                                    style="height: -webkit-fill-available; width: -webkit-fill-available"
+                                    th:src="'/images/downloadDecoded/' + ${carousel.imageId}"
+                                    onclick="document.getElementById('fileBtn').click();" />
                             </div>
-                            
+
 
                             <div class="custom-file mt-3 mb-3">
                                 <input type="submit" class="btn btn-primary btn-block mx-auto" value="ENVIAR IMAGEM" />
@@ -128,12 +128,18 @@
                             <th scope="col">None</th>
                             <th scope="col">Status</th>
                             <th scope="col"></th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="carousel : ${allCarousel}">
-                            <td th:text="${carousel.name}" class="tm-product-name" />
-                            <td th:text="${carousel.isActive}" class="tm-product-name" />
+                            <td th:text="${carousel.name}" class="tm-product-name">
+                            <td th:text="${carousel.isActive}" class="tm-product-name">
+                            <td class="tm-product-name">
+                                <a th:href="'/backoffice/customerorder/order?id=' +${order.id}" class="tm-product-delete-link">
+                                    <i class="far fa-list-alt tm-product-delete-icon"></i>
+                                </a>
+                            </td>
                             <td class="text-center">
                                 <form action="/backoffice/carousel/delete" method="POST"
                                     onclick="return confirm('Tem Certeza?')">

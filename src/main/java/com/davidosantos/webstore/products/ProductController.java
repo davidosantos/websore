@@ -251,11 +251,20 @@ public class ProductController {
         return "redirect:/backoffice/products";
     }
 
+    @RequestMapping(value = "/products/category/delete", method = RequestMethod.POST)
+    public String backofficeDeatitivateProductsCategoryPage(@RequestParam("id") String id, @RequestParam("categoryId") String categoryId) {
+        ProductCategory productCategory = productCategoryRepository.findById(categoryId).get();
+        productCategory.setIsActive(false);
+        productCategoryRepository.save(productCategory);
+        return "redirect:/backoffice/products?id=" + id;
+    }
+
     @PostMapping("/productimage")
     public ResponseEntity<Image> uploadImage(@RequestParam("id") String id, @RequestParam("title") String title,
             @RequestParam("image") MultipartFile image) throws IOException {
         Image uploadedImage = imageService.uploadImage(title, image);
         productService.saveImage(id, uploadedImage.getId());
+        uploadedImage.setImageData(null);
         return new ResponseEntity<>(
             uploadedImage,
                  HttpStatus.OK);

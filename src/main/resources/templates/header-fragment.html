@@ -23,21 +23,21 @@ and open the template in the editor.
 
                 <div class="container">
                     <div class="row">
-                        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col logo_section">
+                        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col logo_section">
                             <div class="full">
                                 <div class="center-desk">
                                     <div class="logo">
-                                        <a href="index.html"><img  th:src="@{/images/logo.png}" alt="#"></a>
+                                        <a th:href="@{/}"><img  th:src="@{/images/logo.png}" alt="#"></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+                        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10">
                             <div class="menu-area">
                                 <div class="limit-box">
                                     <nav class="main-menu">
                                         <ul class="menu-area-main">
-                                            <li class="active"> <a href="index.html">Home</a> </li>
+                                            <li class="active"> <a th:href="@{/}">Home</a> </li>
                                             <li> <a href="about.html">Sobre Nos</a> </li>
                                             <li><a href="brand.html">A Marca</a></li>
                                             <li><a href="special.html">Mais vendidos</a></li>

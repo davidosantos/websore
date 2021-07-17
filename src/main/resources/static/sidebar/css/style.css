@@ -8209,8 +8209,8 @@ h1, h2, h3, h4, h5,
 #sidebar {
   min-width: 250px;
   max-width: 250px;
-  background: rgb(236,43,0);
-  color: #fff;
+  background: #051108;
+  color: rgb(20, 19, 17);
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
   transition: all 0.3s;
@@ -8237,13 +8237,13 @@ h1, h2, h3, h4, h5,
     #sidebar ul li a {
       padding: 10px 0;
       display: block;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgb(248, 246, 246);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
       #sidebar ul li a:hover {
-        color: #fff; }
+        color: rgb(250, 244, 244); }
     #sidebar ul li.active > a {
       background: transparent;
-      color: #fff; }
+      color: rgb(240, 235, 235); }
   @media (max-width: 991.98px) {
     #sidebar {
       margin-left: -250px; }
@@ -8271,11 +8271,12 @@ h1, h2, h3, h4, h5,
       height: 40px;
       border-radius: 50%; }
       #sidebar .custom-menu .btn.btn-primary {
-        background: rgb(236,43,0);
-        border-color: rgb(236,43,0); }
+        background: rgb(255, 255, 255);
+        color: rgb(0.0.0.0);
+        border-color: rgb(172, 163, 161); }
         #sidebar .custom-menu .btn.btn-primary:hover, #sidebar .custom-menu .btn.btn-primary:focus {
-          background: rgb(236,43,0) !important;
-          border-color: rgb(236,43,0) !important; }
+          background: rgb(185, 181, 179) !important;
+          border-color: rgb(172, 163, 161) !important; }
 
 a[data-toggle="collapse"] {
   position: relative; }
