@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <!-- basic -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- mobile metas -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-        <!-- site metas -->
-        <title>pomato</title>
-        <meta name="keywords" content="">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <!-- sidebar css -->
+
+<head>
+    <!-- basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- mobile metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <!-- site metas -->
+    <title>pomato</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- sidebar css -->
     <div th:replace="~{sidebar :: link}"></div>
     <!-- bootstrap css -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <!-- style css -->
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <!-- Responsive-->
@@ -24,14 +26,15 @@
     <!-- fevicon -->
     <link rel="icon" th:href="@{images/favi.png}" type="image/gif" />
     <!-- Scrollbar Custom CSS -->
-    <link rel="stylesheet"th:href="@{/css/jquery.mCustomScrollbar.min.css}">
+    <link rel="stylesheet" th:href="@{/css/jquery.mCustomScrollbar.min.css}">
     <!-- Tweaks for older IEs-->
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
     <!-- owl stylesheets -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" th:href="@{/css/owl.carousel.min.css}">
     <link rel="stylesheet" th:href="@{/css/owl.theme.default.min.css}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css"
+        media="screen">
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
@@ -43,22 +46,25 @@
     <section class="slider_section">
         <div id="myCarousel" class="carousel slide banner-main" data-ride="carousel">
             <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="first-slide"  th:src="@{/images/banner.jpg}" alt="first slide">
+                <div class="carousel-item active carousel-size col-sm-12 col-md-12 col-lg-12 p-0">
+                    <img class="first-slide img-fluid fit-image" th:src="@{/images/banner.jpg}" alt="first slide">
                     <div class="container">
                         <div class="carousel-caption relative">
                             <span>All New Phones </span>
                             <h1>up to 30% Flat Sale</h1>
                             <p>It is a long established fact that a reader will be distracted by the readable content
-                                <br> of a page when looking at its layout. The point of using Lorem Ipsum is that</p>
+                                <br> of a page when looking at its layout. The point of using Lorem Ipsum is that
+                            </p>
                         </div>
                     </div>
                 </div>
-                <div class="carousel-item" th:each="carouselItem : ${carouselItems}">
-                    <img class="first-slide center"  th:src="'/images/downloadDecoded/' + ${carouselItem.imageId}" alt="First slide">
+                <div class="carousel-item carousel-size col-sm-12 col-md-12 col-lg-12"
+                    th:each="carouselItem : ${carouselItems}">
+                    <img class="first-slide img-fluid fit-image center"
+                        th:src="'/images/downloadDecoded/' + ${carouselItem.imageId}" alt="First slide">
                     <div class="container">
                         <div class="carousel-caption relative">
-                        <div th:utext="${carouselItem.description}"></div>
+                            <div th:utext="${carouselItem.description}"></div>
                             <a class="buynow" th:href="${carouselItem.link}">Compre Agora</a>
                             <ul class="social_icon">
                                 <li> <a href="#"><i class="fa fa-facebook-f"></i></a></li>
@@ -99,15 +105,17 @@
             <div class="container">
                 <div class="row">
                     <div th:each="product : ${products}" class="col-xl-4 col-lg-4 col-md-4 col-sm-6 margin">
-                        <div class="brand_box">
-                            <img  th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
-                            <h3>R$ <strong th:text="${product.price}" class="red"></strong></h3>
-                            <span th:text="${product.name}"></span>
-                            <i><img src="images/star.png"/></i>
-                            <i><img src="images/star.png"/></i>
-                            <i><img src="images/star.png"/></i>
-                            <i><img src="images/star.png"/></i>
-                        </div>
+                        <a th:href="@{/detalhes} + '?id=' + ${product.id}">
+                            <div class="brand_box">
+                                <img th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
+                                <h3>R$ <strong th:text="${product.price}" class="red"></strong></h3>
+                                <span th:text="${product.name}"></span>
+                                <i><img src="images/star.png" /></i>
+                                <i><img src="images/star.png" /></i>
+                                <i><img src="images/star.png" /></i>
+                                <i><img src="images/star.png" /></i>
+                            </div>
+                        </a>
                     </div>
                     <div class="col-md-12">
                         <a th:href="@{/produtos}" class="read-more">Veja Mais</a>
@@ -148,10 +156,13 @@
                             <div class="full testimonial_cont text_align_center cross_layout">
                                 <div class="cross_inner">
                                     <h3>Due markes<br><strong class="ornage_color">Rental</strong></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit ess</i>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                        Duis aute irure dolor in reprehenderit in voluptate velit ess</i>
                                     </p>
                                     <div class="full text_align_center margin_top_30">
-                                        <img  th:src="@{/icon/testimonial_qoute.png}">
+                                        <img th:src="@{/icon/testimonial_qoute.png}">
                                     </div>
                                 </div>
                             </div>
@@ -166,10 +177,13 @@
                             <div class="full testimonial_cont text_align_center cross_layout">
                                 <div class="cross_inner">
                                     <h3>Due markes<br><strong class="ornage_color">Rental</strong></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit ess</i>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                        Duis aute irure dolor in reprehenderit in voluptate velit ess</i>
                                     </p>
                                     <div class="full text_align_center margin_top_30">
-                                        <img  th:src="@{/icon/testimonial_qoute.png}">
+                                        <img th:src="@{/icon/testimonial_qoute.png}">
                                     </div>
                                 </div>
                             </div>
@@ -185,10 +199,13 @@
                             <div class="full testimonial_cont text_align_center cross_layout">
                                 <div class="cross_inner">
                                     <h3>Due markes<br><strong class="ornage_color">Rental</strong></h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit ess</i>
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                                        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                                        Duis aute irure dolor in reprehenderit in voluptate velit ess</i>
                                     </p>
                                     <div class="full text_align_center margin_top_30">
-                                        <img  th:src="@{/icon/testimonial_qoute.png}">
+                                        <img th:src="@{/icon/testimonial_qoute.png}">
                                     </div>
                                 </div>
                             </div>
@@ -202,7 +219,7 @@
         </div>
     </div>
     <!-- end clients -->
-    
+
     <div th:replace="contact-fragment.html"></div>
     <div th:insert="~{footer-fragment :: footer}"></div>
 

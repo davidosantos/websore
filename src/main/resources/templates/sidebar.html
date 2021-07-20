@@ -23,7 +23,7 @@
                     <h2 class="components mb-5"><b>Categorias</b></h2>
                     <ul class="list-unstyled components mb-5"  >
                         <li th:each="productCategory : ${productCategories}">
-                            <a href="#" > <b th:text="${productCategory.name}"></b></a>
+                            <a th:href="@{/produtos(categoryId=${productCategory.id})}" > <b th:text="${productCategory.name}"></b></a>
                         </li>
                     </ul>
                 </div>

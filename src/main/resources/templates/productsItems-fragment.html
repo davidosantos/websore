@@ -1,44 +1,41 @@
 <div class="container p-5">
     <div class="row">
         <div th:each="product : ${products}" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 margin">
-            <div class="brand_box">
-                <div class="row brand_box_product">
-                    <img class="center" th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
+            <a th:href="@{/detalhes} + '?id=' + ${product.id}">
+                <div class="brand_box">
+                    <div class="row brand_box_product">
+                        <img class="img-fluid mx-auto d-block" th:src="'/images/downloadDecoded/' + ${product.imageId}"
+                            alt="img" />
+                    </div>
+                    <div class="row brand_box_product_details">
+                        <div class="col-md-12">
+                            <h3>R$ <strong th:text="${product.price}" class="red">
+                                </strong></h3>
+                            <span th:text="${'Desconto ' + product.discount}"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <span th:text="${product.name}"></span>
+                        </div>
+                        <div class="div col-12 brand-bg">
+                            <i><img src="images/star.png" /></i>
+                            <i><img src="images/star.png" /></i>
+                            <i><img src="images/star.png" /></i>
+                            <i><img src="images/star.png" /></i>
+                        </div>
+                    </div>
                 </div>
-                <div class="row brand_box_product_details">
-                    <div class="col-md-12">
-                        <h3>R$ <strong th:text="${product.price}" class="red">
-                        </strong></h3>
-                        <span th:text="${'Desconto ' + product.discount}"></span>
-                    </div>
-                    
-                    <div class="col-md-12">
-                        <span th:text="${product.name}"></span>
-                    </div>
-                    <div class="div col-12 brand-bg">
-                        <i><img src="images/star.png" /></i>
-                        <i><img src="images/star.png" /></i>
-                        <i><img src="images/star.png" /></i>
-                        <i><img src="images/star.png" /></i>
-                    </div>
-                </div>
-            </div>
+            </a>
         </div>
     </div>
     <div class="div row">
         <nav th:if="${products.totalPages > 0}" aria-label="Paginação">
-            <ul  class="pagination pagination-sm">
-                <li 
-                    th:each="pageNumber : ${pageNumbers}" 
-                    class="page-item"
-                    th:classappend="${pageNumber==products.number} ? active"
-                    >
-                    <a
-                        class="page-link"
-                        th:href="@{/produtos(size=${products.size}, page=${pageNumber})}"
+            <ul class="pagination pagination-sm">
+                <li th:each="pageNumber : ${pageNumbers}" class="page-item"
+                    th:classappend="${pageNumber==products.number} ? active">
+                    <a class="page-link" th:href="@{/produtos(size=${products.size}, page=${pageNumber}, categoryId=${categoryId})}"
                         th:text="${pageNumber} +1"
-                        th:style="${pageNumber==products.number} ? 'background-color:black;' : 'color:black;'"
-                        />
+                        th:style="${pageNumber==products.number} ? 'background-color:black;' : 'color:black;'" />
                 </li>
             </ul>
         </nav>

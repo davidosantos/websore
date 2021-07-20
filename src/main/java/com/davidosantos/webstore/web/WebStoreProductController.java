@@ -57,20 +57,22 @@ public class WebStoreProductController {
 
     @RequestMapping("/produtos")
     public String productPage(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            @RequestParam(defaultValue = "") String categoryId, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
-        List<Carousel> carouselItems = carouselService.getDefault();
 
         model.addAttribute("productCategories", productCategories);
-        model.addAttribute("imageService", imageService);
-        model.addAttribute("carouselItems", carouselItems);
 
         Pageable paging = PageRequest.of(page, size);
         Page products;
 
-        products = productRepository.findAll(paging);
+        if (categoryId.equals("")) {
+            products = productRepository.findAll(paging);
+        } else {
+            products = productRepository.findByProductCategoryId(categoryId,paging);
+        }
 
         model.addAttribute("products", products);
+        model.addAttribute("categoryId", categoryId);
 
         int totalPages = products.getTotalPages();
 
@@ -83,17 +85,24 @@ public class WebStoreProductController {
     }
 
     @RequestMapping("/detalhes")
-    public String productDetailsPage(@RequestParam(defaultValue = "") String id,
-            Model model) {
+    public String productDetailsPage(@RequestParam(defaultValue = "") String id, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
         model.addAttribute("productCategories", productCategories);
         model.addAttribute("imageService", imageService);
 
+        Product product;
+        if (id.equals("")) {
+            product = productRepository.findAll().stream().findFirst().get();
+        } else {
+            product = productRepository.findById(id).get();
+        }
 
-        Product product = productRepository.findAll().stream().findFirst().get();
+        Pageable paging = PageRequest.of(0, 3);
+        Page products = productRepository.findByProductCategoryId(product.getProductCategory().getId(),paging);
 
         model.addAttribute("product", product);
+        model.addAttribute("products", products);
 
         return "product-details";
     }
