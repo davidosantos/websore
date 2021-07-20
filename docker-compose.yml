@@ -2,6 +2,6 @@ version: "3.3"
    
 services:
     webstore:
-        build: .
+        image: docker.io/library/webstore:0.0.1
         ports: 
             - "8080:8080"
