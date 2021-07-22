@@ -66,9 +66,9 @@ public class WebStoreProductController {
         Page products;
 
         if (categoryId.equals("")) {
-            products = productRepository.findAll(paging);
+            products = productRepository.findByIsActive(true,paging);
         } else {
-            products = productRepository.findByProductCategoryId(categoryId,paging);
+            products = productRepository.findByProductCategoryIdAndIsActive(categoryId,true,paging);
         }
 
         model.addAttribute("products", products);
@@ -99,7 +99,7 @@ public class WebStoreProductController {
         }
 
         Pageable paging = PageRequest.of(0, 3);
-        Page products = productRepository.findByProductCategoryId(product.getProductCategory().getId(),paging);
+        Page products = productRepository.findByProductCategoryIdAndIsActive(product.getProductCategory().getId(),true,paging);
 
         model.addAttribute("product", product);
         model.addAttribute("products", products);

@@ -1,6 +1,7 @@
-<div class="container-fluid p-5 border bg-light">
+
+<div class="container-fluid p-5">
     <div class="row">
-        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 margin default_content_box">
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 margin brand_box">
 
             <div class="row">
                 <img class="center" th:src="'/images/downloadDecoded/' + ${product.imageId}" alt="img" />
@@ -10,7 +11,7 @@
             </div>
 
         </div>
-        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-6 margin default_content_box">
+        <div class="col-xl-9 col-lg-9 col-md-9 col-sm-6 margin brand_box">
             <div class="row">
                 
                 <div class="col-md-5 col-sm-12">
@@ -60,10 +61,10 @@
 
     </div>
     <div class="row">
-        <div class="col-md-9 col-sm-12 default_content_box">
+        <div class="col-md-9 col-sm-12 brand_box">
             <div th:utext="${product.description}"/>
         </div>
-        <div class="col-md-3 col-sm-12 default_content_box">
+        <div class="col-md-3 col-sm-12 brand_box">
             <div th:insert="productItemsInsedeDescr-fragment"></div>
         </div>
     </div>

@@ -1,30 +1,30 @@
-<div class="container p-5">
+<div class="container">
 
-    <div th:each="product : ${products}" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 margin">
+    <div th:each="product : ${products}" class="col-xl-12 col-lg-12 col-md-12 col-sm-12 margin brand_box">
         <a th:href="@{/detalhes} + '?id=' + ${product.id}">
-            <div class="brand_box">
-                <div class="row brand_box_product">
-                    <img class="img-fluid mx-auto d-block" th:src="'/images/downloadDecoded/' + ${product.imageId}"
-                        alt="img" />
-                </div>
-                <div class="row brand_box_product_details">
-                    <div class="col-md-12">
-                        <h3>R$ <strong th:text="${product.price}" class="red">
-                            </strong></h3>
-                        <span th:text="${'Desconto ' + product.discount}"></span>
-                    </div>
 
-                    <div class="col-md-12">
-                        <span th:text="${product.name}"></span>
-                    </div>
-                    <div class="div col-12 brand-bg">
-                        <i><img src="images/star.png" /></i>
-                        <i><img src="images/star.png" /></i>
-                        <i><img src="images/star.png" /></i>
-                        <i><img src="images/star.png" /></i>
-                    </div>
+            <div class="row brand_box_product">
+                <img class="img-fluid mx-auto d-block" th:src="'/images/downloadDecoded/' + ${product.imageId}"
+                    alt="img" />
+            </div>
+            <div class="row brand_box_product_details">
+                <div class="col-md-12">
+                    <h3>R$ <strong th:text="${product.price}" class="red">
+                        </strong></h3>
+                    <span th:text="${'Desconto ' + product.discount}"></span>
+                </div>
+
+                <div class="col-md-12">
+                    <span th:text="${product.name}"></span>
+                </div>
+                <div class="col-12 center">
+                    <i><img src="images/star.png" /></i>
+                    <i><img src="images/star.png" /></i>
+                    <i><img src="images/star.png" /></i>
+                    <i><img src="images/star.png" /></i>
                 </div>
             </div>
+
         </a>
     </div>
 </div>

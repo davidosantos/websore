@@ -437,7 +437,6 @@ a.readmore_bt {
 
 .header {
      font-family: poppins;
-     padding: 10px 0px;
      background: url(../images/hea.png);
      background-repeat: no-repeat;
 background-size: 100% 100%;
@@ -479,11 +478,11 @@ ul.top_icon li a {
 
 .menu-area-main li:hover a,
 .menu-area-main li:focus a {
-     color: #ffff;
+     color: rgb(24, 22, 22);
 }
 
 .menu-area-main li.active a {
-     color: #fff;
+     color: rgb(34, 32, 32);
 }
 
 .right_cart_section {
@@ -1065,7 +1064,7 @@ ul.top_icon li a {
      font-size: 16px;
      display: block;
      font-weight: 500;
-     color: #fff;
+     color: rgb(36, 34, 34);
      padding: 22px 30px;
 }
 
@@ -1846,7 +1845,12 @@ border-radius: 50px;
 }
 
 .brand-bg {
-     background: #ebebeb;
+     /** background: #ebebeb; **/
+       background-image: url('/images/websitebgwithlogo.png');
+       background-repeat: no-repeat;
+       background-attachment: fixed;
+       background-size: cover;
+     
      font-family: Myriad Pro;
 }
 
@@ -1862,31 +1866,30 @@ border-radius: 50px;
 }
 
 .brand_box {
-     background: rgb(255, 255, 255);
+     background: #ffffff9c;
      border-style: groove;
      border-width: 1px;
-     text-align: center;
      padding: 10px 20px 20px 20px ;
      border-radius: 13px;
-     max-height: 500px;
-     min-height: 500px;
+     /*max-height: 500px;
+     min-height: 500px;*/
 }
 
 .brand_box_product {
-     background: rgb(255, 255, 255);
-     text-align: center;
-     padding: 0px 10px 10px 10px ;
+     background: #ffffff9c;     
+     padding: 10px 10px 10px 10px ;
+     border-radius: 13px;
      max-width: auto;
      max-height: 300px;
      min-height: 300px;
 }
 
 .brand_box_product_details {
-     background: rgb(255, 255, 255);
-     text-align: center;
-     padding: 0px 10px 10px 10px ;
-     max-height: 200px;
-     min-height: fit-content;
+     background: #ffffff9c;
+     padding: 10px 10px 10px 10px ;
+     border-radius: 13px;
+     max-height: 150px;
+     min-height: 150px;
 }
 
 .spanQuantity {cursor:pointer; }
@@ -2043,7 +2046,7 @@ margin-top: 40px
      padding-top: 60px;
 }
 .footer {
-     background-color: #051108;
+     background-color: rgb(28, 33, 40);
      text-align: center;
      font-family: poppins;
 }

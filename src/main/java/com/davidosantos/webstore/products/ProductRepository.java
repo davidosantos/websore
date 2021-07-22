@@ -20,6 +20,10 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     Page<Product> findByCodeContainingIgnoreCaseAndNameContainingIgnoreCaseAndProviderNameContainingIgnoreCase(String code,String name,String providerName, Pageable pgbl);
 
-    Page findByProductCategoryId(String categoryId, Pageable paging);
+    Page findByProductCategoryIdAndIsActive(String categoryId,boolean isActive, Pageable paging);
+
+    Page findByIsActive(boolean isActive, Pageable paging);
+
+
 
 }
