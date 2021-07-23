@@ -76,7 +76,7 @@ public class WebStoreController {
     }
 
     @RequestMapping("/")
-    public String homePage(@CookieValue(value = "JSESSIONID") String JSESSIONID, Model model) {
+    public String homePage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID, Model model) {
         List<Product> products = productRepository.findByIsActiveAndDisplayInHome(true, true);
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
         List<Carousel> carouselItems = carouselService.getDefault();
@@ -92,7 +92,7 @@ public class WebStoreController {
     }
 
     @RequestMapping("/produtos")
-    public String productPage(@CookieValue(value = "JSESSIONID") String JSESSIONID,
+    public String productPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String categoryId, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
@@ -124,7 +124,7 @@ public class WebStoreController {
     }
 
     @RequestMapping("/detalhes")
-    public String productDetailsPage(@CookieValue(value = "JSESSIONID") String JSESSIONID,
+    public String productDetailsPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
             @RequestParam(defaultValue = "") String id, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
@@ -150,7 +150,7 @@ public class WebStoreController {
     }
 
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-    public String createOrder(@CookieValue(value = "JSESSIONID") String JSESSIONID, @RequestParam String action,
+    public String createOrder(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID, @RequestParam String action,
             Product product, int quantity) {
 
         System.out.println("Action: " + action);
