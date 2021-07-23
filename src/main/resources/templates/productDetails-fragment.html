@@ -1,4 +1,3 @@
-
 <div class="container-fluid p-5">
     <div class="row">
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 margin brand_box">
@@ -13,7 +12,7 @@
         </div>
         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-6 margin brand_box">
             <div class="row">
-                
+
                 <div class="col-md-5 col-sm-12">
                     <div class="col-md-12 bottom-border p-3">
                         <p class="h2" th:text="${product.name}"></p>
@@ -26,13 +25,28 @@
                         <br />
                         <span class="h4" th:text="${'Frete ' + product.freight}"></span>
                     </div>
-                    <form th:action="@{/}" method="post" th:object="${product}" class="h4 needs-validation">
-                        <div class="col-md-12 bottom-border" th:each="variants : ${product.productVariants}">
-                            <strong name="cers" th:text="'Selecione uma opção de ' + ${variants.name}"></strong><br />
-                            <th:block th:each="variant : ${variants.productVariantValues}">
+                    <form th:action="@{/createOrder}" method="post" th:object="${product}" class="h4">
+                        <input th:field="*{id}" hidden>
+                        <div class="col-md-12 bottom-border"
+                            th:each="variants, variantsIdx : ${product.productVariants}">
+
+                            <input class="form-check-input" type="text"
+                                th:field="*{productVariants[__${variantsIdx.index}__].name}"
+                                th:value="${variants.name}" required hidden />
+
+                            <strong th:text="'Selecione uma opção de ' + ${variants.name}"></strong><br />
+                            <th:block th:each="variant, variantIdx : ${variants.productVariantValues}">
                                 <div class="input-group form-check form-check-inline">
+                                    <!-- th:field="*{supplierOrderItems[__${iter.index}__].quantity}" -->
+
+
+
                                     <input class="form-check-input" type="radio"
-                                        th:name="${variants.name}" th:value="${variant.name}" required />
+                                        th:field="*{productVariants[__${variantsIdx.index}__].productVariantValues[0].name}"
+                                        th:value="${variant.name}"
+                                        th:checked="${false}"
+                                        required />
+
                                     <label class="form-check-label" th:text="${variant.name}"></label>
                                 </div>
                             </th:block>
@@ -41,13 +55,18 @@
                             <strong>Quantidade:</strong><br />
                             <div class="numberQuantity">
                                 <span class="minus spanQuantity">-</span>
-                                <input type="number" class="inputQuantity" value="1" required />
+                                <input name="quantity" type="number" class="inputQuantity" value="1" required />
                                 <span class="plus spanQuantity">+</span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-sm-12 col-md-12 p-3">
-                                <button type="submit" class="btn btn-danger btn-block text-uppercase">Comprar</button>
+                            <div class="col-sm-12 col-md-6 p-3">
+                                <button name="action" value="buy" type="submit"
+                                    class="btn btn-danger btn-block text-uppercase">Comprar</button>
+                            </div>
+                            <div class="col-sm-12 col-md-6 p-3">
+                                <button name="action" value="addToKart" type="submit"
+                                    class="btn btn-warning btn-block text-uppercase">Carrinho</button>
                             </div>
                         </div>
                     </form>
@@ -62,7 +81,7 @@
     </div>
     <div class="row">
         <div class="col-md-9 col-sm-12 brand_box">
-            <div th:utext="${product.description}"/>
+            <div th:utext="${product.description}" />
         </div>
         <div class="col-md-3 col-sm-12 brand_box">
             <div th:insert="productItemsInsedeDescr-fragment"></div>
