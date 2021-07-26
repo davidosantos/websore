@@ -206,7 +206,14 @@ font-size: 42px;
     .relative {left: 21%;}
     .mean-container .mean-bar {margin-bottom: -1px;}
     .location_icon_bottum {display: none;}
-    .header {background: inherit; padding-bottom: 0; padding-top: 30px;}
+    .header {background: inherit; padding-bottom: 0; background-color : #1c2128}
+    .carousel-size {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    background-size: cover;
+    background-position: center center;
+    }
     .last {display: none;}
     .img-box {display: none;} 
 

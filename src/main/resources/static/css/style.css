@@ -478,11 +478,11 @@ ul.top_icon li a {
 
 .menu-area-main li:hover a,
 .menu-area-main li:focus a {
-     color: rgb(24, 22, 22);
+     color: #ffffff;
 }
 
 .menu-area-main li.active a {
-     color: rgb(34, 32, 32);
+     color: #ffffff;
 }
 
 .right_cart_section {
@@ -1064,7 +1064,7 @@ ul.top_icon li a {
      font-size: 16px;
      display: block;
      font-weight: 500;
-     color: rgb(36, 34, 34);
+     color: #ffffff;
      padding: 22px 30px;
 }
 
@@ -1845,8 +1845,8 @@ border-radius: 50px;
 }
 
 .brand-bg {
-     /** background: #ebebeb; **/
-       background-image: url('/images/websitebgwithlogo.png');
+       background: #ebebeb;
+       /** background-image: url('/images/websitebgwithlogo.png');**/
        background-repeat: no-repeat;
        background-attachment: fixed;
        background-size: cover;
@@ -2231,7 +2231,7 @@ ul.location_icon span {
 .carousel-size{
      max-width: 100%;
      max-height: 100%;
-     height: 500px;
+     height: 630px;
      background-size:cover;
      background-position: center center;
 }

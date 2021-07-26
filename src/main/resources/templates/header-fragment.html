@@ -25,7 +25,7 @@ and open the template in the editor.
 
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 ">
+                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 justify-content-start">
                         <div class="full">
                             <div class="center-desk">
                                 <div class="logo">
@@ -42,9 +42,10 @@ and open the template in the editor.
                                         <li class="active"> <a th:href="@{/}">Home</a> </li>
                                         <li><a href="#contact">Contato</a></li>
                                         <li>
-                                            <a class="btn btn-warning p-1">
+                                            <a th:href="@{/carrinho}" class="btn p-1">
                                                 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                                Carrinho <span class="badge badge-pill badge-danger" th:text="${#lists.size(kart.items)}">3</span>
+                                                Carrinho
+                                                <span class="badge badge-pill badge-danger" th:text="${#lists.size(kart.items)}">3</span>
                                             </a>
                                         </li>
                                     </ul>

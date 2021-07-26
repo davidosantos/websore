@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!-- basic -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- mobile metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+        <!-- site metas -->
+        <title>Imporium Tech - Produtos</title>
+        <meta name="keywords" content="">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <!-- sidebar css -->
+    <div th:replace="~{sidebar :: link}"></div>
+    <!-- bootstrap css -->
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- style css -->
+    <link rel="stylesheet" th:href="@{css/style.css}">
+    <!-- Responsive-->
+    <link rel="stylesheet" th:href="@{css/responsive.css}">
+    <!-- fevicon -->
+    <link rel="icon" th:href="@{images/favi.png}" type="image/gif" />
+    <!-- Scrollbar Custom CSS -->
+    <link rel="stylesheet"th:href="@{css/jquery.mCustomScrollbar.min.css}">
+    <!-- Tweaks for older IEs-->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    <!-- owl stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" th:href="@{css/owl.carousel.min.css}">
+    <link rel="stylesheet" th:href="@{css/owl.theme.default.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+</head>
+<!-- body -->
+
+<body class="main-layout ">
+    <div th:replace="header-fragment.html :: body"></div>
+    <div th:insert="sidebar.html :: insertAtContent(~{cart-items-fragment}) "></div>
+    <div th:insert="~{footer-fragment :: footer}"></div>
+
+    <!-- Javascript files-->
+    <script th:src="@{js/jquery.min.js}"></script>
+    <script th:src="@{js/popper.min.js}"></script>
+    <script th:src="@{js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{js/jquery-3.0.0.min.js}"></script>
+    <script th:src="@{js/plugin.js}"></script>
+    <!-- sidebar -->
+    <script th:src="@{js/jquery.mCustomScrollbar.concat.min.js}"></script>
+    <script th:src="@{js/custom.js}"></script>
+    <!-- javascript -->
+    <script th:src="@{js/owl.carousel.js}"></script>
+    <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".fancybox").fancybox({
+                openEffect: "none",
+                closeEffect: "none"
+            });
+
+            $(".zoom").hover(function () {
+
+                $(this).addClass('transition');
+            }, function () {
+
+                $(this).removeClass('transition');
+            });
+        });
+
+    </script>
+    <script>
+        (function ($) {
+
+            "use strict";
+
+            var fullHeight = function () {
+
+                $('.js-fullheight').css('height', $(window).height());
+                $(window).resize(function () {
+                    $('.js-fullheight').css('height', $(window).height());
+                });
+
+            };
+            fullHeight();
+
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+
+        })(jQuery);
+
+    </script>
+</body>
+
+</html>

@@ -150,12 +150,17 @@ public class WebStoreController {
     }
 
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-    public String createOrder(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID, @RequestParam String action,
-            Product product, int quantity) {
+    public String createOrder(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+            @RequestParam String action, Product product, int quantity) {
 
         System.out.println("Action: " + action);
         System.out.println("JSESSIONID: " + JSESSIONID);
         System.out.println("product: " + product);
+
+        if (JSESSIONID.equals("")) {
+            return "redirect:/produtos";
+        }
+
         if (kartService.countKart(JSESSIONID) > 0) {
             Kart kart = kartService.getKart(JSESSIONID);
             kart.setLastUpdateDate(new Date());
@@ -164,13 +169,13 @@ public class WebStoreController {
             kartItem.setStatus("active");
             kartItem.setQuantity(quantity);
 
-            if (kart.getItems().stream().filter(filter -> filter.getProduct().getId().equals(product.getId()))
-                    .count() <= 0) {
+            if (kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")
+                    && filter.getProduct().getId().equals(product.getId())).count() <= 0) {
                 kart.getItems().add(kartItem);
             } else {
 
-                KartItem kartItemFromDB = kart.getItems().stream()
-                        .filter(filter -> filter.getProduct().getId().equals(product.getId())).findFirst().get();
+                KartItem kartItemFromDB = kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")
+                        && filter.getProduct().getId().equals(product.getId())).findFirst().get();
 
                 kartItemFromDB.setQuantity(kartItemFromDB.getQuantity() + quantity);
                 kartItemFromDB.setProductVariants(product.getProductVariants());
@@ -192,6 +197,67 @@ public class WebStoreController {
         }
 
         return "redirect:/produtos";
+    }
+
+    // shopping cart
+
+    @RequestMapping("/carrinho")
+    public String shoppingCartPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String categoryId, Model model) {
+
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
+
+        addKart(JSESSIONID, model);
+
+        model.addAttribute("productCategories", productCategories);
+
+        Pageable paging = PageRequest.of(page, size);
+        Page products;
+
+        if (categoryId.equals("")) {
+            products = productRepository.findByIsActive(true, paging);
+        } else {
+            products = productRepository.findByProductCategoryIdAndIsActive(categoryId, true, paging);
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("categoryId", categoryId);
+
+        int totalPages = products.getTotalPages();
+
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "cart";
+    }
+
+    @RequestMapping(value = "/carrinho", method = RequestMethod.POST)
+    public String shoppingCartEditPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+            @RequestParam(defaultValue = "") String operation,
+            int itemIndex,
+            Kart kart,
+            int quantity,
+            Model model) {
+
+        if (JSESSIONID.equals("")) {
+            return "redirect:/carrinho";
+        }
+
+        System.out.println("Operation: " + operation);
+        if(operation.equals("reactivate")){
+            kartService.reactivateItem(kart.getId(), itemIndex);
+        } else if(operation.equals("cancel")){
+            kartService.cancelItem(kart.getId(), itemIndex);
+        } else if(operation.equals("alterQuantity")){
+            kartService.alterQuantity(kart.getId(), itemIndex, quantity);
+        }
+
+        
+
+        return "redirect:/carrinho";
     }
 
     @ExceptionHandler({ Exception.class })

@@ -1,6 +1,7 @@
 
 package com.davidosantos.webstore.kart;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,11 +19,24 @@ public class Kart {
     String id;
     String status;
     String sessionId;
+    BigDecimal totalAmount;
+    BigDecimal totalDiscountAmount;
+    BigDecimal totalFreightAmount;
+    BigDecimal totalProductsAmount;
     Date createdDate;
     Date lastUpdateDate;
     @DBRef
     Customer customer;
     List<KartItem> items;
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+
     public String getId() {
         return id;
     }
@@ -68,6 +82,24 @@ public class Kart {
     }
     public void setItems(List<KartItem> items) {
         this.items = items;
+    }
+    public BigDecimal getTotalDiscountAmount() {
+        return totalDiscountAmount;
+    }
+    public void setTotalDiscountAmount(BigDecimal totalDiscountAmount) {
+        this.totalDiscountAmount = totalDiscountAmount;
+    }
+    public BigDecimal getTotalFreightAmount() {
+        return totalFreightAmount;
+    }
+    public void setTotalFreightAmount(BigDecimal totalFreightAmount) {
+        this.totalFreightAmount = totalFreightAmount;
+    }
+    public BigDecimal getTotalProductsAmount() {
+        return totalProductsAmount;
+    }
+    public void setTotalProductsAmount(BigDecimal totalProductsAmount) {
+        this.totalProductsAmount = totalProductsAmount;
     }
 
     

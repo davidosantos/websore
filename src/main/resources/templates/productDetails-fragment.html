@@ -52,11 +52,16 @@
                             </th:block>
                         </div>
                         <div class="col-md-12 bottom-border">
-                            <strong>Quantidade:</strong><br />
-                            <div class="numberQuantity">
-                                <span class="minus spanQuantity">-</span>
-                                <input name="quantity" type="number" class="inputQuantity" value="1" required />
-                                <span class="plus spanQuantity">+</span>
+                            <span></span><strong>Quantidade:</strong></span>
+                            <div class="d-flex flex-row bd-highlight">
+                                <button type="button"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
+                                    class="minus">-</button>
+                                <input min="1" class="inputQuantity" name="quantity" value="1"
+                                    type="number">
+                                <button type="button"
+                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                                    class="plus">+</button>
                             </div>
                         </div>
                         <div class="row">
