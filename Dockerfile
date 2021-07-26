@@ -1,7 +1,7 @@
 #
 # Build stage
 #
-FROM maven:3.6.0-jdk-11-slim AS build
+FROM maven:3.8.1-jdk-8 AS webstore
 COPY . /
 RUN mvn -f /pom.xml clean package spring-boot:repackage
 EXPOSE 8080
