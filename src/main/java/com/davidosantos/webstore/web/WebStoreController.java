@@ -157,7 +157,7 @@ public class WebStoreController {
         System.out.println("JSESSIONID: " + JSESSIONID);
         System.out.println("product: " + product);
 
-        if (JSESSIONID.equals("")) {
+        if (JSESSIONID == null && JSESSIONID.equals("")) {
             return "redirect:/produtos";
         }
 
