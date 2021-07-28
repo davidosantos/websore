@@ -3,7 +3,7 @@
 #
 FROM maven:3.8.1-jdk-8 AS webstore
 COPY . /
-COPY /etc/letsencrypt/live/www.imporiumtech.com.br/keystore.p12 /
+COPY keystore.p12 /
 RUN mvn -f /pom.xml clean package spring-boot:repackage
 EXPOSE 8080
 ENTRYPOINT ["mvn","spring-boot:run"]
