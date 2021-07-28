@@ -265,6 +265,7 @@ public class WebStoreController {
         return "error-view-name";
     }
 
+    //images
     @GetMapping("/images/downloadDecoded/{id}")
     public ResponseEntity<byte[]> getImageDecoded(@PathVariable String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -274,5 +275,9 @@ public class WebStoreController {
         return new ResponseEntity<>(Base64.getDecoder().decode(imageService.downloadImage(id).getImageData()), headers,
                 HttpStatus.OK);
     }
+
+    //checkout
+
+    
 
 }
