@@ -4,4 +4,4 @@ services:
     webstore:
         build: .
         ports: 
-            - "8080:443"
+            - "443:8080"
