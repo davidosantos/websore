@@ -1,7 +1,7 @@
 #
 # Build stage
 #
-FROM maven:3.8.1-jdk-8 AS webstore
+FROM webstore_webstore
 COPY . /
 COPY keystore.p12 /
 RUN mvn -f /pom.xml clean package spring-boot:repackage
