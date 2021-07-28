@@ -189,7 +189,7 @@ public class WebStoreController {
             kart.setLastUpdateDate(new Date());
             kart.setStatus("active");
             KartItem kartItem = new KartItem();
-            kartItem.setProduct(product);
+            kartItem.setProduct(productRepository.findById(product.getId()).get());
             kartItem.setStatus("active");
             kartItem.setQuantity(quantity);
             kart.getItems().add(kartItem);
