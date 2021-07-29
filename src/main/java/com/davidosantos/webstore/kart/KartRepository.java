@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface KartRepository extends MongoRepository <Kart,String> {
 
-    List<Kart> findBySessionIdAndStatus(String sessionId,String status);
+    List<Kart> findByIdAndStatus(String id,String status);
 
-    int countBySessionIdAndStatus(String sessionId,String status);
+    int countByIdAndStatus(String id,String status);
     
 }

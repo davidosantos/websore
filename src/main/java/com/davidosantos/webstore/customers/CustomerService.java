@@ -34,8 +34,17 @@ public class CustomerService {
         return customerRepository.findById(id).get();
     }
 
+    public Customer getByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
     public Customer saveCustomer(Customer customer){
         return customerRepository.save(customer);
+    }
+
+
+    public int countByEmail(String email) {
+        return customerRepository.countByEmail(email);
     }
 
 }

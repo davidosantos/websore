@@ -3,8 +3,6 @@ package com.davidosantos.webstore.kart;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import com.davidosantos.webstore.customers.Customer;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,21 +12,9 @@ public class KartService {
     @Autowired
     KartRepository kartRepository;
     
-    public Kart createKart(String sessionId){
+    public Kart createKart(){
 
         Kart kart = new Kart();
-
-        kart.setSessionId(sessionId);
-
-        return kartRepository.save(kart);
-    }
-
-    public Kart createKart(String sessionId, Customer customer){
-
-        Kart kart = new Kart();
-
-        kart.setSessionId(sessionId);
-        kart.setCustomer(customer);
 
         return kartRepository.save(kart);
     }
@@ -38,9 +24,9 @@ public class KartService {
         return kartRepository.save(kart);
     }
 
-    public Kart getKart(String sessionId){
+    public Kart getKart(String cartId){
 
-        return kartRepository.findBySessionIdAndStatus(sessionId,"active").stream().findFirst().get();
+        return kartRepository.findByIdAndStatus(cartId,"active").stream().findFirst().get();
     }
 
     public Kart getKartById(String kartId){
@@ -48,8 +34,8 @@ public class KartService {
         return kartRepository.findById(kartId).get();
     }
 
-    public int countKart(String sessionId){
-        return kartRepository.countBySessionIdAndStatus(sessionId, "active");
+    public int countKart(String cartId){
+        return kartRepository.countByIdAndStatus(cartId, "active");
     }
 
     public void cancelItem(String kartId, int itemIndex){

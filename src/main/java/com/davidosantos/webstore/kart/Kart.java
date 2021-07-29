@@ -18,7 +18,6 @@ public class Kart {
     @Id
     String id;
     String status;
-    String sessionId;
     BigDecimal totalAmount;
     BigDecimal totalDiscountAmount;
     BigDecimal totalFreightAmount;
@@ -49,12 +48,7 @@ public class Kart {
     public void setStatus(String status) {
         this.status = status;
     }
-    public String getSessionId() {
-        return sessionId;
-    }
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
+
     public Date getCreatedDate() {
         return createdDate;
     }

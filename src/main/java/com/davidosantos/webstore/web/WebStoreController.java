@@ -5,23 +5,33 @@
  */
 package com.davidosantos.webstore.web;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.servlet.http.HttpSession;
+
 import com.davidosantos.webstore.carousel.Carousel;
 import com.davidosantos.webstore.carousel.CarouselService;
+import com.davidosantos.webstore.customers.Customer;
 import com.davidosantos.webstore.images.ImageService;
 import com.davidosantos.webstore.kart.Kart;
 import com.davidosantos.webstore.kart.KartItem;
 import com.davidosantos.webstore.kart.KartService;
+import com.davidosantos.webstore.orders.CustomerOrder;
+import com.davidosantos.webstore.orders.CustomerOrderItemVariant;
+import com.davidosantos.webstore.orders.CustomerOrderProductItem;
+import com.davidosantos.webstore.orders.CustomerOrderService;
 import com.davidosantos.webstore.products.Product;
 import com.davidosantos.webstore.products.ProductCategory;
 import com.davidosantos.webstore.products.ProductCategoryRepository;
 import com.davidosantos.webstore.products.ProductRepository;
 import com.davidosantos.webstore.products.ProductService;
+import com.davidosantos.webstore.products.ProductVariant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +41,7 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -64,10 +75,13 @@ public class WebStoreController {
     @Autowired
     KartService kartService;
 
-    public boolean addKart(String JSESSIONID, Model model) {
+    @Autowired
+    CustomerOrderService customerOrderService;
+
+    public boolean addKart(HttpSession session, Model model) {
         Kart kart;
-        if (kartService.countKart(JSESSIONID) > 0) {
-            kart = kartService.getKart(JSESSIONID);
+        if (session.getAttribute("cartId") != null && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+            kart = kartService.getKart(session.getAttribute("cartId").toString());
         } else {
             kart = new Kart();
         }
@@ -76,12 +90,13 @@ public class WebStoreController {
     }
 
     @RequestMapping("/")
-    public String homePage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID, Model model) {
+    public String homePage(
+        HttpSession session, Model model) {
         List<Product> products = productRepository.findByIsActiveAndDisplayInHome(true, true);
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
         List<Carousel> carouselItems = carouselService.getDefault();
 
-        addKart(JSESSIONID, model);
+        addKart(session, model);
 
         model.addAttribute("products", products);
         model.addAttribute("productCategories", productCategories);
@@ -92,12 +107,12 @@ public class WebStoreController {
     }
 
     @RequestMapping("/produtos")
-    public String productPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+    public String productPage(HttpSession session,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String categoryId, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
-        addKart(JSESSIONID, model);
+        addKart(session, model);
 
         model.addAttribute("productCategories", productCategories);
 
@@ -124,11 +139,11 @@ public class WebStoreController {
     }
 
     @RequestMapping("/detalhes")
-    public String productDetailsPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+    public String productDetailsPage(HttpSession session,
             @RequestParam(defaultValue = "") String id, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
-        addKart(JSESSIONID, model);
+        addKart(session, model);
 
         model.addAttribute("productCategories", productCategories);
 
@@ -150,19 +165,15 @@ public class WebStoreController {
     }
 
     @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-    public String createOrder(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+    public String createOrder(HttpSession session,
             @RequestParam String action, Product product, int quantity) {
 
         System.out.println("Action: " + action);
-        System.out.println("JSESSIONID: " + JSESSIONID);
         System.out.println("product: " + product);
 
-        if (JSESSIONID == null && JSESSIONID.equals("")) {
-            return "redirect:/produtos";
-        }
 
-        if (kartService.countKart(JSESSIONID) > 0) {
-            Kart kart = kartService.getKart(JSESSIONID);
+        if (session.getAttribute("cartId") != null && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+            Kart kart = kartService.getKart(session.getAttribute("cartId").toString());
             kart.setLastUpdateDate(new Date());
             KartItem kartItem = new KartItem();
             kartItem.setProduct(productRepository.findById(product.getId()).get());
@@ -182,9 +193,9 @@ public class WebStoreController {
             }
 
             kartService.save(kart);
+            session.setAttribute("cartId", kart.getId());
         } else {
             Kart kart = new Kart();
-            kart.setSessionId(JSESSIONID);
             kart.setCreatedDate(new Date());
             kart.setLastUpdateDate(new Date());
             kart.setStatus("active");
@@ -194,21 +205,22 @@ public class WebStoreController {
             kartItem.setQuantity(quantity);
             kart.getItems().add(kartItem);
             kartService.save(kart);
+            session.setAttribute("cartId", kart.getId());
         }
-
+        
         return "redirect:/produtos";
     }
 
     // shopping cart
-
     @RequestMapping("/carrinho")
-    public String shoppingCartPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
+    public String shoppingCartPage(
+         HttpSession session,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "") String categoryId, Model model) {
 
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
-        addKart(JSESSIONID, model);
+        addKart(session, model);
 
         model.addAttribute("productCategories", productCategories);
 
@@ -247,20 +259,18 @@ public class WebStoreController {
         }
 
         System.out.println("Operation: " + operation);
-        if(operation.equals("reactivate")){
+        if (operation.equals("reactivate")) {
             kartService.reactivateItem(kart.getId(), itemIndex);
-        } else if(operation.equals("cancel")){
+        } else if (operation.equals("cancel")) {
             kartService.cancelItem(kart.getId(), itemIndex);
-        } else if(operation.equals("alterQuantity")){
+        } else if (operation.equals("alterQuantity")) {
             kartService.alterQuantity(kart.getId(), itemIndex, quantity);
         }
-
-        
 
         return "redirect:/carrinho";
     }
 
-    @ExceptionHandler({ Exception.class })
+    @ExceptionHandler({Exception.class})
     public String databaseError() {
         return "error-view-name";
     }
@@ -277,7 +287,76 @@ public class WebStoreController {
     }
 
     //checkout
+    @RequestMapping("/checkout")
+    public String checkoutPage(
+    HttpSession session,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "") String categoryId, Authentication auth, Model model) {
+                
+        Customer customer = (Customer) auth.getPrincipal();
 
-    
+        Kart kart;
+        if (kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+            kart = kartService.getKart(session.getAttribute("cartId").toString());
+
+            CustomerOrder customerOrder = customerOrderService.createOrder(customer, customer.getAddresses().get(0), customer.getEmail());
+            kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")).forEach(items -> {
+
+                CustomerOrderProductItem customerOrderProductItem = new CustomerOrderProductItem();
+                customerOrderProductItem.setProduct(items.getProduct());
+                customerOrderProductItem.setQuantity(new BigDecimal(items.getQuantity()));
+                customerOrderProductItem.setStatus("active");
+                List<CustomerOrderItemVariant> customerOrderItemVariants = new ArrayList<CustomerOrderItemVariant>();
+
+                for(ProductVariant productVariant : items.getProductVariants()) {
+                    CustomerOrderItemVariant customerOrderItemVariant =  new CustomerOrderItemVariant();
+                    customerOrderItemVariant.setName(productVariant.getName());
+                    customerOrderItemVariant.setValue(productVariant.getProductVariantValues().get(0).getName());
+                    customerOrderItemVariants.add(customerOrderItemVariant);
+
+                }
+
+                customerOrderProductItem.setCustomerOrderItemVariants(customerOrderItemVariants);
+
+                customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
+                customerOrderService.update(customerOrder,customer.getEmail());
+                
+            });
+            
+            kart.setStatus("finished");
+            kartService.save(kart);
+        } else {
+            kart = new Kart();
+        }
+
+        System.out.println("session: " + session.getAttribute("cartId"));
+
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
+
+        addKart(session, model);
+
+        model.addAttribute("productCategories", productCategories);
+
+        Pageable paging = PageRequest.of(page, size);
+        Page products;
+
+        if (categoryId.equals("")) {
+            products = productRepository.findByIsActive(true, paging);
+        } else {
+            products = productRepository.findByProductCategoryIdAndIsActive(categoryId, true, paging);
+        }
+
+        model.addAttribute("products", products);
+        model.addAttribute("categoryId", categoryId);
+
+        int totalPages = products.getTotalPages();
+
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        return "checkout";
+    }
 
 }

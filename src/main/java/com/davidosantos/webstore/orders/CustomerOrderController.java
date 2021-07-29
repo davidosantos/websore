@@ -5,13 +5,15 @@
  */
 package com.davidosantos.webstore.orders;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import com.davidosantos.webstore.customers.Customer;
 import com.davidosantos.webstore.customers.CustomerService;
 import com.davidosantos.webstore.products.ProductService;
 import com.davidosantos.webstore.supplier.SupplierOrder;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,15 +42,11 @@ public class CustomerOrderController {
     ProductService productService;
 
     @RequestMapping("customerorderlist")
-    public String page(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "7") int size,
-            @RequestParam(defaultValue = "") String code,
-            @RequestParam(defaultValue = "") String email,
-            @RequestParam(defaultValue = "") String documentNumber,
-            @RequestParam(defaultValue = "") String status,
+    public String page(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "7") int size,
+            @RequestParam(defaultValue = "") String code, @RequestParam(defaultValue = "") String email,
+            @RequestParam(defaultValue = "") String documentNumber, @RequestParam(defaultValue = "") String status,
             Model model) {
-//https://www.baeldung.com/spring-thymeleaf-pagination
+        // https://www.baeldung.com/spring-thymeleaf-pagination
 
         Pageable paging = PageRequest.of(page, size);
         Page orderPage;
@@ -63,9 +61,7 @@ public class CustomerOrderController {
         int totalPages = orderPage.getTotalPages();
 
         if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
-                    .boxed()
-                    .collect(Collectors.toList());
+            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
@@ -73,13 +69,12 @@ public class CustomerOrderController {
     }
 
     @RequestMapping("order")
-    public String OrderEditPage(
-            @RequestParam(defaultValue = "") String id,
-            @RequestParam(defaultValue = "") String customerid,
-            Model model) {
+    public String OrderEditPage(@RequestParam(defaultValue = "") String id,
+            @RequestParam(defaultValue = "") String customerid, Model model) {
 
         Customer customer = null;
-        CustomerOrder customerOrder = null;;
+        CustomerOrder customerOrder = null;
+        ;
         if (!customerid.equals("")) {
             customer = customerService.getById(customerid);
             customerOrder = new CustomerOrder();
@@ -103,25 +98,19 @@ public class CustomerOrderController {
     }
 
     @RequestMapping(value = "createOrder", method = RequestMethod.POST)
-    public String OrderSave(
-            String customerAddress,
-            String customerid,
-            CustomerOrder customerOrder,
-            Model model) {
+    public String OrderSave(String customerAddress, String customerid, CustomerOrder customerOrder, Model model) {
         Customer customer = customerService.getById(customerid);
-        customerOrder.setCustomer(customer);
-        customerOrder.setSelectedCustomerAddress(customer.getAddresses().stream().filter(address -> address.toString().equals(customerAddress.toString())).findFirst().get());
 
         System.out.println("customerAddress " + customerAddress);
-        return "redirect:/backoffice/customerorder/order?id=" + customerOrderService.createOrder(customerOrder, "Backoffice").getId();
+        return "redirect:/backoffice/customerorder/order?id=" + customerOrderService.createOrder(customer,
+                customer.getAddresses().stream()
+                        .filter(address -> address.toString().equals(customerAddress.toString())).findFirst().get(),
+                "Backoffice").getId();
 
     }
 
     @RequestMapping(value = "productadd", method = RequestMethod.POST)
-    public String OrderAddProduct(
-            String id,
-            String productid,
-            Model model) {
+    public String OrderAddProduct(String id, String productid, Model model) {
 
         customerOrderService.addProduct(id, productid, "Backoffice");
 
@@ -130,47 +119,34 @@ public class CustomerOrderController {
     }
 
     @RequestMapping(value = "supplieradd", method = RequestMethod.POST)
-    public String OrderAddSupplier(
-            String id,
-            String supplierid,
-            Model model) {
+    public String OrderAddSupplier(String id, String supplierid, Model model) {
 
         customerOrderService.addSupplier(id, supplierid, "Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 
     }
-    
-    @RequestMapping(value = "variantadd", method = RequestMethod.POST)
-    public String OrderAddVariant(
-            String id,
-            String productid,
-            String name,
-            String value,
-            Model model) {
 
-        customerOrderService.addVariant(id, productid,name,value, "Backoffice");
+    @RequestMapping(value = "variantadd", method = RequestMethod.POST)
+    public String OrderAddVariant(String id, String productid, String name, String value, Model model) {
+
+        customerOrderService.addVariant(id, productid, name, value, "Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 
     }
-    @RequestMapping(value = "notesadd", method = RequestMethod.POST)
-    public String OrderAddNotes(
-            String id,
-            String notes,
-            Model model) {
 
-        customerOrderService.addNotes(id, notes,"Backoffice");
+    @RequestMapping(value = "notesadd", method = RequestMethod.POST)
+    public String OrderAddNotes(String id, String notes, Model model) {
+
+        customerOrderService.addNotes(id, notes, "Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 
     }
 
     @RequestMapping(value = "cancelItem", method = RequestMethod.POST)
-    public String OrderCancelProduct(
-            String id,
-            int itemIndex,
-            Model model) {
+    public String OrderCancelProduct(String id, int itemIndex, Model model) {
 
         customerOrderService.cancelItem(id, itemIndex, "Backoffice");
 
@@ -179,9 +155,7 @@ public class CustomerOrderController {
     }
 
     @RequestMapping(value = "cancelOrder", method = RequestMethod.POST)
-    public String OrderCancelOrder(
-            String id,
-            Model model) {
+    public String OrderCancelOrder(String id, Model model) {
 
         customerOrderService.cancelOrder(id, "Backoffice");
 
@@ -190,13 +164,9 @@ public class CustomerOrderController {
     }
 
     @RequestMapping(value = "supplierorderadd", method = RequestMethod.POST)
-    public String SuppllierOrderAddOrder(
-            String id,
-            String supplierid,
-            SupplierOrder supplierOrder,
-            Model model) {
+    public String SuppllierOrderAddOrder(String id, String supplierid, SupplierOrder supplierOrder, Model model) {
 
-        customerOrderService.SupplierOrderAdd(id, supplierid, supplierOrder,"Backoffice");
+        customerOrderService.SupplierOrderAdd(id, supplierid, supplierOrder, "Backoffice");
 
         return "redirect:/backoffice/customerorder/order?id=" + id;
 

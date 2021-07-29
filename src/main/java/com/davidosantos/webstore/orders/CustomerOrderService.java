@@ -5,6 +5,14 @@
  */
 package com.davidosantos.webstore.orders;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Date;
+
+import com.davidosantos.webstore.customers.Customer;
+import com.davidosantos.webstore.customers.CustomerAddress;
 import com.davidosantos.webstore.products.Product;
 import com.davidosantos.webstore.products.ProductService;
 import com.davidosantos.webstore.supplier.Supplier;
@@ -12,11 +20,7 @@ import com.davidosantos.webstore.supplier.SupplierOrder;
 import com.davidosantos.webstore.supplier.SupplierOrderItem;
 import com.davidosantos.webstore.supplier.SupplierOrderService;
 import com.davidosantos.webstore.supplier.SupplierService;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Date;
+
 import org.apache.commons.codec.binary.Base32;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,7 +65,15 @@ public class CustomerOrderService {
         return new Base32().encodeToString(random).replace("=", "");
     }
 
-    public CustomerOrder createOrder(CustomerOrder customerOrder, String createdBy) {
+    public void update(CustomerOrder customerOrder, String updatedBy){
+        recalculateOrder(customerOrder, updatedBy);
+        customerOrderRepository.save(customerOrder);
+    }
+
+    public CustomerOrder createOrder(Customer customer, CustomerAddress selectedCustomerAddress, String createdBy) {
+        CustomerOrder customerOrder = new CustomerOrder();
+        customerOrder.setCustomer(customer);
+        customerOrder.setSelectedCustomerAddress(selectedCustomerAddress);
         CustomerOrderStatus customerOrderStatus = CustomerOrderStatus.Created;
         customerOrder.setCreatedDate(new Date());
         customerOrder.setLastCustomerOrderStatus(customerOrderStatus);
@@ -85,7 +97,7 @@ public class CustomerOrderService {
         return customerOrderRepository.save(customerOrder);
     }
 
-    private void changeOrderStatus(CustomerOrder customerOrder, CustomerOrderStatus customerOrderStatus, String updatedBy) {
+    public void changeOrderStatus(CustomerOrder customerOrder, CustomerOrderStatus customerOrderStatus, String updatedBy) {
 
         customerOrder.setLastCustomerOrderStatus(customerOrderStatus);
         CustomerOrderStatusItem customerOrderStatusItem = new CustomerOrderStatusItem();

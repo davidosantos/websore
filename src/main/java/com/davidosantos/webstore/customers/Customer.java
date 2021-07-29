@@ -6,18 +6,23 @@
 package com.davidosantos.webstore.customers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
  * @author david
  */
 @Document
-public class Customer {
+public class Customer implements UserDetails {
     @Id
     private String id;
     private String name;
@@ -48,6 +53,11 @@ public class Customer {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" + "id=" + id + ", name=" + name + ", email=" + email + ", encryptedPassword=" + encryptedPassword + ", documentNumber=" + documentNumber + ", birthDate=" + birthDate + ", registeredDate=" + registeredDate + ", activeChangeDate=" + activeChangeDate + ", blockChangeDate=" + blockChangeDate + ", emailConfirmedChangeDate=" + emailConfirmedChangeDate + ", sex=" + sex + ", phones=" + phones + ", addresses=" + addresses + ", isBlocked=" + isBlocked + ", isActive=" + isActive + ", isEmailConformed=" + isEmailConformed + ", offerOpted=" + offerOpted + '}';
     }
 
     public String getEmail() {
@@ -182,6 +192,41 @@ public class Customer {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority("SITE_USER_ROLE"));
+    }
+
+    @Override
+    public String getPassword() {
+        return encryptedPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return isActive;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isActive;
     }
 
     

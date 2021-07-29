@@ -20,4 +20,8 @@ public interface CustomerRepository extends MongoRepository<Customer,String> {
 
     Page<Customer> findByNameContainingIgnoreCaseAndEmailContainingIgnoreCaseAndDocumentNumberContainingIgnoreCase(String name ,String email,String documentNumber, Pageable pgbl);
 
+    Customer findByEmail(String email);
+
+    public int countByEmail(String email);
+
 }
