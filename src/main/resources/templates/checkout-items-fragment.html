@@ -1,111 +1,94 @@
-<div class="container-fluid p-5">
-    <div class="row">
-        <div class="col-md-8">
-            <div class="row" th:each="item,index : ${kart.items}">
+<div class="row m-3">
 
-                <div class="col-md-4 col-sm-6 brand_box mb-md-2">
+    <div class="col-sm-12 brand_box">
+        <div class="container">
 
-                    <div class="row">
-                        <img class="center" th:src="'/images/downloadDecoded/' + ${item.product.imageId}" alt="img" />
-                    </div>
+            
 
-                </div>
-                <div class="col-md-8 col-sm-6 brand_box mb-md-2 mb-3">
-                    <div class="row">
-                        <div class="col-md-8 col-sm-12">
-                            <div class="col-md-12 bottom-border p-3">
-                                <p class="h2" th:text="${item.product.name}"></p>
+                <div class="row bs-wizard" style="border-bottom:0;">
+
+                    <div class="d-flex justify-content-center align-content-stretch w-100">
+
+                        <div class="col-md-4 bs-wizard-step active">
+                            <div class="text-center bs-wizard-stepnum">Endereço</div>
+                            <div class="progress">
+                                <div class="progress-bar"></div>
                             </div>
-                            <div class="col-md-12 bottom-border">
-                                <h3>Preço: R$ <strong th:text="${item.product.price}" class="red h4">
-                                    </strong></h3>
-                                <span class="h4" th:text="${'Desconto ' + item.product.discount}"></span>
+                            <a href="/checkout" class="bs-wizard-dot"></a>
 
-                                <span class="h4" th:text="${'Frete ' + item.product.freight}"></span>
-                            </div>
-                            <form th:action="@{/carrinho}" method="post" th:object="${kart}" class="h4">
-                                <input th:field="*{id}" hidden>
-                                <input name="itemIndex" th:value="${index.index}" hidden>
-
-                                <div class="col-md-12 bottom-border"
-                                    th:each="variants, variantsIdx : ${item.productVariants}">
-                                    <span class="h2" th:text="${variants.name} + ': '" />
-                                    <span th:each="variant, variantIdx : ${variants.productVariantValues}"
-                                        th:text="${variant.name}">
-                                </div>
-
-                                <div class="row bottom-border">
-                                    <div class="col-md-6 col-sm-12">
-                                        <span></span><strong>Quantidade:</strong></span>
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <button type="button"
-                                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
-                                                class="minus">-</button>
-                                            <input min="1" class="inputQuantity" name="quantity"
-                                                th:value="${item.quantity}" type="number">
-                                            <button type="button"
-                                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
-                                                class="plus">+</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-sm-12">
-                                        <button name="operation" value="alterQuantity" type="submit"
-                                            class="btn btn-warning btn-block text-uppercase m-3">Confirmar</button>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-sm-12 col-md-6 p-3">
-
-                                        <button name="operation" value="cancel" th:if="${item.status.equals('active')} "
-                                            type="submit" class="btn btn-danger btn-block text-uppercase">Cancelar
-                                            item</button>
-
-                                        <button name="operation" value="reactivate"
-                                            th:if="${item.status.equals('canceled')} "
-                                            class="btn btn-secondary btn-block text-uppercase">Cancelado/reativar</button>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
-                    </div>
-                </div>
 
-            </div>
+                        <div class="col-md-4 bs-wizard-step disabled">
+                            <!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">Pagamento</div>
+                            <div class="progress">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <a href="#" class="bs-wizard-dot"></a>
+
+                        </div>
+
+                        <div class="col-md-4 bs-wizard-step disabled">
+                            <!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">Fim</div>
+                            <div class="progress">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <a href="#" class="bs-wizard-dot"></a>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                </div>
+            
         </div>
-        <div class="col-md-3 brand_box ml-md-2 sticky-top" style="height: 350px;">
+    </div>
+    <div class="d-md-flex justify-content-center align-content-md-stretch w-100">
+        <div class="col-md-9 col-sm-12 brand_box m-2">
+            <div th:replace="~{address/index :: body} "></div>
+        </div>
+        <div class="col-md-3 col-sm-12 sticky-top font-weight-bold brand_box m-2" style="height: 350px;">
             <div class="row">
-                <h3 class="red h4 bottom-border">Valores:</h3>
-            </div>
-            <div class="row">
-                <div class="col-6 bottom-border">
-                    <p class="font-weight-bold h4"> Produtos: </p>
+                <div class="col-6" >
+                    <p class="font-weight-bold"> Produtos: </p>
                 </div>
-                <div class="col-6 bottom-border">
-                    <p th:text="'R$ ' + ${kart.totalProductsAmount}" class="font-weight-bold h4 text-nowrap text-end">
+                <div class="col-6">
+                    <p th:text="'R$ ' + ${kart.totalProductsAmount == null ? '0.00' : kart.totalProductsAmount}"
+                        class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <div class="col-6 bottom-border">
-                    <p class="font-weight-bold h4"> Descontos: </p>
+                <hr/>
+                <div class="col-6">
+                    <p class="font-weight-bold"> Descontos: </p>
                 </div>
-                <div class="col-6 bottom-border">
-                    <p th:text="'R$ ' + ${kart.totalDiscountAmount}" class="font-weight-bold h4 text-nowrap text-end">
+                <div class="col-6">
+                    <p th:text="'R$ ' + ${kart.totalDiscountAmount == null ? '0.00' : kart.totalDiscountAmount}"
+                        class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <div class="col-6 bottom-border">
-                    <p class="font-weight-bold h4"> Frete: </p>
+                <hr/>
+                <div class="col-6">
+                    <p class="font-weight-bold"> Frete: </p>
                 </div>
-                <div class="col-6 bottom-border">
-                    <p th:text="'R$ ' + ${kart.totalFreightAmount}" class="font-weight-bold h4 text-nowrap text-end">
+                <div class="col-6">
+                    <p th:text="'R$ ' + ${kart.totalFreightAmount == null ? '0.00' : kart.totalFreightAmount}"
+                        class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
+                <hr/>
                 <div class="col-6 bottom-border">
-                    <p class="font-weight-bold h3"> Total: </p>
+                    <p class="font-weight-bold h5"> Total: </p>
                 </div>
                 <div class="col-6 bottom-border">
-                    <p th:text="'R$ ' + ${kart.totalAmount}" class="font-weight-bold h3 red text-nowrap text-end">
+                    <p th:text="'R$ ' + ${kart.totalAmount == null ? '0.00' : kart.totalAmount}"
+                        class="font-weight-bold h5 red text-nowrap text-end">
                         100,00 </p>
                 </div>
+                <hr/>
             </div>
         </div>
     </div>

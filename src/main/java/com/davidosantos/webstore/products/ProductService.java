@@ -35,16 +35,16 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product saveProduct(Product product){
+    public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 
-    public ProductCategory saveProduct(ProductCategory productCategory){
+    public ProductCategory saveProduct(ProductCategory productCategory) {
         productCategory.setIsActive(true);
         return productCategoryRepository.save(productCategory);
     }
 
-    public List<ProductCategory> getProductCategories(){
+    public List<ProductCategory> getProductCategories() {
         return this.productCategoryRepository.findByIsActive(true);
     }
 
@@ -52,24 +52,32 @@ public class ProductService {
         return productRepository.findAll(paging);
     }
 
-    public Page getByDefaultFilter(String code,String name,String providerName, Pageable paging) {
-        return productRepository.findByCodeContainingIgnoreCaseAndNameContainingIgnoreCaseAndProviderNameContainingIgnoreCase(code, name, providerName, paging);
+    public Page getByDefaultFilter(String code, String name, String providerName, Pageable paging) {
+        return productRepository
+                .findByCodeContainingIgnoreCaseAndNameContainingIgnoreCaseAndProviderNameContainingIgnoreCase(code,
+                        name, providerName, paging);
     }
 
     public Product getById(String productid) {
-       return productRepository.findById(productid).get();
+        return productRepository.findById(productid).get();
     }
 
     public Product saveImage(String productid, String imageId) {
         Product product = productRepository.findById(productid).get();
 
-        if(product.getImageId() != null && !product.getImageId().equals("")){
-            imageService.delete(product.getImageId());
-        }
+        product.getImagesId().add(imageId);
 
-        product.setImageId(imageId);
-        
         return productRepository.save(product);
-     }
+    }
+
+    public Product removeImage(String productid, int imageIndex) {
+        Product product = productRepository.findById(productid).get();
+
+        imageService.delete(product.getImagesId().get(imageIndex));
+
+        product.getImagesId().remove(product.getImagesId().get(imageIndex));
+
+        return productRepository.save(product);
+    }
 
 }

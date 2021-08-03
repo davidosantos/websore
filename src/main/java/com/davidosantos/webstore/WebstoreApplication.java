@@ -1,6 +1,7 @@
 package com.davidosantos.webstore;
 
 import com.davidosantos.webstore.security.WebStoreUserDatailsService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,8 +41,10 @@ public class WebstoreApplication extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
+        http.csrf().disable().cors();
 
+        http
+        
         .authorizeRequests()
         .mvcMatchers("/checkout**")
         .authenticated()

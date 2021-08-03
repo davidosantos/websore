@@ -7,7 +7,6 @@ package com.davidosantos.webstore.products;
 
 import com.davidosantos.webstore.images.Image;
 import com.davidosantos.webstore.images.ImageService;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -252,7 +251,8 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products/category/delete", method = RequestMethod.POST)
-    public String backofficeDeatitivateProductsCategoryPage(@RequestParam("id") String id, @RequestParam("categoryId") String categoryId) {
+    public String backofficeDeatitivateProductsCategoryPage(@RequestParam("id") String id,
+            @RequestParam("categoryId") String categoryId) {
         ProductCategory productCategory = productCategoryRepository.findById(categoryId).get();
         productCategory.setIsActive(false);
         productCategoryRepository.save(productCategory);
@@ -265,9 +265,15 @@ public class ProductController {
         Image uploadedImage = imageService.uploadImage(title, image);
         productService.saveImage(id, uploadedImage.getId());
         uploadedImage.setImageData(null);
-        return new ResponseEntity<>(
-            uploadedImage,
-                 HttpStatus.OK);
+        return new ResponseEntity<>(uploadedImage, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/productimage/delete", method = RequestMethod.POST)
+    public String removeImage(@RequestParam("id") String id, 
+    @RequestParam("imageIndex") int imageIndex){
+        
+        productService.removeImage(id, imageIndex);
+        return "redirect:/backoffice/products?id=" + id;
     }
 
 }

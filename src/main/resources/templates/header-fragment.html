@@ -42,10 +42,13 @@ and open the template in the editor.
                                         <li class="active"> <a th:href="@{/}">Home</a> </li>
                                         <li><a href="#contact">Contato</a></li>
                                         <li>
-                                            <a th:href="@{/carrinho}" class="btn p-1">
+                                            <a th:href="@{/carrinho}"
+                                            class="btn p-1">
                                                 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
                                                 Carrinho
-                                                <span class="badge badge-pill badge-danger" th:text="${#lists.size(kart.items)}">3</span>
+                                                <span class="badge badge-pill badge-danger"
+                                                th:if="${#lists.size(kart.items) > 0}"
+                                                th:text="${#lists.size(kart.items)}">3</span>
                                             </a>
                                         </li>
                                     </ul>

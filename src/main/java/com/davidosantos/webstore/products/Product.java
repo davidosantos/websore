@@ -10,6 +10,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -40,7 +41,7 @@ public class Product {
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date expireDate;
     private Date lastUpdateDate;
-    private String imageId;
+    private List<String> imagesId;
     private String providerName;
     private String providerUrl;
     private ProductCategory productCategory;
@@ -125,12 +126,25 @@ public class Product {
         this.lastUpdateDate = lastUpdateDate;
     }
 
-    public String getImageId() {
-        return imageId;
+    
+
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setImageId(String imageId) {
-        this.imageId = imageId;
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public List<String> getImagesId() {
+        if(imagesId == null){
+            imagesId = new ArrayList<String>();
+        }
+        return imagesId;
+    }
+
+    public void setImagesId(List<String> imagesId) {
+        this.imagesId = imagesId;
     }
 
     public String getProviderName() {

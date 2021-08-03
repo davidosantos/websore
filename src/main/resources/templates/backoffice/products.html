@@ -159,28 +159,59 @@
 
                             <div class="col-xl-6 col-lg-6 col-md-12 mx-auto mb-4">
 
-                                <div id="imageBox" th:if="${product.imageId == null}"
+                                <div id="imageBox" th:if="${#lists.size(product.imagesId) == 0}"
                                     class="tm-product-img-dummy mx-auto"
                                     onclick="document.getElementById('fileInput').click();">
                                     <i class="fas fa-cloud-upload-alt tm-upload-icon"></i>
                                 </div>
 
                                 <div id="imageBox" class="tm-product-img-dummy mx-auto">
-                                    <img th:if="${product.imageId != null}"
+                                    <img th:if="${#lists.size(product.imagesId)> 0}"
                                         style="height: -webkit-fill-available; width: -webkit-fill-available"
-                                        th:src="'/images/downloadDecoded/' + ${product.imageId}"
+                                        th:src="'/images/downloadDecoded/' + ${product.imagesId[0]}"
                                         onclick="document.getElementById('fileInput').click();" />
                                 </div>
 
 
                                 <div class="custom-file mt-3 mb-3">
-                                    <input type="text" id="imageid" name="imageid" th:field="*{imageId}"
+                                    <input type="text" id="imageid" name="imageid" th:field="*{imagesId}"
                                         hidden="true" />
                                     <input id="enviarImagem" type="button" class="btn btn-primary btn-block mx-auto"
                                         value="ENVIAR IMAGEM" />
                                 </div>
-                            </div>
 
+                                <div class="margin brand_box">
+
+                                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                        <ol class="carousel-indicators">
+                                            <li th:each="imageId,index : ${product.imagesId}"
+                                                th:data-slide-to="${index.index}"
+                                                th:text="${index.index}"
+                                                data-target="#carouselExampleIndicators"
+                                                th:class="${index.index == 0 ? 'active' : '' }"></li>
+                                        </ol>
+                                        <div class="carousel-inner">
+                                            <div th:each="imageId,index : ${product.imagesId}"
+                                                th:class="${index.index == 0 ? 'carousel-item active' : 'carousel-item' }">
+                                                <img class="d-block w-100" th:if="${#lists.size(product.imagesId) > 0}"
+                                                    th:src="'/images/downloadDecoded/' + ${imageId}" alt="First slide">
+                                            </div>
+                                        </div>
+                                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                                            data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                                            data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
+
+
+                                </div>
+                            </div>
 
 
                             <div class="form-group col-12">
@@ -205,11 +236,36 @@
 
             <div class="col-sm-4 tm-col" style="padding-top: 20px">
                 <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
+                    <h2 class="tm-block-title">Imagens</h2>
+                    <table class="table tm-table-small tm-product-table">
+                        <tbody>
+                            <tr th:each="imageId,index : ${product.imagesId}">
+                                <td th:text="${'Imagem ' + index.index}" class="tm-product-name">
+                                <td class="text-center">
+                                    <form method="post" action="/backoffice/productimage/delete">
+                                        <input type="text" name="id" hidden="true" th:value="${product.id}">
+                                        <input type="text" name="imageIndex" hidden="true"
+                                            th:value="${index.index}">
+                                        <button type="submit" class="tm-product-delete-link">
+                                            <i class="far fa-trash-alt tm-product-delete-icon"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- table container -->
+                </div>
+            </div>
+            
+            <div class="col-sm-4 tm-col" style="padding-top: 20px">
+                <div class="tm-bg-primary-dark tm-block tm-block-h-auto">
                     <h2 class="tm-block-title">Categorias de produtos</h2>
                     <table class="table tm-table-small tm-product-table">
                         <tbody>
                             <tr th:each="productCategory : ${productCategories}">
-                                <td th:text="${productCategory.name}" class="tm-product-name" >
+                                <td th:text="${productCategory.name}" class="tm-product-name">
                                 <td class="text-center">
                                     <form method="post" action="/backoffice/products/category/delete">
                                         <input type="text" name="id" hidden="true" th:value="${product.id}">

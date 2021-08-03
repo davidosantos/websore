@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 import com.davidosantos.webstore.carousel.Carousel;
 import com.davidosantos.webstore.carousel.CarouselService;
 import com.davidosantos.webstore.customers.Customer;
+import com.davidosantos.webstore.customers.CustomerAddress;
+import com.davidosantos.webstore.customers.CustomerService;
 import com.davidosantos.webstore.images.ImageService;
 import com.davidosantos.webstore.kart.Kart;
 import com.davidosantos.webstore.kart.KartItem;
@@ -78,9 +80,13 @@ public class WebStoreController {
     @Autowired
     CustomerOrderService customerOrderService;
 
+    @Autowired
+    CustomerService customerService;
+
     public boolean addKart(HttpSession session, Model model) {
         Kart kart;
-        if (session.getAttribute("cartId") != null && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+        if (session.getAttribute("cartId") != null
+                && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
             kart = kartService.getKart(session.getAttribute("cartId").toString());
         } else {
             kart = new Kart();
@@ -90,8 +96,7 @@ public class WebStoreController {
     }
 
     @RequestMapping("/")
-    public String homePage(
-        HttpSession session, Model model) {
+    public String homePage(HttpSession session, Model model) {
         List<Product> products = productRepository.findByIsActiveAndDisplayInHome(true, true);
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
         List<Carousel> carouselItems = carouselService.getDefault();
@@ -107,9 +112,9 @@ public class WebStoreController {
     }
 
     @RequestMapping("/produtos")
-    public String productPage(HttpSession session,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String categoryId, Model model) {
+    public String productPage(HttpSession session, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String categoryId,
+            Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
         addKart(session, model);
@@ -139,8 +144,7 @@ public class WebStoreController {
     }
 
     @RequestMapping("/detalhes")
-    public String productDetailsPage(HttpSession session,
-            @RequestParam(defaultValue = "") String id, Model model) {
+    public String productDetailsPage(HttpSession session, @RequestParam(defaultValue = "") String id, Model model) {
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
         addKart(session, model);
@@ -164,15 +168,18 @@ public class WebStoreController {
         return "product-details";
     }
 
-    @RequestMapping(value = "/createOrder", method = RequestMethod.POST)
-    public String createOrder(HttpSession session,
-            @RequestParam String action, Product product, int quantity) {
+    @RequestMapping(value = "/createShippingCart", method = RequestMethod.POST)
+    public String createcreateShippingCart(HttpSession session, @RequestParam String action, Product product, int quantity) {
 
         System.out.println("Action: " + action);
         System.out.println("product: " + product);
 
+        if(action.equals("buy")) {
+            return "redirect:checkout?itemId="+product.getId()+"&quantity="+quantity;
+        }
 
-        if (session.getAttribute("cartId") != null && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+        if (session.getAttribute("cartId") != null
+                && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
             Kart kart = kartService.getKart(session.getAttribute("cartId").toString());
             kart.setLastUpdateDate(new Date());
             KartItem kartItem = new KartItem();
@@ -203,20 +210,20 @@ public class WebStoreController {
             kartItem.setProduct(productRepository.findById(product.getId()).get());
             kartItem.setStatus("active");
             kartItem.setQuantity(quantity);
+            kartItem.setProductVariants(product.getProductVariants());
             kart.getItems().add(kartItem);
             kartService.save(kart);
             session.setAttribute("cartId", kart.getId());
         }
-        
-        return "redirect:/produtos";
+
+        return "redirect:/detalhes?id="+product.getId();
     }
 
     // shopping cart
     @RequestMapping("/carrinho")
-    public String shoppingCartPage(
-         HttpSession session,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String categoryId, Model model) {
+    public String shoppingCartPage(HttpSession session, @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String categoryId,
+            Model model) {
 
         List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
@@ -248,11 +255,7 @@ public class WebStoreController {
 
     @RequestMapping(value = "/carrinho", method = RequestMethod.POST)
     public String shoppingCartEditPage(@CookieValue(value = "JSESSIONID", required = false) String JSESSIONID,
-            @RequestParam(defaultValue = "") String operation,
-            int itemIndex,
-            Kart kart,
-            int quantity,
-            Model model) {
+            @RequestParam(defaultValue = "") String operation, int itemIndex, Kart kart, int quantity, Model model) {
 
         if (JSESSIONID.equals("")) {
             return "redirect:/carrinho";
@@ -270,12 +273,12 @@ public class WebStoreController {
         return "redirect:/carrinho";
     }
 
-    @ExceptionHandler({Exception.class})
+    @ExceptionHandler({ Exception.class })
     public String databaseError() {
         return "error-view-name";
     }
 
-    //images
+    // images
     @GetMapping("/images/downloadDecoded/{id}")
     public ResponseEntity<byte[]> getImageDecoded(@PathVariable String id) {
         HttpHeaders headers = new HttpHeaders();
@@ -286,77 +289,105 @@ public class WebStoreController {
                 HttpStatus.OK);
     }
 
-    //checkout
+    // checkout
     @RequestMapping("/checkout")
-    public String checkoutPage(
-    HttpSession session,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String categoryId, Authentication auth, Model model) {
-                
+    public String checkoutAddressPage(HttpSession session, @RequestParam(defaultValue = "") String itemId,
+            Authentication auth, Model model) {
+        Customer loggedCustomer = (Customer) auth.getPrincipal();
+        Customer customer = customerService.getById(loggedCustomer.getId());
+        CustomerAddress customerAddress = new CustomerAddress();
+        addKart(session, model);
+
+        model.addAttribute("customer", customer);
+        model.addAttribute("customerAddress", customerAddress);
+
+        if (!itemId.equals("")) {
+            model.addAttribute("itemId", itemId);
+        }
+
+        return "checkout";
+    }
+
+    @RequestMapping(value = "/checkout", method = RequestMethod.POST)
+    public String checkoutAddressPostPage(HttpSession session, 
+    @RequestParam(required = false) String addressIndex,
+    @RequestParam(required = false) String quantity,
+            @RequestParam(defaultValue = "") String itemId, String addressAction, CustomerAddress customerAddress,
+            Authentication auth, Model model) {
+
         Customer customer = (Customer) auth.getPrincipal();
+        if (addressAction.equals("newCustomerAddress")) {
+            customer.getAddresses().add(customerAddress);
+            customerService.saveCustomer(customer);
+        } else if (addressAction.equals("selectedCustomerAddress")) {
+            customerAddress = customer.getAddresses().get(Integer.valueOf(addressIndex));
+        }
 
-        Kart kart;
-        if (kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
-            kart = kartService.getKart(session.getAttribute("cartId").toString());
-
-            CustomerOrder customerOrder = customerOrderService.createOrder(customer, customer.getAddresses().get(0), customer.getEmail());
-            kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")).forEach(items -> {
-
-                CustomerOrderProductItem customerOrderProductItem = new CustomerOrderProductItem();
-                customerOrderProductItem.setProduct(items.getProduct());
-                customerOrderProductItem.setQuantity(new BigDecimal(items.getQuantity()));
-                customerOrderProductItem.setStatus("active");
-                List<CustomerOrderItemVariant> customerOrderItemVariants = new ArrayList<CustomerOrderItemVariant>();
-
-                for(ProductVariant productVariant : items.getProductVariants()) {
-                    CustomerOrderItemVariant customerOrderItemVariant =  new CustomerOrderItemVariant();
-                    customerOrderItemVariant.setName(productVariant.getName());
-                    customerOrderItemVariant.setValue(productVariant.getProductVariantValues().get(0).getName());
-                    customerOrderItemVariants.add(customerOrderItemVariant);
-
-                }
-
-                customerOrderProductItem.setCustomerOrderItemVariants(customerOrderItemVariants);
-
-                customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
-                customerOrderService.update(customerOrder,customer.getEmail());
-                
-            });
+        if (!itemId.equals("")) {
             
-            kart.setStatus("finished");
-            kartService.save(kart);
+            CustomerOrder customerOrder = customerOrderService.createOrder(customer, customerAddress,
+                        customer.getEmail());
+
+                    CustomerOrderProductItem customerOrderProductItem = new CustomerOrderProductItem();
+                    customerOrderProductItem.setProduct(productService.getById(itemId));
+                    customerOrderProductItem.setQuantity(new BigDecimal(Integer.valueOf(quantity)));
+                    customerOrderProductItem.setStatus("active");
+                    List<CustomerOrderItemVariant> customerOrderItemVariants = new ArrayList<CustomerOrderItemVariant>();
+
+                  //  for (ProductVariant productVariant : items.getProductVariants()) {
+                  //      CustomerOrderItemVariant customerOrderItemVariant = new CustomerOrderItemVariant();
+                  //      customerOrderItemVariant.setName(productVariant.getName());
+                    //    customerOrderItemVariant.setValue(productVariant.getProductVariantValues().get(0).getName());
+                   //     customerOrderItemVariants.add(customerOrderItemVariant);
+
+                  //  }
+
+                    customerOrderProductItem.setCustomerOrderItemVariants(customerOrderItemVariants);
+
+                    customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
+                    customerOrderService.update(customerOrder, customer.getEmail());
         } else {
-            kart = new Kart();
+
+            
+            if (kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+                Kart kart = kartService.getKart(session.getAttribute("cartId").toString());
+
+                CustomerOrder customerOrder = customerOrderService.createOrder(customer, customerAddress,
+                        customer.getEmail());
+
+                kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")).forEach(items -> {
+
+                    CustomerOrderProductItem customerOrderProductItem = new CustomerOrderProductItem();
+                    customerOrderProductItem.setProduct(items.getProduct());
+                    customerOrderProductItem.setQuantity(new BigDecimal(items.getQuantity()));
+                    customerOrderProductItem.setStatus("active");
+                    List<CustomerOrderItemVariant> customerOrderItemVariants = new ArrayList<CustomerOrderItemVariant>();
+
+                    for (ProductVariant productVariant : items.getProductVariants()) {
+                        CustomerOrderItemVariant customerOrderItemVariant = new CustomerOrderItemVariant();
+                        customerOrderItemVariant.setName(productVariant.getName());
+                        customerOrderItemVariant.setValue(productVariant.getProductVariantValues().get(0).getName());
+                        customerOrderItemVariants.add(customerOrderItemVariant);
+
+                    }
+
+                    customerOrderProductItem.setCustomerOrderItemVariants(customerOrderItemVariants);
+
+                    customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
+                    customerOrderService.update(customerOrder, customer.getEmail());
+
+                });
+
+                kart.setStatus("finished");
+                kartService.save(kart);
+            }
         }
 
         System.out.println("session: " + session.getAttribute("cartId"));
 
-        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
-
         addKart(session, model);
 
-        model.addAttribute("productCategories", productCategories);
-
-        Pageable paging = PageRequest.of(page, size);
-        Page products;
-
-        if (categoryId.equals("")) {
-            products = productRepository.findByIsActive(true, paging);
-        } else {
-            products = productRepository.findByProductCategoryIdAndIsActive(categoryId, true, paging);
-        }
-
-        model.addAttribute("products", products);
-        model.addAttribute("categoryId", categoryId);
-
-        int totalPages = products.getTotalPages();
-
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(0, totalPages - 1).boxed().collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-
-        return "checkout";
+        return "redirect:/";
     }
 
 }

@@ -6,6 +6,15 @@ https://templatemo.com/tm-524-product-admin
 
 */
 
+
+.brand_box {
+    background: #ffffff9c;
+    border-style: groove;
+    border-width: 1px;
+    padding: 10px 20px 20px 20px ;
+    border-radius: 13px;
+}
+
 html {
     font-size: 16px;
     overflow-x: hidden;

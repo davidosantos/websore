@@ -1871,8 +1871,6 @@ border-radius: 50px;
      border-width: 1px;
      padding: 10px 20px 20px 20px ;
      border-radius: 13px;
-     /*max-height: 500px;
-     min-height: 500px;*/
 }
 
 .brand_box_product {
@@ -1880,8 +1878,8 @@ border-radius: 50px;
      padding: 10px 10px 10px 10px ;
      border-radius: 13px;
      max-width: auto;
-     max-height: 300px;
-     min-height: 300px;
+     max-height: 215px;
+     min-height: 215px;
 }
 
 .brand_box_product_details {
@@ -2007,7 +2005,6 @@ margin-top: 40px
      border: #000000 solid 2px;
      border-radius: inherit;
      margin-bottom: 30px;
-     padding: 13px 20px;
      font-family: poppins;
 }
 .form-control:focus {
@@ -2200,11 +2197,28 @@ ul.location_icon span {
 #myCarousel .carousel-control-next {
      width: 62px;
      height: 60px;
-     background: #fffdfd;
+     background: #884e4e;
      opacity: 1;
      font-size: 30px;
      color: #000;
 }
+
+.carousel-control-prev-icon {
+     background-color: black;
+     width: 32px;
+     height: 32px;
+}
+ .carousel-control-next-icon {
+     background-color: black;
+     width: 32px;
+     height: 32px;
+}
+
+.carousel-indicators li {
+     width: 20px;
+     height: 40px;
+     border-radius: 100%;
+   }
 
 #myCarousel .carousel-control-prev:hover,
 #myCarousel .carousel-control-next:hover,
@@ -2255,3 +2269,29 @@ ul.location_icon span {
 .special-page .relative  {text-align:center !important; }
 
 .special-page .footer {margin-top: 90px;}
+
+/*Form Wizard*/
+.bs-wizard {border-bottom: solid 1px #e0e0e0; padding: 0 0 10px 0;}
+.bs-wizard > .d-flex > .bs-wizard-step {padding: 0; position: relative;}
+.bs-wizard > .d-flex > .bs-wizard-step + .bs-wizard-step {}
+.bs-wizard > .d-flex > .bs-wizard-step .bs-wizard-stepnum {color: #595959; font-size: 16px; margin-bottom: 5px;}
+.bs-wizard > .d-flex > .bs-wizard-step .bs-wizard-info {color: #999; font-size: 14px;}
+.bs-wizard > .d-flex > .bs-wizard-step > .bs-wizard-dot {position: absolute; width: 30px; height: 30px; display: block; background: #807b6a; top: 45px; left: 50%; margin-top: -15px; margin-left: -15px; border-radius: 50%;} 
+.bs-wizard > .d-flex > .bs-wizard-step > .bs-wizard-dot:after {content: ' '; width: 14px; height: 14px; background: #3b3a38; border-radius: 50px; position: absolute; top: 8px; left: 8px; } 
+.bs-wizard > .d-flex > .bs-wizard-step > .progress {position: relative; border-radius: 0px; height: 8px; box-shadow: none; margin: 14px 0;}
+.bs-wizard > .d-flex > .bs-wizard-step > .progress > .progress-bar {width:0px; box-shadow: none; background: #807b6a;}
+.bs-wizard > .d-flex > .bs-wizard-step.complete > .progress > .progress-bar {width:100%;}
+.bs-wizard > .d-flex > .bs-wizard-step.active > .progress > .progress-bar {width:50%;}
+.bs-wizard > .d-flex > .bs-wizard-step:first-child.active > .progress > .progress-bar {width:0%;}
+.bs-wizard > .d-flex > .bs-wizard-step:last-child.active > .progress > .progress-bar {width: 100%;}
+.bs-wizard > .d-flex > .bs-wizard-step.disabled > .bs-wizard-dot {background-color: #e9ecef;}
+.bs-wizard > .d-flex > .bs-wizard-step.disabled > .bs-wizard-dot:after {opacity: 0;}
+.bs-wizard > .d-flex > .bs-wizard-step:first-child  > .progress {left: 50%; width: 50%;}
+.bs-wizard > .d-flex > .bs-wizard-step:last-child  > .progress {width: 50%;}
+.bs-wizard > .d-flex > .bs-wizard-step.disabled a.bs-wizard-dot{ pointer-events: none; }
+/*END Form Wizard*/
+
+.imgfit {
+     height: fit-content;
+     width: fit-content;
+}
