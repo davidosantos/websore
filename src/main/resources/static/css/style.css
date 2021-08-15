@@ -1143,7 +1143,7 @@ ul.top_icon li a {
      display: inline-block;
      vertical-align: middle;
 }
-.main-menu ul>li:nth-child (6) {
+.main-menu ul>li:nth-child{
      padding-right: 0px;
 }
 .nav>li {
@@ -1863,28 +1863,23 @@ border-radius: 50px;
      background: #fff;
      text-align: center;
      border-radius: 10px;
-     padding: 80px 0px 30px 0px ;
 }
 
 .brand_box {
      background: #fff;
-     padding: 10px 20px 20px 20px ;
      border-radius: 8px;
 }
 
 .brand_box_product {
-     background: #fff;     
-     padding: 10px 10px 10px 10px ;
-     border-radius: 13px;
      max-width: auto;
      max-height: 215px;
      min-height: 215px;
 }
 
 .brand_box_product_details {
-     background: #ffffff9c;
+     
      padding: 10px 10px 10px 10px ;
-     border-radius: 13px;
+     
      max-height: 150px;
      min-height: 150px;
 }

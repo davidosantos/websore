@@ -1,7 +1,7 @@
-<div class="container p-md-2 p-sm-1">
+<div class="container p-0">
     <br/>
     <div class="row">
-        <div th:each="product : ${products}" class="col-md-2 col-sm-12 mb-2">
+        <div th:each="product : ${products}" class="col-md-2 col-sm-12 mt-2 mb-2">
             <a th:href="@{/detalhes} + '?id=' + ${product.id}">
                 <div class="brand_box">
                     <div class="row brand_box_product">
@@ -13,7 +13,7 @@
                     <div class="row brand_box_product_details">
                         <div class="col-md-12">
                             <h3>R$ <strong th:text="${product.price}" class="red">
-                                </strong></h3>''
+                                </strong></h3>
                             <span th:text="${'Desconto ' + product.discount}"></span>
                         </div>
 

@@ -5,12 +5,12 @@
  */
 package com.davidosantos.webstore;
 
-import com.davidosantos.webstore.customers.CustomerService;
-import com.davidosantos.webstore.images.Image;
-import com.davidosantos.webstore.images.ImageService;
 import java.io.IOException;
+
+import com.davidosantos.webstore.customers.CustomerService;
+import com.davidosantos.webstore.images.ImageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;

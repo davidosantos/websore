@@ -1,4 +1,4 @@
-<div class="container-fluid p-5">
+<div class="container-fluid p-dm-5 pt-5">
     <div class="row">
         <div class="col-md-8">
             <div class="row" th:each="item,index : ${kart.items}">
@@ -20,7 +20,8 @@
                             <div class="col-md-12">
                                 <p class="h3"> R$ <strong th:text="${item.product.price}" class="red h3" /></p>
                                 <span class="h4" th:text="${'Em 12x de R$ ' + item.product.price / 12}"></span>
-                                <span class="h4" th:if="${item.product.discount > 0}" th:text="${'Desconto ' + item.product.discount}"></span>
+                                <span class="h4" th:if="${item.product.discount > 0}"
+                                    th:text="${'Desconto ' + item.product.discount}"></span>
 
                                 <span class="h4" th:text="${'Frete ' + item.product.freight}"></span>
                             </div>
@@ -29,30 +30,27 @@
                                 <hr>
                                 <input name="itemIndex" th:value="${index.index}" hidden>
 
-                                <div class="col-md-12"
-                                    th:each="variants, variantsIdx : ${item.productVariants}">
+                                <div class="col-md-12" th:each="variants, variantsIdx : ${item.productVariants}">
                                     <span class="h2" th:text="${variants.name} + ': '" />
                                     <span th:each="variant, variantIdx : ${variants.productVariantValues}"
                                         th:text="${variant.name}">
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-6 col-sm-12">
+                                    <div class="col-md-6 col-sm-6">
                                         <h2>Quantidade:</h2>
-                                        <div class="d-flex flex-row bd-highlight">
-                                            <button type="button"
-                                                onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
-                                                class="minus">-</button>
-                                            <input min="1" class="inputQuantity" name="quantity"
-                                                th:value="${item.quantity}" type="number">
-                                            <button type="button"
-                                                onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
-                                                class="plus">+</button>
-                                        </div>
+                                        <button type="button"
+                                            onclick="this.parentNode.querySelector('input[type=number]').stepDown()"
+                                            class="minus">-</button>
+                                        <input min="1" class="inputQuantity" name="quantity" th:value="${item.quantity}"
+                                            type="number">
+                                        <button type="button"
+                                            onclick="this.parentNode.querySelector('input[type=number]').stepUp()"
+                                            class="plus">+</button>
                                     </div>
-                                    <div class="col-md-6 col-sm-12">
+                                    <div class="col-md-6 col-sm-6">
                                         <button name="operation" value="alterQuantity" type="submit"
-                                            class="btn btn-dark btn-block text-uppercase m-3">Confirmar</button>
+                                            class="btn btn-dark btn-block text-uppercase mt-3">Confirmar</button>
                                     </div>
                                 </div>
 
@@ -75,9 +73,9 @@
 
             </div>
         </div>
-        <div class="col-md-3 col-sm-12 sticky-top font-weight-bold brand_box m-2" style="height: 350px;">
+        <div class="col-md-3 col-sm-12 sticky-top font-weight-bold brand_box m-md-2" style="height: 350px;">
             <div class="row">
-                <div class="col-6" >
+                <div class="col-6">
                     <p class="font-weight-bold"> Produtos: </p>
                 </div>
                 <div class="col-6">
@@ -85,7 +83,7 @@
                         class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <p class="font-weight-bold"> Descontos: </p>
                 </div>
@@ -94,7 +92,7 @@
                         class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <p class="font-weight-bold"> Frete: </p>
                 </div>
@@ -103,7 +101,7 @@
                         class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <p class="font-weight-bold h5"> Total: </p>
                 </div>
@@ -112,10 +110,10 @@
                         class="font-weight-bold h5 red text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <a href="/checkout">
-                    <button type="button" class="btn btn-danger" >Finalizar</button>
+                        <button type="button" class="btn btn-danger">Finalizar</button>
                     </a>
                 </div>
             </div>

@@ -10,30 +10,30 @@
 </head>
 
 <body>
-    <div class="container-fluid">
+    <div class="container-fluid p-0">
         <div class="accordion" role="tablist" id="accordion-1">
             <div class="accordion-item">
                 <h2 class="accordion-header" role="tab"><button class="accordion-button" data-bs-toggle="collapse"
-                        data-bs-target="#accordion-1 .item-1" th:aria-expanded="${#lists.size(customer.addresses) > 0}  ? true : false"
+                        data-bs-target="#accordion-1 .item-1"
+                        th:aria-expanded="${#lists.size(customer.addresses) > 0}  ? true : false"
                         aria-controls="accordion-1 .item-1">Selecione um endereço</button></h2>
                 <div class="accordion-collapse collapse show item-1" role="tabpanel" data-bs-parent="#accordion-1">
                     <div class="accordion-body">
                         <form method="post" th:action="@{/checkout}">
 
                             <div class="row">
-                                <div class="col">
+                                <div class="col-sm-12">
                                     <select class="form-select form-control"
-                                    th:disabled="${#lists.size(customer.addresses) <= 0}  ? true : false"
-                                    name="addressIndex"
-                                    >
-                                    <option th:each="address,iter : ${customer.addresses}"
-                                            th:value="${iter.index}" th:text="${address}">This is item 1</option>
+                                        th:disabled="${#lists.size(customer.addresses) <= 0}  ? true : false"
+                                        name="addressIndex">
+                                        <option th:each="address,iter : ${customer.addresses}" th:value="${iter.index}"
+                                            th:text="${address}">This is item 1</option>
                                     </select>
                                 </div>
-                                <div class="col"><button class="btn btn-dark" type="submit" name="addressAction"
+                                <div class="col-sm-12"><button class="btn btn-dark" type="submit" name="addressAction"
                                         value="selectedCustomerAddress"
-                                        th:disabled="${#lists.size(customer.addresses) <= 0}  ? true : false"
-                                        >Continuar</button></div>
+                                        th:disabled="${#lists.size(customer.addresses) <= 0}  ? true : false">Continuar</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -41,7 +41,8 @@
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed"
-                        data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-2" th:aria-expanded="${#lists.size(customer.addresses) <= 0} ? true : false"
+                        data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-2"
+                        th:aria-expanded="${#lists.size(customer.addresses) <= 0} ? true : false"
                         aria-controls="accordion-1 .item-2">Cadastre um novo endereço</button></h2>
                 <div class="accordion-collapse collapse item-2" role="tabpanel" data-bs-parent="#accordion-1">
                     <div class="accordion-body">
@@ -87,8 +88,9 @@
                                                 autocomplete="on" required="">
                                         </div>
                                         <div class="col-sm-6 col-md-4"><label class="form-label">*Tipo</label>
-                                            <select th:field="*{type}" class="form-select form-control" data-bs-toggle="tooltip"
-                                                data-bss-tooltip="" title="Tipo de Endereço de entrega." required="">
+                                            <select th:field="*{type}" class="form-select form-control"
+                                                data-bs-toggle="tooltip" data-bss-tooltip=""
+                                                title="Tipo de Endereço de entrega." required="">
                                                 <option value="12" selected="">Casa</option>
                                                 <option value="13">Trabalho</option>
                                                 <option value="14">Outro</option>
@@ -100,7 +102,8 @@
                                         <div
                                             class="col-sm-12 col-md-12 text-end align-self-end m-sm-auto m-md-auto m-3 p-3">
                                             <button class="btn btn-dark" type="submit" name="addressAction"
-                                                value="newCustomerAddress">Continuar</button></div>
+                                                value="newCustomerAddress">Continuar</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

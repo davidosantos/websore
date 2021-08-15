@@ -8,10 +8,10 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container p-0">
         <div class="row">
             <div class="col">
-                <h2 class="text-center" th:text="${customerOrder.code}"></h2>
+                <h2 class="text-center" th:text="'Pedido: ' + ${customerOrder.code}"></h2>
             </div>
         </div>
         <div class="row">
@@ -20,7 +20,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" role="tab"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-1" aria-expanded="true" aria-controls="accordion-1 .item-1"><img th:src="@{/checkouts/assets/img/paypal.png}"></button></h2>
                         <div class="accordion-collapse collapse show item-1" role="tabpanel" data-bs-parent="#accordion-1">
-                            <div class="accordion-body">
+                            <div class="accordion-body p-sm-1">
                                 <div th:replace="~{checkouts/paypal/new :: head} "></div>
                                 <div th:replace="~{checkouts/paypal/new :: body} "></div>
                                 <div th:replace="~{checkouts/paypal/new :: script} "></div>

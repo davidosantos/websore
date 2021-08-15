@@ -23,9 +23,9 @@
       <div class="content">
 
         <div class="row">
-          <div class="col d-md-flex flex-column justify-content-center align-items-center align-content-center">
+          <div class="col d-flex flex-column justify-content-center align-items-center align-content-center">
             
-            <div class="icon">
+            <div class="icon p-2">
               <img th:if="${isSuccess}" src="/paypal/images/success.svg" th:src="@{/paypal/images/success.svg}"
                 alt="" />
               <img th:unless="${isSuccess}" src="/paypal/images/fail.svg" th:src="@{/paypal/images/fail.svg}" alt="" />
@@ -37,10 +37,10 @@
                 <hr>
                 <h1>Veja Outros Itens</h1>
                 
-                <div class="brand-bg p-4">
-                  <div class="container">
+                <div class="brand-bg p-2">
+                  <div class="container p-0">
                       <div class="row">
-                          <div th:each="product : ${products}" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 margin">
+                          <div th:each="product : ${products}" class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mt-2 mb-2">
                               <a th:href="@{/detalhes} + '?id=' + ${product.id}">
                                   <div class="brand_box">
                                       <div class="row brand_box_product">
