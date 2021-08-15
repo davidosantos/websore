@@ -1862,19 +1862,20 @@ border-radius: 50px;
 .brand-b {
      background: #fff;
      text-align: center;
+     border-radius: 10px;
      padding: 80px 0px 30px 0px ;
 }
 
 .brand_box {
-     background: #ffffff9c;
-     border-style: groove;
-     border-width: 1px;
+     background: #fff;
+     
+     
      padding: 10px 20px 20px 20px ;
-     border-radius: 4px;
+     border-radius: 8px;
 }
 
 .brand_box_product {
-     background: #ffffff9c;     
+     background: #fff;     
      padding: 10px 10px 10px 10px ;
      border-radius: 13px;
      max-width: auto;
