@@ -1,14 +1,13 @@
-package springexample;
-
-import com.braintreegateway.BraintreeGateway;
+package com.davidosantos.webstore.checkouts.paypal;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import java.util.Map;
 import java.util.Properties;
+
+import com.braintreegateway.BraintreeGateway;
 
 public class BraintreeGatewayFactory {
     public static BraintreeGateway fromConfigMapping(Map<String, String> mapping) {

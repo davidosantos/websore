@@ -3,22 +3,12 @@
 <head>
     <title>Braintree Checkout</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" href="/paypal/css/app.css" th:href="@{/paypal/css/app.css}" />
-    <link rel="icon" type="image/png" href="/paypal/images/favicon.png" th:href="@{/paypal/images/favicon.png}"/>
 </head>
 <body>
   <header class="main">
     <div class="container wide">
       <div class="content slim">
-        <div class="set">
-          <div class="fill">
-            <a class="pseudoshop" href="/">PSEUDO<strong>SHOP</strong></a>
-          </div>
-
-          <div class="fit">
-            <a class="braintree" href="https://developers.braintreepayments.com/guides/drop-in" target="_blank">Braintree</a>
-          </div>
-        </div>
+        
       </div>
     </div>
     <div class="notice-wrapper">
@@ -30,30 +20,18 @@
 
   <div class="wrapper">
     <div class="checkout container">
+      <form id="payment-form" method="post" action="/checkout-step2">
 
-      <header>
-        <h1>Hi, <br />Let's test a transaction</h1>
-        <p>
-          Make a test payment with Braintree using PayPal or a card
-        </p>
-      </header>
+        <input type="hidden" name="customerOrderId" th:value="${customerOrder.code}">
 
-      <form id="payment-form" method="post" action="/paypal/checkouts">
         <section>
-          <label for="amount">
-            <span class="input-label">Amount</span>
-            <div class="input-wrapper amount-wrapper">
-              <input id="amount" name="amount" type="tel" min="1" placeholder="Amount" value="10" />
-            </div>
-          </label>
-
           <div class="bt-drop-in-wrapper">
             <div id="bt-dropin"></div>
           </div>
         </section>
 
         <input type="hidden" id="nonce" name="payment_method_nonce" />
-        <button class="button" type="submit"><span>Test Transaction</span></button>
+        <button class="btn btn-dark" type="submit">Confirmar</button>
       </form>
     </div>
   </div>
@@ -69,7 +47,8 @@
       container: '#bt-dropin',
       paypal: {
         flow: 'vault'
-      }
+      },
+      locale: 'pt_BR'
     }, function (createErr, instance) {
       form.addEventListener('submit', function (event) {
       event.preventDefault();
@@ -82,12 +61,13 @@
 
         // Add the nonce to the form and submit
         document.querySelector('#nonce').value = payload.nonce;
+
           form.submit();
         });
       });
     });
     /*]]>*/
   </script>
-  <script src="/javascript/demo.js" th:src="@{/paypal/javascript/demo.js}"></script>
+
 </body>
 </html>

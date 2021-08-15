@@ -28,6 +28,9 @@ public class ProductService {
     ProductCategoryRepository productCategoryRepository;
 
     @Autowired
+    ProductBrandRepository productBrandRepository;
+
+    @Autowired
     ImageService imageService;
 
     public List<Product> getHomeProducts() {
@@ -39,10 +42,30 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public ProductCategory saveProduct(ProductCategory productCategory) {
+    public ProductCategory saveProductCategory(ProductCategory productCategory) {
         productCategory.setIsActive(true);
         return productCategoryRepository.save(productCategory);
     }
+
+    public List<ProductBrand> getProductBrands() {
+        return this.productBrandRepository.findByIsActive(true);
+    }
+
+    public ProductBrand saveProductBrand(ProductBrand productBrand) {
+        productBrand.setIsActive(true);
+        return productBrandRepository.save(productBrand);
+    }
+
+    public ProductBrand getProductBrandById(String id) {
+        
+        return productBrandRepository.findById(id).get();
+    }
+
+    public ProductCategory getProductCategoryById(String id) {
+        
+        return productCategoryRepository.findById(id).get();
+    }
+
 
     public List<ProductCategory> getProductCategories() {
         return this.productCategoryRepository.findByIsActive(true);
@@ -78,6 +101,16 @@ public class ProductService {
         product.getImagesId().remove(product.getImagesId().get(imageIndex));
 
         return productRepository.save(product);
+    }
+
+    public void deleteProductBrand(ProductBrand productBrand) {
+        productBrand.setIsActive(false);
+        productBrandRepository.save(productBrand);
+    }
+
+    public void deleteProductCategory(ProductCategory productCategory) {
+        productCategory.setIsActive(false);
+        productCategoryRepository.save(productCategory);
     }
 
 }

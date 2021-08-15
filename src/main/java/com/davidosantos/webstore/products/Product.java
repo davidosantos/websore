@@ -45,6 +45,7 @@ public class Product {
     private String providerName;
     private String providerUrl;
     private ProductCategory productCategory;
+    private ProductBrand productBrand;
     private List<ProductVariant> productVariants;
 
     public String getCode() {
@@ -228,6 +229,21 @@ public class Product {
 
     public void setFreight(BigDecimal freight) {
         this.freight = freight.setScale(2, RoundingMode.HALF_EVEN);
+    }
+
+
+    /**
+     * @return ProductBrand return the productBrand
+     */
+    public ProductBrand getProductBrand() {
+        return productBrand;
+    }
+
+    /**
+     * @param productBrand the productBrand to set
+     */
+    public void setProductBrand(ProductBrand productBrand) {
+        this.productBrand = productBrand;
     }
 
 }

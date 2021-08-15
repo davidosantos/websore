@@ -17,4 +17,6 @@ public interface CustomerOrderRepository extends MongoRepository <CustomerOrder,
 
     Page<CustomerOrder> findByCodeContainingIgnoreCaseAndCustomerEmailContainingIgnoreCaseAndCustomerDocumentNumberContainingIgnoreCaseAndLastCustomerOrderStatus(String code ,String email,String documentNumber, String status,Pageable pgbl);
 
+    CustomerOrder findByCode(String code);
+
 }

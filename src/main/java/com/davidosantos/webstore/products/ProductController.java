@@ -5,13 +5,15 @@
  */
 package com.davidosantos.webstore.products;
 
-import com.davidosantos.webstore.images.Image;
-import com.davidosantos.webstore.images.ImageService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import com.davidosantos.webstore.images.Image;
+import com.davidosantos.webstore.images.ImageService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,8 +46,6 @@ public class ProductController {
 
     @Autowired
     ProductRepository productRepository;
-    @Autowired
-    ProductCategoryRepository productCategoryRepository;
 
     @RequestMapping("/url")
     public String page(Model model) {
@@ -121,7 +121,10 @@ public class ProductController {
 
         List<ProductCategory> productCategories = productService.getProductCategories();
 
+        List<ProductBrand> productBrands = productService.getProductBrands();
+
         ProductCategory productCategorynew = new ProductCategory();
+        ProductCategory productBrandnew = new ProductCategory();
 
         ProductCategory productCategory;
         if (product.getProductCategory() == null) {
@@ -138,7 +141,11 @@ public class ProductController {
 
         model.addAttribute("productCategorynew", productCategorynew);
 
+        model.addAttribute("productBrandnew", productBrandnew);
+
         model.addAttribute("productCategories", productCategories);
+
+        model.addAttribute("productBrands", productBrands);
 
         return "backoffice/products";
     }
@@ -226,7 +233,7 @@ public class ProductController {
         }
 
         if (product.getProductCategory() != null) {
-            product.setProductCategory(productCategoryRepository.findById(product.getProductCategory().getId()).get());
+            product.setProductCategory(productService.getProductCategoryById(product.getProductCategory().getId()));
         }
 
         product = productService.saveProduct(product);
@@ -235,7 +242,7 @@ public class ProductController {
     }
 
     @RequestMapping(value = "/products/category", method = RequestMethod.POST)
-    public String backofficeSaveProductsCategoryPage(@Validated @ModelAttribute ProductCategory productCategory,
+    public String backofficeSaveProductsCategoryPage(@Validated @ModelAttribute ProductCategory productCategory, @RequestParam("id") String id,
             BindingResult errors, Model model) {
         errors.getFieldErrors().stream().forEach((error) -> {
             System.out.println("Erro: " + error.toString());
@@ -245,17 +252,42 @@ public class ProductController {
             productCategory.setId(null);
         }
 
-        productCategory = productService.saveProduct(productCategory);
+        productCategory = productService.saveProductCategory(productCategory);
         model.addAttribute("productCategory", productCategory);
-        return "redirect:/backoffice/products";
+        return "redirect:/backoffice/products?id=" + id;
+    }
+    
+    @RequestMapping(value = "/products/brand", method = RequestMethod.POST)
+    public String backofficeSaveProductsBrandPage(@Validated @ModelAttribute ProductBrand productBrand, @RequestParam("id") String id,
+            BindingResult errors, Model model) {
+        errors.getFieldErrors().stream().forEach((error) -> {
+            System.out.println("Erro: " + error.toString());
+        });
+
+        if (productBrand.getId() != null && productBrand.getId().equals("")) {
+            productBrand.setId(null);
+        }
+
+        productBrand = productService.saveProductBrand(productBrand);
+        model.addAttribute("productBrand", productBrand);
+        return "redirect:/backoffice/products?id=" + id;
     }
 
     @RequestMapping(value = "/products/category/delete", method = RequestMethod.POST)
     public String backofficeDeatitivateProductsCategoryPage(@RequestParam("id") String id,
             @RequestParam("categoryId") String categoryId) {
-        ProductCategory productCategory = productCategoryRepository.findById(categoryId).get();
+        ProductCategory productCategory = productService.getProductCategoryById(categoryId);
         productCategory.setIsActive(false);
-        productCategoryRepository.save(productCategory);
+        productService.deleteProductCategory(productCategory);
+        return "redirect:/backoffice/products?id=" + id;
+    }
+
+    @RequestMapping(value = "/products/brand/delete", method = RequestMethod.POST)
+    public String backofficeDeatitivateProductsBrandPage(@RequestParam("id") String id,
+            @RequestParam("brandId") String categoryId) {
+        ProductBrand productBrand = productService.getProductBrandById(categoryId);
+        productBrand.setIsActive(false);
+        productService.deleteProductBrand(productBrand);
         return "redirect:/backoffice/products?id=" + id;
     }
 

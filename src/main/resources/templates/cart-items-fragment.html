@@ -104,15 +104,20 @@
                         100,00 </p>
                 </div>
                 <hr/>
-                <div class="col-6 bottom-border">
+                <div class="col-6">
                     <p class="font-weight-bold h5"> Total: </p>
                 </div>
-                <div class="col-6 bottom-border">
+                <div class="col-6">
                     <p th:text="'R$ ' + ${kart.totalAmount == null ? '0.00' : kart.totalAmount}"
                         class="font-weight-bold h5 red text-nowrap text-end">
                         100,00 </p>
                 </div>
                 <hr/>
+                <div class="col-6">
+                    <a href="/checkout">
+                    <button type="button" class="btn btn-danger" >Finalizar</button>
+                    </a>
+                </div>
             </div>
         </div>
     </div>

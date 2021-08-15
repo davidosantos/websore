@@ -473,4 +473,8 @@ public class CustomerOrderService {
         customerOrder.setNotes(notes);
         customerOrderRepository.save(customerOrder);
     }
+
+    public CustomerOrder getByCode(String customerOrderId) {
+        return customerOrderRepository.findByCode(customerOrderId);
+    }
 }

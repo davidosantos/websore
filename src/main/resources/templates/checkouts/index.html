@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Pagina de Pagamentos</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2 class="text-center" th:text="${customerOrder.code}"></h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="accordion" role="tablist" id="accordion-1">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" role="tab"><button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-1" aria-expanded="true" aria-controls="accordion-1 .item-1"><img th:src="@{/checkouts/assets/img/paypal.png}"></button></h2>
+                        <div class="accordion-collapse collapse show item-1" role="tabpanel" data-bs-parent="#accordion-1">
+                            <div class="accordion-body">
+                                <div th:replace="~{checkouts/paypal/new :: head} "></div>
+                                <div th:replace="~{checkouts/paypal/new :: body} "></div>
+                                <div th:replace="~{checkouts/paypal/new :: script} "></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" role="tab"><button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordion-1 .item-2" aria-expanded="false" aria-controls="accordion-1 .item-2"><img th:src="@{/checkouts/assets/img/boleto.svg}"></button></h2>
+                        <div class="accordion-collapse collapse item-2" role="tabpanel" data-bs-parent="#accordion-1">
+                            <div class="accordion-body">
+                                <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/checkouts/assets/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+
+</html>
