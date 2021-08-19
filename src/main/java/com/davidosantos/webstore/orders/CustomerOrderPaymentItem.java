@@ -5,12 +5,18 @@
  */
 package com.davidosantos.webstore.orders;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 /**
  *
  * @author david
  */
 public class CustomerOrderPaymentItem {
 
+    BigDecimal value;
+    Date createdAt;
     String status;
+    String details;
 
 }

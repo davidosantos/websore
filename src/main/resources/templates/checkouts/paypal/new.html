@@ -31,7 +31,7 @@
         </section>
 
         <input type="hidden" id="nonce" name="payment_method_nonce" />
-        <button class="btn btn-dark" type="submit">Confirmar</button>
+        <button id="submitButton" class="btn btn-dark" type="submit">Confirmar</button>
       </form>
     </div>
   </div>
@@ -50,12 +50,15 @@
       },
       locale: 'pt_BR'
     }, function (createErr, instance) {
+      
       form.addEventListener('submit', function (event) {
+      document.querySelector('#submitButton').disabled = true;
       event.preventDefault();
 
       instance.requestPaymentMethod(function (err, payload) {
         if (err) {
           console.log('Error', err);
+          document.querySelector('#submitButton').disabled = false;
           return;
         }
 
@@ -63,6 +66,7 @@
         document.querySelector('#nonce').value = payload.nonce;
 
           form.submit();
+          
         });
       });
     });

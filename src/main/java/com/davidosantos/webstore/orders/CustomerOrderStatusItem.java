@@ -16,19 +16,29 @@ public class CustomerOrderStatusItem {
     private CustomerOrderStatus customerOrderStatus;
     private Date createdDate;
     private String createdBy;
+    private boolean isCustomerVisible;
 
     public CustomerOrderStatus getCustomerOrderStatus() {
         return customerOrderStatus;
     }
 
-    public void setCustomerOrderStatus(CustomerOrderStatus customerOrderStatus, String createdBy) {
+    public void setCustomerOrderStatus(CustomerOrderStatus customerOrderStatus, String createdBy, boolean isCustomerVisible) {
         this.createdDate = new Date();
         this.customerOrderStatus = customerOrderStatus;
         this.createdBy = createdBy;
+        this.isCustomerVisible = isCustomerVisible;
     }
 
     public String getCreatedBy() {
         return createdBy;
+    }
+
+    public boolean isCustomerVisible() {
+        return isCustomerVisible;
+    }
+
+    public void setCustomerVisible(boolean isCustomerVisible) {
+        this.isCustomerVisible = isCustomerVisible;
     }
 
     public void setCreatedBy(String createdBy) {

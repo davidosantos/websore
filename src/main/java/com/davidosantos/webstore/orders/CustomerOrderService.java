@@ -81,7 +81,7 @@ public class CustomerOrderService {
         CustomerOrderStatusItem customerOrderStatusItem = new CustomerOrderStatusItem();
         customerOrderStatusItem.setCreatedDate(new Date());
         customerOrderStatusItem.setCreatedBy(createdBy);
-        customerOrderStatusItem.setCustomerOrderStatus(customerOrderStatus, createdBy);
+        customerOrderStatusItem.setCustomerOrderStatus(customerOrderStatus, createdBy,false);
         statusListItem.add(customerOrderStatusItem);
         customerOrder.setCustomerOrderStatusItems(statusListItem);
         customerOrder.setCode(GenerateCode());
@@ -97,13 +97,13 @@ public class CustomerOrderService {
         return customerOrderRepository.save(customerOrder);
     }
 
-    public void changeOrderStatus(CustomerOrder customerOrder, CustomerOrderStatus customerOrderStatus, String updatedBy) {
+    public void changeOrderStatus(CustomerOrder customerOrder, CustomerOrderStatus customerOrderStatus, String updatedBy, boolean isCustomerVisible) {
 
         customerOrder.setLastCustomerOrderStatus(customerOrderStatus);
         CustomerOrderStatusItem customerOrderStatusItem = new CustomerOrderStatusItem();
         customerOrderStatusItem.setCreatedBy(updatedBy);
         customerOrderStatusItem.setCreatedDate(new Date());
-        customerOrderStatusItem.setCustomerOrderStatus(customerOrderStatus, updatedBy);
+        customerOrderStatusItem.setCustomerOrderStatus(customerOrderStatus, updatedBy,isCustomerVisible);
         customerOrder.getCustomerOrderStatusItems().add(customerOrderStatusItem);
         customerOrder.getCustomerOrderUpdateHistorys().add(new CustomerOrderUpdateHistory(updatedBy, "Alterado status do pedido para " + customerOrderStatus.name() + "."));
         customerOrderRepository.save(customerOrder);
@@ -138,7 +138,7 @@ public class CustomerOrderService {
         CustomerOrderStatusItem customerOrderStatusItem = new CustomerOrderStatusItem();
         customerOrderStatusItem.setCreatedBy(updatedBy);
         customerOrderStatusItem.setCreatedDate(new Date());
-        customerOrderStatusItem.setCustomerOrderStatus(CustomerOrderStatus.Cancelled, updatedBy);
+        customerOrderStatusItem.setCustomerOrderStatus(CustomerOrderStatus.Cancelled, updatedBy,true);
         customerOrder.getCustomerOrderStatusItems().add(customerOrderStatusItem);
         customerOrder.getCustomerOrderUpdateHistorys().add(new CustomerOrderUpdateHistory(updatedBy, "Cancelado pedido."));
         customerOrderRepository.save(customerOrder);
@@ -229,11 +229,9 @@ public class CustomerOrderService {
         customerOrder.setTotalProfitPercent(newTotalProfitPercent);
 
         if (newTotalQuantityBought.compareTo(BigDecimal.ZERO) > 0 && newTotalQuantityBought.compareTo(newTotalQuantity) < 0) {
-            changeOrderStatus(customerOrder, CustomerOrderStatus.SupplierPartiallyOrderCreated, updatedBy);
+            changeOrderStatus(customerOrder, CustomerOrderStatus.SupplierPartiallyOrderCreated, updatedBy,false);
         } else if (newTotalQuantityBought.compareTo(newTotalQuantity) == 0) {
-            changeOrderStatus(customerOrder, CustomerOrderStatus.SupplierOrderCreated, updatedBy);
-        } else if(newTotalQuantity.compareTo(BigDecimal.ZERO) > 0 && !customerOrder.getLastCustomerOrderStatus().equals(CustomerOrderStatus.PaymentWait)){
-            changeOrderStatus(customerOrder, CustomerOrderStatus.PaymentWait, updatedBy);
+            changeOrderStatus(customerOrder, CustomerOrderStatus.SupplierOrderCreated, updatedBy,false);
         }
 
         customerOrder.getCustomerOrderUpdateHistorys().add(
@@ -381,7 +379,7 @@ public class CustomerOrderService {
                         customerOrderItem.setProfitPercent(
                                 customerOrderItem.getProfit()
                                         //lucro dividido pelo total do item no forncedor
-                                        .divide(customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getSupplierPrice()), RoundingMode.HALF_UP)
+                                        .divide(customerOrderItem.getQuantity().multiply(customerOrderItem.getProduct().getSupplierPrice()), RoundingMode.HALF_EVEN)
                                         //multiplicado por 100
                                         .multiply(new BigDecimal(100))
                         );

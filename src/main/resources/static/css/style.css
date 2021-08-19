@@ -136,16 +136,6 @@ a {
      outline: none !important;
 }
 
-a,
-.btn {
-     text-decoration: none !important;
-     outline: none !important;
-     -webkit-transition: all .3s ease-in-out;
-     -moz-transition: all .3s ease-in-out;
-     -ms-transition: all .3s ease-in-out;
-     -o-transition: all .3s ease-in-out;
-     transition: all .3s ease-in-out;
-}
 
 img {
      max-width: 100%;
@@ -1296,10 +1286,6 @@ ul.top_icon li a {
      color: white;
      box-shadow: none;
 }
-.btn-secondary.focus,
-.btn-secondary:focus {
-     box-shadow: none;
-}
 .img-responsive {
      max-width: 100%;
 }
@@ -2143,10 +2129,6 @@ ul.location_icon span {
 }
 .copyright a:hover {
      color: #ff0000;
-}
-.btn-primary.focus,
-.btn-primary:focus {
-     box-shadow: inherit;
 }
 
 /*--------------------------------------------------------------------- inner_page css ---------------------------------------------------------------------*/

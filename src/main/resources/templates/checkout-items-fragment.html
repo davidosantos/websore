@@ -2,55 +2,49 @@
 
     <div class="col-sm-12 mt-sm-4 brand_box">
         <div class="container">
-                <div class="row bs-wizard" style="border-bottom:0;">
+            <div class="row bs-wizard" style="border-bottom:0;">
 
-                    <div class="d-flex justify-content-center align-content-stretch w-100">
+                <div class="d-flex justify-content-center align-content-stretch w-100">
 
-                        <div class="col-md-4 bs-wizard-step active">
-                            <div class="text-center bs-wizard-stepnum">Endereço</div>
-                            <div class="progress">
-                                <div class="progress-bar"></div>
-                            </div>
-                            <a href="/checkout" class="bs-wizard-dot"></a>
-
+                    <div class="col-md-4 bs-wizard-step active">
+                        <div class="text-center bs-wizard-stepnum">Endereço</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
                         </div>
-
-                        <div class="col-md-4 bs-wizard-step disabled">
-                            <!-- complete -->
-                            <div class="text-center bs-wizard-stepnum">Pagamento</div>
-                            <div class="progress">
-                                <div class="progress-bar"></div>
-                            </div>
-                            <a href="#" class="bs-wizard-dot"></a>
-
-                        </div>
-
-                        <div class="col-md-4 bs-wizard-step disabled">
-                            <!-- complete -->
-                            <div class="text-center bs-wizard-stepnum">Fim</div>
-                            <div class="progress">
-                                <div class="progress-bar"></div>
-                            </div>
-                            <a href="#" class="bs-wizard-dot"></a>
-                        </div>
+                        <a href="/checkout" class="bs-wizard-dot"></a>
 
                     </div>
 
+                    <div class="col-md-4 bs-wizard-step disabled">
+                        <!-- complete -->
+                        <div class="text-center bs-wizard-stepnum">Pagamento</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#" class="bs-wizard-dot"></a>
 
+                    </div>
 
-
+                    <div class="col-md-4 bs-wizard-step disabled">
+                        <!-- complete -->
+                        <div class="text-center bs-wizard-stepnum">Fim</div>
+                        <div class="progress">
+                            <div class="progress-bar"></div>
+                        </div>
+                        <a href="#" class="bs-wizard-dot"></a>
+                    </div>
 
                 </div>
-            
+            </div>
         </div>
     </div>
     <div class="d-md-flex justify-content-center align-content-md-stretch w-100 p-0">
         <div class="col-md-9 col-sm-12 brand_box mt-2 mt-2 m-md-2">
             <div th:replace="~{address/index :: body} "></div>
         </div>
-        <div class="col-md-3 col-sm-12 sticky-top font-weight-bold brand_box m-md-2" style="height: 350px;">
-            <div class="row">
-                <div class="col-6" >
+        <div class="col-md-3 col-sm-12 sticky-top font-weight-bold brand_box m-md-2 p-3" style="height: 350px;">
+            <div th:unless="${singleItem}" class="row">
+                <div class="col-6">
                     <p class="font-weight-bold"> Produtos: </p>
                 </div>
                 <div class="col-6">
@@ -58,7 +52,7 @@
                         class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <p class="font-weight-bold"> Descontos: </p>
                 </div>
@@ -67,7 +61,7 @@
                         class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <p class="font-weight-bold"> Frete: </p>
                 </div>
@@ -76,7 +70,7 @@
                         class="font-weight-bold text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6 bottom-border">
                     <p class="font-weight-bold h5"> Total: </p>
                 </div>
@@ -85,7 +79,41 @@
                         class="font-weight-bold h5 red text-nowrap text-end">
                         100,00 </p>
                 </div>
-                <hr/>
+                <hr />
+            </div>
+            <div th:if="${singleItem}" class="row">
+                <div class="col-6">
+                    <p class="font-weight-bold"> Produtos: </p>
+                </div>
+                <div class="col-6">
+                    <p th:text="'R$ ' + ${productTotal}" class="font-weight-bold text-nowrap text-end">
+                        100,00 </p>
+                </div>
+                <hr />
+                <div class="col-6">
+                    <p class="font-weight-bold"> Descontos: </p>
+                </div>
+                <div class="col-6">
+                    <p th:text="'R$ ' + ${discountTotal}" class="font-weight-bold text-nowrap text-end">
+                        100,00 </p>
+                </div>
+                <hr />
+                <div class="col-6">
+                    <p class="font-weight-bold"> Frete: </p>
+                </div>
+                <div class="col-6">
+                    <p th:text="'R$ ' + ${freightTotal}" class="font-weight-bold text-nowrap text-end">
+                        100,00 </p>
+                </div>
+                <hr />
+                <div class="col-6 bottom-border">
+                    <p class="font-weight-bold h5"> Total: </p>
+                </div>
+                <div class="col-6 bottom-border">
+                    <p th:text="'R$ ' + ${total}" class="font-weight-bold h5 red text-nowrap text-end">
+                        100,00 </p>
+                </div>
+                <hr />
             </div>
         </div>
     </div>

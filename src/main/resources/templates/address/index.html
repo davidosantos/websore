@@ -20,7 +20,7 @@
                 <div class="accordion-collapse collapse show item-1" role="tabpanel" data-bs-parent="#accordion-1">
                     <div class="accordion-body">
                         <form method="post" th:action="@{/checkout}">
-
+                            <input type="hidden" name="singleItem" th:value="${singleItem}">
                             <div class="row">
                                 <div class="col-sm-12">
                                     <select class="form-select form-control"

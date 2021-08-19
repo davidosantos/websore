@@ -38,6 +38,7 @@ import com.davidosantos.webstore.orders.CustomerOrder;
 import com.davidosantos.webstore.orders.CustomerOrderItemVariant;
 import com.davidosantos.webstore.orders.CustomerOrderProductItem;
 import com.davidosantos.webstore.orders.CustomerOrderService;
+import com.davidosantos.webstore.orders.CustomerOrderStatus;
 import com.davidosantos.webstore.products.Product;
 import com.davidosantos.webstore.products.ProductCategory;
 import com.davidosantos.webstore.products.ProductCategoryRepository;
@@ -181,58 +182,6 @@ public class WebStoreController {
         return "product-details";
     }
 
-    @RequestMapping(value = "/createShippingCart", method = RequestMethod.POST)
-    public String createcreateShippingCart(HttpSession session, @RequestParam String action, Product product,
-            int quantity) {
-
-        System.out.println("Action: " + action);
-        System.out.println("product: " + product);
-
-        if (action.equals("buy")) {
-            return "redirect:checkout?itemId=" + product.getId() + "&quantity=" + quantity;
-        }
-
-        if (session.getAttribute("cartId") != null
-                && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
-            Kart kart = kartService.getKart(session.getAttribute("cartId").toString());
-            kart.setLastUpdateDate(new Date());
-            KartItem kartItem = new KartItem();
-            kartItem.setProduct(productRepository.findById(product.getId()).get());
-            kartItem.setStatus("active");
-            kartItem.setQuantity(quantity);
-
-            if (kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")
-                    && filter.getProduct().getId().equals(product.getId())).count() <= 0) {
-                kart.getItems().add(kartItem);
-            } else {
-
-                KartItem kartItemFromDB = kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")
-                        && filter.getProduct().getId().equals(product.getId())).findFirst().get();
-
-                kartItemFromDB.setQuantity(kartItemFromDB.getQuantity() + quantity);
-                kartItemFromDB.setProductVariants(product.getProductVariants());
-            }
-
-            kartService.save(kart);
-            session.setAttribute("cartId", kart.getId());
-        } else {
-            Kart kart = new Kart();
-            kart.setCreatedDate(new Date());
-            kart.setLastUpdateDate(new Date());
-            kart.setStatus("active");
-            KartItem kartItem = new KartItem();
-            kartItem.setProduct(productRepository.findById(product.getId()).get());
-            kartItem.setStatus("active");
-            kartItem.setQuantity(quantity);
-            kartItem.setProductVariants(product.getProductVariants());
-            kart.getItems().add(kartItem);
-            kartService.save(kart);
-            session.setAttribute("cartId", kart.getId());
-        }
-
-        return "redirect:/detalhes?id=" + product.getId();
-    }
-
     // shopping cart
     @RequestMapping("/carrinho")
     public String shoppingCartPage(HttpSession session, @RequestParam(defaultValue = "0") int page,
@@ -303,41 +252,132 @@ public class WebStoreController {
                 HttpStatus.OK);
     }
 
-    // checkout 1
-    @RequestMapping("/checkout")
-    public String checkoutAddressPage(HttpSession session, @RequestParam(defaultValue = "") String itemId,
-            Authentication auth, Model model) {
+    @RequestMapping(value = "/createShippingCart", method = RequestMethod.POST)
+    public String createcreateShippingCart(HttpSession session, @RequestParam String action, Product product,
+            int quantity, Model model) {
+
+        System.out.println("Action: " + action);
+        System.out.println("product: " + product);
+
+        if (action.equals("buy")) {
+            session.setAttribute("quantity", quantity);
+            session.setAttribute("product", product);
+            return "redirect:checkoutSingleItem";
+        }
+
+        if (session.getAttribute("cartId") != null
+                && kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
+            Kart kart = kartService.getKart(session.getAttribute("cartId").toString());
+            kart.setLastUpdateDate(new Date());
+            KartItem kartItem = new KartItem();
+            kartItem.setProduct(productRepository.findById(product.getId()).get());
+            kartItem.setStatus("active");
+            kartItem.setQuantity(quantity);
+
+            if (kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")
+                    && filter.getProduct().getId().equals(product.getId())).count() <= 0) {
+                kart.getItems().add(kartItem);
+            } else {
+
+                KartItem kartItemFromDB = kart.getItems().stream().filter(filter -> filter.getStatus().equals("active")
+                        && filter.getProduct().getId().equals(product.getId())).findFirst().get();
+
+                kartItemFromDB.setQuantity(kartItemFromDB.getQuantity() + quantity);
+                kartItemFromDB.setProductVariants(product.getProductVariants());
+            }
+
+            kartService.save(kart);
+            session.setAttribute("cartId", kart.getId());
+        } else {
+            Kart kart = new Kart();
+            kart.setCreatedDate(new Date());
+            kart.setLastUpdateDate(new Date());
+            kart.setStatus("active");
+            KartItem kartItem = new KartItem();
+            kartItem.setProduct(productRepository.findById(product.getId()).get());
+            kartItem.setStatus("active");
+            kartItem.setQuantity(quantity);
+            kartItem.setProductVariants(product.getProductVariants());
+            kart.getItems().add(kartItem);
+            kartService.save(kart);
+            session.setAttribute("cartId", kart.getId());
+        }
+
+        return "redirect:/detalhes?id=" + product.getId();
+    }
+
+    // checkout 1 - quando usuário quer comprar apenas 1 item direto sem carrinho
+    @RequestMapping("/checkoutSingleItem")
+    public String checkoutAddressSingleItemPage(HttpSession session, Authentication auth, Model model) {
+
         Customer loggedCustomer = (Customer) auth.getPrincipal();
         Customer customer = customerService.getById(loggedCustomer.getId());
         CustomerAddress customerAddress = new CustomerAddress();
+
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
+
+        model.addAttribute("productCategories", productCategories);
+
         addKart(session, model);
 
         model.addAttribute("customer", customer);
         model.addAttribute("customerAddress", customerAddress);
+        model.addAttribute("singleItem", true);
 
-        if (!itemId.equals("")) {
-            model.addAttribute("itemId", itemId);
-        }
+        Product product = (Product) session.getAttribute("product");
+        int quantity = Integer.valueOf(session.getAttribute("quantity").toString());
+
+        Product productFromDB = productService.getById(product.getId());
+        productFromDB.setProductVariants(product.getProductVariants());
+
+        BigDecimal productTotal = productFromDB.getPrice().multiply(new BigDecimal(Integer.valueOf(quantity)));
+        BigDecimal discountTotal = productFromDB.getDiscount().multiply(new BigDecimal(Integer.valueOf(quantity)));
+        BigDecimal freightTotal = productFromDB.getFreight().multiply(new BigDecimal(Integer.valueOf(quantity)));
+        BigDecimal total = productTotal.subtract(discountTotal).add(freightTotal);
+
+        model.addAttribute("product", productFromDB);
+        model.addAttribute("productTotal", productTotal);
+        model.addAttribute("discountTotal", discountTotal);
+        model.addAttribute("freightTotal", freightTotal);
+        model.addAttribute("total", total);
+
+        return "checkout";
+    }
+
+    // checkout 1
+    @RequestMapping("/checkout")
+    public String checkoutAddressPage(HttpSession session, @RequestParam(defaultValue = "") String quantity,
+            Authentication auth, Model model) {
+        Customer loggedCustomer = (Customer) auth.getPrincipal();
+        Customer customer = customerService.getById(loggedCustomer.getId());
+        CustomerAddress customerAddress = new CustomerAddress();
+
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
+
+        model.addAttribute("productCategories", productCategories);
+
+        addKart(session, model);
+
+        model.addAttribute("customer", customer);
+        model.addAttribute("customerAddress", customerAddress);
 
         return "checkout";
     }
 
     // checkout 2
     @RequestMapping("/checkout-step2")
-    public String checkoutPaymentPage(HttpSession session, 
-            String customerOrderId,
-            Authentication auth, Model model) {
+    public String checkoutPaymentPage(HttpSession session, String customerOrderId, Authentication auth, Model model) {
         Customer loggedCustomer = (Customer) auth.getPrincipal();
         Customer customer = customerService.getById(loggedCustomer.getId());
 
-        
         addKart(session, model);
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
 
+        model.addAttribute("productCategories", productCategories);
 
         CustomerOrder customerOrder = customerOrderService.getByCode(customerOrderId);
         String clientToken = gateway.clientToken().generate();
         model.addAttribute("clientToken", clientToken);
-
 
         model.addAttribute("customer", customer);
         model.addAttribute("customerOrder", customerOrder);
@@ -346,43 +386,40 @@ public class WebStoreController {
     }
 
     @RequestMapping(value = "/checkout-step2", method = RequestMethod.POST)
-    public String checkoutPaymentPostPage(@RequestParam("payment_method_nonce") String nonce, Model model, final RedirectAttributes redirectAttributes,
-    @RequestParam("customerOrderId") String customerOrderId){
+    public String checkoutPaymentPostPage(@RequestParam("payment_method_nonce") String nonce, Model model,
+            final RedirectAttributes redirectAttributes, @RequestParam("customerOrderId") String customerOrderId) {
 
         CustomerOrder customerOrder = customerOrderService.getByCode(customerOrderId);
-
 
         BigDecimal decimalAmount;
         try {
             decimalAmount = customerOrder.getTotalAmount();
         } catch (NumberFormatException e) {
             redirectAttributes.addFlashAttribute("errorDetails", "Error: 81503: Amount is an invalid format.");
-            return "redirect:/checkouts-step2?customerOrderId="+customerOrderId;
+            return "redirect:/checkouts-step2?customerOrderId=" + customerOrderId;
         }
 
-        TransactionRequest request = new TransactionRequest()
-            .amount(decimalAmount)
-            .paymentMethodNonce(nonce)
-            .orderId(customerOrder.getCode())
-            .options()
-                .submitForSettlement(true)
-                .done();
+        TransactionRequest request = new TransactionRequest().amount(decimalAmount).paymentMethodNonce(nonce)
+                .orderId(customerOrder.getCode()).options().submitForSettlement(true).done();
 
         Result<Transaction> result = gateway.transaction().sale(request);
 
         if (result.isSuccess()) {
             Transaction transaction = result.getTarget();
+            customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.Paid,customerOrder.getCustomer().getEmail(),true);
             return "redirect:/checkouts-step3?transactionId=" + transaction.getId();
         } else if (result.getTransaction() != null) {
             Transaction transaction = result.getTransaction();
+            customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.Paid,customerOrder.getCustomer().getEmail(),true);
             return "redirect:/checkouts-step3?transactionId=" + transaction.getId();
         } else {
             StringBuilder errorString = new StringBuilder();
             for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
-               errorString.append("Error: ").append(error.getCode()).append(": ").append(error.getMessage()).append("\n");
+                errorString.append("Error: ").append(error.getCode()).append(": ").append(error.getMessage())
+                        .append("\n");
             }
             redirectAttributes.addFlashAttribute("errorDetails", errorString.toString());
-            return "redirect:/checkout-step2?customerOrderId="+customerOrderId;
+            return "redirect:/checkout-step2?customerOrderId=" + customerOrderId;
         }
     }
 
@@ -390,17 +427,15 @@ public class WebStoreController {
     public String checkoutPaymentDonePage(HttpSession session, @RequestParam String transactionId, Model model) {
         Transaction transaction;
         CreditCard creditCard;
-        Customer customer;
 
-        Status[] TRANSACTION_SUCCESS_STATUSES = new Status[] {
-            Transaction.Status.AUTHORIZED,
-            Transaction.Status.AUTHORIZING,
-            Transaction.Status.SETTLED,
-            Transaction.Status.SETTLEMENT_CONFIRMED,
-            Transaction.Status.SETTLEMENT_PENDING,
-            Transaction.Status.SETTLING,
-            Transaction.Status.SUBMITTED_FOR_SETTLEMENT
-         };
+        List<ProductCategory> productCategories = productCategoryRepository.findByIsActive(true);
+
+        model.addAttribute("productCategories", productCategories);
+
+        Status[] TRANSACTION_SUCCESS_STATUSES = new Status[] { Transaction.Status.AUTHORIZED,
+                Transaction.Status.AUTHORIZING, Transaction.Status.SETTLED, Transaction.Status.SETTLEMENT_CONFIRMED,
+                Transaction.Status.SETTLEMENT_PENDING, Transaction.Status.SETTLING,
+                Transaction.Status.SUBMITTED_FOR_SETTLEMENT };
 
         try {
             transaction = gateway.transaction().find(transactionId);
@@ -411,28 +446,24 @@ public class WebStoreController {
             return "redirect:/checkouts";
         }
 
-        if(Arrays.asList(TRANSACTION_SUCCESS_STATUSES).contains(transaction.getStatus())){
+        if (Arrays.asList(TRANSACTION_SUCCESS_STATUSES).contains(transaction.getStatus())) {
             List<Product> products = productRepository.findByIsActiveAndDisplayInHome(true, true);
-            model.addAttribute("products", products);    
+            model.addAttribute("products", products);
         }
-
-        
 
         model.addAttribute("isSuccess", Arrays.asList(TRANSACTION_SUCCESS_STATUSES).contains(transaction.getStatus()));
         model.addAttribute("transaction", transaction);
         model.addAttribute("creditCard", creditCard);
 
-        addKart(session, model);    
+        addKart(session, model);
 
         return "checkout-step3";
     }
 
-
-
     @RequestMapping(value = "/checkout", method = RequestMethod.POST)
     public String checkoutAddressPostPage(HttpSession session, @RequestParam(required = false) String addressIndex,
-            @RequestParam(required = false) String quantity, @RequestParam(defaultValue = "") String itemId,
-            String addressAction, CustomerAddress customerAddress, Authentication auth, Model model) {
+            @RequestParam(defaultValue = "") String singleItem, String addressAction, CustomerAddress customerAddress,
+            Authentication auth, Model model) {
 
         Customer customer = (Customer) auth.getPrincipal();
         if (addressAction.equals("newCustomerAddress")) {
@@ -444,29 +475,35 @@ public class WebStoreController {
 
         CustomerOrder customerOrder = null;
 
-        if (!itemId.equals("")) {
+        if (!singleItem.equals("")) {
 
             customerOrder = customerOrderService.createOrder(customer, customerAddress, customer.getEmail());
 
+            Product product = (Product) session.getAttribute("product");
+            int quantity = Integer.valueOf(session.getAttribute("quantity").toString());
+            Product productFromDB = productService.getById(product.getId());
+            productFromDB.setProductVariants(product.getProductVariants());
+
             CustomerOrderProductItem customerOrderProductItem = new CustomerOrderProductItem();
-            customerOrderProductItem.setProduct(productService.getById(itemId));
+            customerOrderProductItem.setProduct(productFromDB);
             customerOrderProductItem.setQuantity(new BigDecimal(Integer.valueOf(quantity)));
             customerOrderProductItem.setStatus("active");
             List<CustomerOrderItemVariant> customerOrderItemVariants = new ArrayList<CustomerOrderItemVariant>();
 
-            // for (ProductVariant productVariant : items.getProductVariants()) {
-            // CustomerOrderItemVariant customerOrderItemVariant = new
-            // CustomerOrderItemVariant();
-            // customerOrderItemVariant.setName(productVariant.getName());
-            // customerOrderItemVariant.setValue(productVariant.getProductVariantValues().get(0).getName());
-            // customerOrderItemVariants.add(customerOrderItemVariant);
+            for (ProductVariant productVariant : product.getProductVariants()) {
+                CustomerOrderItemVariant customerOrderItemVariant = new CustomerOrderItemVariant();
+                customerOrderItemVariant.setName(productVariant.getName());
+                customerOrderItemVariant.setValue(productVariant.getProductVariantValues().get(0).getName());
+                customerOrderItemVariants.add(customerOrderItemVariant);
 
-            // }
+            }
 
             customerOrderProductItem.setCustomerOrderItemVariants(customerOrderItemVariants);
-
             customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
             customerOrderService.update(customerOrder, customer.getEmail());
+            session.removeAttribute("product");
+            session.removeAttribute("quantity");
+            customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.PaymentWait,customerOrder.getCustomer().getEmail(),true);
         } else {
 
             if (kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
@@ -497,6 +534,7 @@ public class WebStoreController {
 
                     customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
                     customerOrderService.update(customerOrder, customer.getEmail());
+                    customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.PaymentWait,customerOrder.getCustomer().getEmail(),true);
 
                 }
 
@@ -504,8 +542,6 @@ public class WebStoreController {
                 kartService.save(kart);
             }
         }
-
-        System.out.println("session: " + session.getAttribute("cartId"));
 
         addKart(session, model);
 

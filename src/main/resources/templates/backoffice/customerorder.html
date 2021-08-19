@@ -578,14 +578,16 @@
                                 <th scope="col">Status</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">Responsável</th>
+                                <th scope="col">Visível</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="status, iter : ${customerOrder.customerOrderStatusItems}">
-                                <td><b th:text="${iter.index}" /></td>
-                                <td><b th:text="${status.createdDate}" /></td>
-                                <td><b th:text="${status.customerOrderStatus}" /></td>
-                                <td><b th:text="${status.createdBy}" /></td>
+                                <td><b th:text="${iter.index}" ></td>
+                                <td><b th:text="${status.createdDate}" ></td>
+                                <td><b th:text="${status.customerOrderStatus}" ></td>
+                                <td><b th:text="${status.createdBy}" ></td>
+                                <td><b th:text="${status.isCustomerVisible}" ></td>
                             </tr>
                         </tbody>
                     </table>
