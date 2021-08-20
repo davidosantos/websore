@@ -127,6 +127,11 @@ public class WebStoreController {
         return "index";
     }
 
+    @RequestMapping("/login")
+    public String loginPage(){
+        return "login";
+    }
+
     @RequestMapping("/produtos")
     public String productPage(HttpSession session, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String categoryId,
