@@ -5,14 +5,16 @@
  */
 package com.davidosantos.webstore.orders;
 
-import com.davidosantos.webstore.customers.Customer;
-import com.davidosantos.webstore.customers.CustomerAddress;
-import com.davidosantos.webstore.supplier.Supplier;
-import com.davidosantos.webstore.supplier.SupplierOrder;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.davidosantos.webstore.customers.Customer;
+import com.davidosantos.webstore.customers.CustomerAddress;
+import com.davidosantos.webstore.supplier.Supplier;
+import com.davidosantos.webstore.supplier.SupplierOrder;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -96,7 +98,7 @@ public class CustomerOrder {
     public void setCustomerOrderItems(List<CustomerOrderProductItem> customerOrderItems) {
         this.customerOrderItems = customerOrderItems;
     }
-    
+
     public Date getCreatedDate() {
         return createdDate;
     }
@@ -130,7 +132,11 @@ public class CustomerOrder {
     }
 
     public List<CustomerOrderPaymentItem> getCustomerOrderPaymentItems() {
+        if (customerOrderPaymentItems == null) {
+            customerOrderPaymentItems = new ArrayList<CustomerOrderPaymentItem>();
+        }
         return customerOrderPaymentItems;
+
     }
 
     public void setCustomerOrderPaymentItems(List<CustomerOrderPaymentItem> customerOrderPaymentItems) {
@@ -221,7 +227,7 @@ public class CustomerOrder {
     }
 
     public List<Supplier> getSuppliers() {
-        if(suppliers == null){
+        if (suppliers == null) {
             suppliers = new ArrayList<Supplier>();
         }
         return suppliers;
@@ -232,7 +238,7 @@ public class CustomerOrder {
     }
 
     public List<SupplierOrder> getSupplierOrders() {
-        if(supplierOrders == null){
+        if (supplierOrders == null) {
             supplierOrders = new ArrayList<SupplierOrder>();
         }
         return supplierOrders;
@@ -273,6 +279,5 @@ public class CustomerOrder {
     public void setNotes(String notes) {
         this.notes = notes;
     }
-
 
 }

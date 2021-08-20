@@ -45,6 +45,8 @@ import com.davidosantos.webstore.products.ProductCategoryRepository;
 import com.davidosantos.webstore.products.ProductRepository;
 import com.davidosantos.webstore.products.ProductService;
 import com.davidosantos.webstore.products.ProductVariant;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -404,15 +406,45 @@ public class WebStoreController {
 
         Result<Transaction> result = gateway.transaction().sale(request);
 
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        
         if (result.isSuccess()) {
             Transaction transaction = result.getTarget();
+            
+            customerOrderService.addPaymentStatus(customerOrder, transaction.getAmount(),true, transaction.getStatus().name(),
+            new StringBuilder()
+            .append("----- result -----\n")
+            .append(gson.toJson(result))
+            .append("\n----- transaction -----\n")
+            .append(gson.toJson(transaction))
+            .toString()
+            , customerOrder.getCustomer().getEmail());
+
             customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.Paid,customerOrder.getCustomer().getEmail(),true);
             return "redirect:/checkouts-step3?transactionId=" + transaction.getId();
         } else if (result.getTransaction() != null) {
             Transaction transaction = result.getTransaction();
+
+            customerOrderService.addPaymentStatus(customerOrder, transaction.getAmount(),true, transaction.getStatus().name(),
+            new StringBuilder()
+            .append("----- result -----\n")
+            .append(gson.toJson(result))
+            .append("\n----- transaction -----\n")
+            .append(gson.toJson(transaction))
+            .toString()
+            , customerOrder.getCustomer().getEmail());
+
             customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.Paid,customerOrder.getCustomer().getEmail(),true);
             return "redirect:/checkouts-step3?transactionId=" + transaction.getId();
         } else {
+
+            customerOrderService.addPaymentStatus(customerOrder, customerOrder.getTotalAmount(),false, "falha",
+            new StringBuilder()
+            .append("----- result -----\n")
+            .append(gson.toJson(result))
+            .toString(),
+             customerOrder.getCustomer().getEmail());
+
             StringBuilder errorString = new StringBuilder();
             for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
                 errorString.append("Error: ").append(error.getCode()).append(": ").append(error.getMessage())

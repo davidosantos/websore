@@ -236,7 +236,7 @@ public class CustomerOrderService {
 
         customerOrder.getCustomerOrderUpdateHistorys().add(
                 new CustomerOrderUpdateHistory(updatedBy,
-                        "Recalculado <br />"
+                        "Recalculado <br/>"
                         + "CustomerOrderStatus: " + lastCustomerOrderStatus + " -> " + customerOrder.getLastCustomerOrderStatus() + "<br/>"
                         + "TotalQuantity: " + lastTotalQuantity + " -> " + newTotalQuantity + "<br/>"
                         + "TotalDiscount: " + lastTotalDiscount + " -> " + newTotalDiscount + "<br/>"
@@ -475,4 +475,14 @@ public class CustomerOrderService {
     public CustomerOrder getByCode(String customerOrderId) {
         return customerOrderRepository.findByCode(customerOrderId);
     }
+
+    public void addPaymentStatus(CustomerOrder customerOrder,BigDecimal value,boolean isSuccessful,String status, String details,String createdBy){
+        
+        customerOrder.getCustomerOrderPaymentItems().add(
+            new CustomerOrderPaymentItem(value,isSuccessful,status,details,createdBy)
+        );
+
+        customerOrderRepository.save(customerOrder);
+    }
+
 }
