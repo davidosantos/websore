@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -43,6 +44,7 @@ public class Customer implements UserDetails {
     private List<CustomerPhone> phones;
     private List<CustomerAddress> addresses;
     private boolean isBlocked;
+    private boolean isTermsAccepted;
     private boolean isActive;
     private boolean isEmailConformed;
     private boolean offerOpted;
@@ -53,6 +55,40 @@ public class Customer implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    
+
+    public boolean isBlocked() {
+        return isBlocked;
+    }
+
+    public void setBlocked(boolean isBlocked) {
+        this.isBlocked = isBlocked;
+    }
+
+    public boolean isTermsAccepted() {
+        return isTermsAccepted;
+    }
+
+    public void setTermsAccepted(boolean isTermsAccepted) {
+        this.isTermsAccepted = isTermsAccepted;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public boolean isEmailConformed() {
+        return isEmailConformed;
+    }
+
+    public void setEmailConformed(boolean isEmailConformed) {
+        this.isEmailConformed = isEmailConformed;
     }
 
     @Override

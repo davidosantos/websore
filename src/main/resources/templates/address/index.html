@@ -50,6 +50,7 @@
                             <div class="col">
                                 <form method="post" th:object="${customerAddress}" th:action="@{/checkout}">
                                     <input type="hidden" name="addressIndex" value="0">
+                                    <input type="hidden" name="singleItem" th:value="${singleItem}">
                                     <div class="row">
                                         <div class="col-sm-12 col-md-8"><label class="form-label"
                                                 for="street">*Rua</label>

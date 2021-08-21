@@ -16,14 +16,35 @@
             <h4 style="color:rgb(139,139,139);margin-bottom:0px;font-weight:400;font-size:27px;">Imporium Tech</h4>
         </div>
         <form name="f" th:action="@{/register}" method="post" onsubmit="return validate()">
+
+            <div th:if="${success}" class="alert alert-success">
+                <p style="margin-bottom:0px;"><a th:text="${success} + ' Clique aqui e efetue o Login'" href="/login">Efetue o Login</a></p>
+            </div>
+
+            <div th:if="${error}" th:text="${error}" class="alert alert-danger">
+                
+            </div>
+
             <div id="alertMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
                 
             </div>
         <div class="email-login" style="background-color:#ffffff;">
             <input type="name" name="name" class="email-imput form-control" style="margin-top:10px;" required="true"
                 placeholder="Nome Completo">
+            
+            <select type="" name="sex" class="email-imput form-control" style="margin-top:10px;" required="true"
+                placeholder="">
+                <option value="" selected>--Selecione--</option>
+                <option value="F">Feminino</option>
+                <option value="M">Masculino</option>
+            </select>
+
+            <input type="tel" name="phone" class="email-imput form-control" style="margin-top:10px;" required="true"
+                placeholder="telefone">
+
             <input type="email" name="email" class="email-imput form-control" style="margin-top:10px;" required="true"
                 placeholder="Email">
+
             <input type="password" name="password" class="password-input form-control" style="margin-top:10px;"
                 required="true" placeholder="Senha" >
             <input type="password" name="retype_password" class="password-input form-control" style="margin-top:10px;"
@@ -38,14 +59,19 @@
             </button>
         </div>
 
-        <div class="d-flex justify-content-center">
-            <div class="form-check form-check-inline" id="form-check-rememberMe">
+        <div class="d-flex justify-content-start">
+            <div class="form-check form-check-start" id="form-check-rememberMe">
                 <input class="form-check-input" name="terms"
-                    type="checkbox" id="formCheck-1" for="remember" style="cursor:pointer;">
+                    type="checkbox" id="formCheck-1"  style="cursor:pointer;">
                     <label  class="form-check-label" for="formCheck-1">
                     <span class="label-text">Aceito os <a href="#">Termos e condições</a> e autorizo o uso de meus dados.</span></label>
             </div>
         </div>
+
+        <input class="form-check-input" name="offerOpted"
+                    type="checkbox" id="formCheck-2" style="cursor:pointer;">
+                <label  class="form-check-label" for="formCheck-2">
+                <span class="label-text">Aceito receber ofertas do site por e-mail.</span></label>
 
         </form>
         <div id="login-box-footer" style="padding:10px 20px;padding-bottom:23px;padding-top:18px;">

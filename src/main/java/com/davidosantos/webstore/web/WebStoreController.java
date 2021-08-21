@@ -29,6 +29,7 @@ import com.davidosantos.webstore.carousel.CarouselService;
 import com.davidosantos.webstore.checkouts.paypal.BraintreeGatewayFactory;
 import com.davidosantos.webstore.customers.Customer;
 import com.davidosantos.webstore.customers.CustomerAddress;
+import com.davidosantos.webstore.customers.CustomerPhone;
 import com.davidosantos.webstore.customers.CustomerService;
 import com.davidosantos.webstore.images.ImageService;
 import com.davidosantos.webstore.kart.Kart;
@@ -57,6 +58,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -97,6 +99,9 @@ public class WebStoreController {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private final BraintreeGateway gateway = BraintreeGatewayFactory.fromConfigFile(new File("config.properties"));
 
     public boolean addKart(HttpSession session, Model model) {
@@ -128,12 +133,63 @@ public class WebStoreController {
     }
 
     @RequestMapping("/login")
-    public String loginPage(){
+    public String loginPage() {
         return "login";
     }
 
     @RequestMapping("/register")
-    public String registerPage(){
+    public String registerPage() {
+        return "register";
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String registerPostPage(@RequestParam String name,@RequestParam String email,@RequestParam String password,
+    @RequestParam String document,@RequestParam String sex,@RequestParam String phone, @RequestParam boolean offerOpted, @RequestParam boolean terms, Model model){
+        //passwordEncoder.
+        if(customerService.countByEmail(email) > 0 ){
+            model.addAttribute("error", "Email já cadastrado.");
+            return "register";
+        }
+
+        if(!email.contains("@")){
+            model.addAttribute("error", "O Email informado não é válido.");
+            return "register";
+        }
+
+        if(password.length() < 6 ){
+            model.addAttribute("error", "A senha deve ter um mínimo de 6 caracteres.");
+            return "register";
+        }
+
+        if(document.length() < 10 ){
+            model.addAttribute("error", "CPF invalido.");
+            return "register";
+        }
+    
+        if(!terms){
+            model.addAttribute("error", "Por favor leia e aceite os termos");
+            return "register";
+        }
+
+        Customer customer = new Customer();
+        customer.setName(name);
+        customer.setEmail(email);
+        customer.setEncryptedPassword(passwordEncoder.encode(password));
+        customer.setDocumentNumber(document);
+        customer.setTermsAccepted(terms);
+        customer.setSex(sex);
+        CustomerPhone customerPhone = new CustomerPhone();
+        customerPhone.setPhone(phone);
+        customerPhone.setPhoneType("CELULAR");
+        customer.getPhones().add(customerPhone);
+        customer.setBlocked(false);
+        customer.setEmailConformed(false);
+        customer.setActive(true);
+        customer.setOfferOpted(offerOpted);
+        customer.setRegisteredDate(new Date());
+        customer.setActiveChangeDate(new Date());
+        customerService.saveCustomer(customer);
+        model.addAttribute("success", "Cadastro Efeturado com Sucesso.");
         return "register";
     }
 
@@ -417,43 +473,36 @@ public class WebStoreController {
         Result<Transaction> result = gateway.transaction().sale(request);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        
+
         if (result.isSuccess()) {
             Transaction transaction = result.getTarget();
-            
-            customerOrderService.addPaymentStatus(customerOrder, transaction.getAmount(),true, transaction.getStatus().name(),
-            new StringBuilder()
-            .append("----- result -----\n")
-            .append(gson.toJson(result))
-            .append("\n----- transaction -----\n")
-            .append(gson.toJson(transaction))
-            .toString()
-            , customerOrder.getCustomer().getEmail());
 
-            customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.Paid,customerOrder.getCustomer().getEmail(),true);
+            customerOrderService.addPaymentStatus(customerOrder, transaction.getAmount(), true,
+                    transaction.getStatus().name(),
+                    new StringBuilder().append("----- result -----\n").append(gson.toJson(result))
+                            .append("\n----- transaction -----\n").append(gson.toJson(transaction)).toString(),
+                    customerOrder.getCustomer().getEmail());
+
+            customerOrderService.changeOrderStatus(customerOrder, CustomerOrderStatus.Paid,
+                    customerOrder.getCustomer().getEmail(), true);
             return "redirect:/checkouts-step3?transactionId=" + transaction.getId();
         } else if (result.getTransaction() != null) {
             Transaction transaction = result.getTransaction();
 
-            customerOrderService.addPaymentStatus(customerOrder, transaction.getAmount(),true, transaction.getStatus().name(),
-            new StringBuilder()
-            .append("----- result -----\n")
-            .append(gson.toJson(result))
-            .append("\n----- transaction -----\n")
-            .append(gson.toJson(transaction))
-            .toString()
-            , customerOrder.getCustomer().getEmail());
+            customerOrderService.addPaymentStatus(customerOrder, transaction.getAmount(), true,
+                    transaction.getStatus().name(),
+                    new StringBuilder().append("----- result -----\n").append(gson.toJson(result))
+                            .append("\n----- transaction -----\n").append(gson.toJson(transaction)).toString(),
+                    customerOrder.getCustomer().getEmail());
 
-            customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.Paid,customerOrder.getCustomer().getEmail(),true);
+            customerOrderService.changeOrderStatus(customerOrder, CustomerOrderStatus.Paid,
+                    customerOrder.getCustomer().getEmail(), true);
             return "redirect:/checkouts-step3?transactionId=" + transaction.getId();
         } else {
 
-            customerOrderService.addPaymentStatus(customerOrder, customerOrder.getTotalAmount(),false, "falha",
-            new StringBuilder()
-            .append("----- result -----\n")
-            .append(gson.toJson(result))
-            .toString(),
-             customerOrder.getCustomer().getEmail());
+            customerOrderService.addPaymentStatus(customerOrder, customerOrder.getTotalAmount(), false, "falha",
+                    new StringBuilder().append("----- result -----\n").append(gson.toJson(result)).toString(),
+                    customerOrder.getCustomer().getEmail());
 
             StringBuilder errorString = new StringBuilder();
             for (ValidationError error : result.getErrors().getAllDeepValidationErrors()) {
@@ -545,7 +594,8 @@ public class WebStoreController {
             customerOrderService.update(customerOrder, customer.getEmail());
             session.removeAttribute("product");
             session.removeAttribute("quantity");
-            customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.PaymentWait,customerOrder.getCustomer().getEmail(),true);
+            customerOrderService.changeOrderStatus(customerOrder, CustomerOrderStatus.PaymentWait,
+                    customerOrder.getCustomer().getEmail(), true);
         } else {
 
             if (kartService.countKart(session.getAttribute("cartId").toString()) > 0) {
@@ -576,7 +626,8 @@ public class WebStoreController {
 
                     customerOrder.getCustomerOrderItems().add(customerOrderProductItem);
                     customerOrderService.update(customerOrder, customer.getEmail());
-                    customerOrderService.changeOrderStatus(customerOrder,CustomerOrderStatus.PaymentWait,customerOrder.getCustomer().getEmail(),true);
+                    customerOrderService.changeOrderStatus(customerOrder, CustomerOrderStatus.PaymentWait,
+                            customerOrder.getCustomer().getEmail(), true);
 
                 }
 
