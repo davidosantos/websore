@@ -1,6 +1,7 @@
 package com.davidosantos.webstore;
 
 import com.davidosantos.webstore.security.WebStoreUserDatailsService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -56,7 +57,10 @@ public class WebstoreApplication extends WebSecurityConfigurerAdapter {
         .and()
         .formLogin()
         .loginPage("/login")
-        .permitAll();
+        .permitAll()
+        .and()
+        .rememberMe();
+
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS);
     }

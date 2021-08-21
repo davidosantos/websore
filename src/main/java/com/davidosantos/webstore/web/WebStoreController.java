@@ -132,6 +132,11 @@ public class WebStoreController {
         return "login";
     }
 
+    @RequestMapping("/register")
+    public String registerPage(){
+        return "register";
+    }
+
     @RequestMapping("/produtos")
     public String productPage(HttpSession session, @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "") String categoryId,
