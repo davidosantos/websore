@@ -5,90 +5,92 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
-.ftco-no-pb {
-  padding-bottom: 0; }
-
-.heading-section {
-  font-size: 28px;
-  color: #000; }
-  .heading-section small {
-    font-size: 18px; }
-
-.img {
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center; }
-
-.navbar {
-  padding: 15px 10px;
-  background: #fff;
-  border: none;
-  border-radius: 0;
-  margin-bottom: 40px;
-  -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); }
-
-.navbar-btn {
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  outline: none !important;
-  border: none; }
-
 .wrapper {
-  width: 100%; }
+    width: 100%;
+}
 
 #sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  background: rgba(28, 33, 40);
-  color: rgb(20, 19, 17);
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  transition: all 0.3s;
-  position: relative; }
-  #sidebar .h6 {
-    color: #fff; }
-  #sidebar.active {
-    margin-left: -250px; }
-    #sidebar.active .custom-menu {
-      margin-right: -50px; }
-  #sidebar h1 {
+    min-width: 250px;
+    max-width: 250px;
+    background: rgba(28, 33, 40);
+    color: rgb(20, 19, 17);
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+    position: relative;
+}
+
+#sidebar .h6 {
+    color: #fff;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar.active .custom-menu {
+    margin-right: -50px;
+}
+
+#sidebar h1 {
     margin-bottom: 20px;
-    font-weight: 700; }
-    #sidebar h1 .logo {
-      color: #fff; }
-  #sidebar ul.components {
-    padding: 0; }
+    font-weight: 700;
+}
 
-    #sidebar b {
-      color: rgb(248, 246, 246);
-    }
+#sidebar h1 .logo {
+    color: #fff;
+}
 
-  #sidebar ul li {
-    font-size: 16px; }
-    #sidebar ul li > ul {
-      margin-left: 10px; }
-      #sidebar ul li > ul li {
-        font-size: 14px; }
-    #sidebar ul li a {
-      padding: 10px 0;
-      display: block;
-      color: rgb(248, 246, 246);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-      #sidebar ul li a:hover {
-        color: rgb(250, 244, 244); }
-    #sidebar ul li.active > a {
-      background: transparent;
-      color: rgb(240, 235, 235); }
-  @media (max-width: 991.98px) {
+#sidebar ul.components {
+    padding: 0;
+}
+
+#sidebar b {
+    color: rgb(248, 246, 246);
+}
+
+#sidebar ul li {
+    font-size: 16px;
+}
+
+#sidebar ul li>ul {
+    margin-left: 10px;
+}
+
+#sidebar ul li>ul li {
+    font-size: 14px;
+}
+
+#sidebar ul li a {
+    padding: 10px 0;
+    display: block;
+    color: rgb(248, 246, 246);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#sidebar ul li a:hover {
+    color: rgb(250, 244, 244);
+}
+
+#sidebar ul li.active>a {
+    background: transparent;
+    color: rgb(240, 235, 235);
+}
+
+@media (max-width: 991.98px) {
     #sidebar {
-      margin-left: -250px; }
-      #sidebar.active {
-        margin-left: 0; }
-      #sidebar .custom-menu {
+        margin-left: -250px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #sidebar .custom-menu {
         margin-right: -50px !important;
-        top: 10px !important; } }
-  #sidebar .custom-menu {
+        top: 10px !important;
+    }
+}
+
+#sidebar .custom-menu {
     display: inline-block;
     position: absolute;
     top: 20px;
@@ -96,78 +98,48 @@
     margin-right: -20px;
     -webkit-transition: 0.3s;
     -o-transition: 0.3s;
-    transition: 0.3s; }
-    @media (prefers-reduced-motion: reduce) {
-      #sidebar .custom-menu {
+    transition: 0.3s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #sidebar .custom-menu {
         -webkit-transition: none;
         -o-transition: none;
-        transition: none; } }
-    #sidebar .custom-menu .btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%; }
-      #sidebar .custom-menu .btn.btn-primary {
-        background: rgb(255, 255, 255);
-        color: rgb(0.0.0.0);
-        border-color: rgb(172, 163, 161); }
-        #sidebar .custom-menu .btn.btn-primary:hover, #sidebar .custom-menu .btn.btn-primary:focus {
-          background: rgb(185, 181, 179) !important;
-          border-color: rgb(172, 163, 161) !important; }
+        transition: none;
+    }
+}
+
+#sidebar .custom-menu .btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+#sidebar .custom-menu .btn.btn-primary {
+    background: rgb(255, 255, 255);
+    color: rgb(0.0.0.0);
+    border-color: rgb(172, 163, 161);
+}
+
+#sidebar .custom-menu .btn.btn-primary:hover,
+#sidebar .custom-menu .btn.btn-primary:focus {
+    background: rgb(185, 181, 179) !important;
+    border-color: rgb(172, 163, 161) !important;
+}
 
 a[data-toggle="collapse"] {
-  position: relative; }
-
-.dropdown-toggle::after {
-  display: block;
-  position: absolute;
-  top: 50%;
-  right: 0;
-  -webkit-transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%); }
-
-@media (max-width: 991.98px) {
-  #sidebarCollapse span {
-    display: none; } }
+    position: relative;
+}
 
 #content {
-  width: 100%;
-  padding: 0;
-  min-height: 100vh;
-  -webkit-transition: all 0.3s;
-  -o-transition: all 0.3s;
-  transition: all 0.3s; }
-
-.btn.btn-primary {
-  background: rgb(236,43,0);
-  border-color: rgb(236,43,0); }
-  .btn.btn-primary:hover, .btn.btn-primary:focus {
-    background: rgb(236,43,0) !important;
-    border-color: rgb(236,43,0) !important; }
+    width: 100%;
+    padding: 0;
+    min-height: 100vh;
+    -webkit-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
+}
 
 .footer p {
-  color: rgba(255, 255, 255, 0.5); }
-
-.form-control {
-  height: 40px !important;
-  background: #fff;
-  color: #000;
-  font-size: 13px;
-  border-radius: 4px;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  border: transparent; }
-  .form-control:focus, .form-control:active {
-    border-color: #000; }
-  .form-control::-webkit-input-placeholder {
-    /* Chrome/Opera/Safari */
-    color: rgba(0, 0, 0, 0.3); }
-  .form-control::-moz-placeholder {
-    /* Firefox 19+ */
-    color: rgba(0, 0, 0, 0.3); }
-  .form-control:-ms-input-placeholder {
-    /* IE 0+ */
-    color: rgba(0, 0, 0, 0.3); }
-  .form-control:-moz-placeholder {
-    /* Firefox 18- */
-    color: rgba(0, 0, 0, 0.3); }
+    color: rgba(255, 255, 255, 0.5);
+}

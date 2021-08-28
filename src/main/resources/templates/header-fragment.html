@@ -1,68 +1,372 @@
-<!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<html>
+<html lang="en">
 
 <head>
-    <title>TODO supply a title</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,
+      shrink-to-fit=no" />
 </head>
 
 <body>
-    <!-- loader  -->
-    <div class="loader_bg">
-        <div class="loader"><img th:src="@{/images/loading.gif}" alt="#" /></div>
-    </div>
-    <!-- end loader -->
-    <!-- header -->
-    <header>
-        <!-- header inner -->
-        <div class="header">
+    <!--Menu for mobile-->
+    <nav class="navbar navbar-light navbar-expand
+      shadow
+      topbar
+      d-md-none
+      bg-dark
+      static-top">
 
-            <div class="container">
-                <div class="row">
-                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 justify-content-start">
-                        <div class="full">
-                            <div class="center-desk">
-                                <div class="logo">
-                                    <a th:href="@{/}"><img th:src="@{/images/logo.png}" alt="#"></a>
+        <div class="container-fluid">
+            <button class="btn d-md-none rounded-circle me-3 text-white" id="sidebarToggleTop" type="button">
+                <i class="fa fa-bars"></i>
+            </button>
+            <ul class="navbar-nav flex-nowrap ms-auto">
+                <li class="nav-item dropdown d-md-none position-static">
+                    <!-- Pesquisa no celulcar -->
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" aria-haspopup="true" data-bs-toggle="dropdown"
+                            class="dropdown-toggle nav-link" href="#">
+                            <i class="fa fa-search text-white" style="font-size:x-large"></i>
+                        </a>
+                        <div class="dropdown-menu mt-0 w-100 shadow border-outline-success animated--grow-in">
+                            <form method="POST" action="/" class="px-1 py-1">
+
+                                <div class="input-group">
+                                    <input class="bg-light form-control" type="text" placeholder="Pesquisar por..." />
+                                    <div class="input-group-append">
+                                        <button type="submit" class="input-group-text bg-light border-0 small"
+                                            style="font-size: x-large; border-radius: 0px;">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown d-none d-md-none">
+                    <a class="dropdown-toggle nav-link" aria-expanded="true" data-bs-toggle="dropdown" href="#"><i
+                            class="fas fa-search"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in"
+                        aria-labelledby="searchDropdown">
+                        <form class="me-auto navbar-search w-100">
+                            <div class="input-group">
+                                <input class="bg-light form-control border-0 small" type="text"
+                                    placeholder="Pesquisar por ..." />
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary py-0" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" data-bs-toggle="dropdown" class="dropdown-toggle nav-link" href="#">
+                            <span class="badge bg-danger badge-counter">3</span>
+                            <i class="fa fa-bell fa-fw text-white" style="font-size:x-large"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-list
+                animated--grow-in">
+                            <h6 class="dropdown-header">alerts center</h6>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="me-3">
+                                    <div class="bg-primary icon-circle">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="small text-gray-500">December 12, 2019</span>
+                                    <p>A new monthly report is ready to download!</p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="me-3">
+                                    <div class="bg-success icon-circle">
+                                        <i class="fas fa-donate text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="small text-gray-500">December 7, 2019</span>
+                                    <p>$290.29 has been deposited into your account!</p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="me-3">
+                                    <div class="bg-warning icon-circle">
+                                        <i class="fas fa-exclamation-triangle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="small text-gray-500">December 2, 2019</span>
+                                    <p>
+                                        Spending Alert: We&#39;ve noticed unusually high spending for your account.
+                                    </p>
+                                </div>
+                            </a><a class="dropdown-item text-center small text-gray-500" href="#">Show
+                                All Alerts</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <!-- Itens de Carrinho -->
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" data-bs-toggle="dropdown" class="dropdown-toggle nav-link" href="#">
+                            <span class="badge bg-danger badge-counter">7</span>
+                            <i class="fa fa-shopping-cart fa-fw text-white" style="font-size:x-large"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in">
+
+                            <div class="dropdown-header">
+                                <span class="lighter-text">Total:</span>
+                                <span class="main-color-text">$2,229.97</span>
+                            </div>
+
+                            <ul class="dropdown-item">
+                                <li class="clearfix">
+                                    <span class="text-gray-400">Sony DSC-RX10</span></br>
+                                    <span class="text-gray-400">R$849.99</span>
+                                    <span class="text-gray-400">Qtd.: 01</span>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li class="clearfix">
+                                    <span class="text-gray-400">Sony DSC-RX10</span></br>
+                                    <span class="text-gray-400">R$849.99</span>
+                                    <span class="text-gray-400">Qtd.: 01</span>
+                                </li>
+
+                            </ul>
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="/checkout" class="btn btn-danger">Finalizar</a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="/carrinho" class="btn btn-dark">Editar</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10">
-                        <div class="menu-area">
-                            <div class="limit-box">
-                                <nav class="main-menu">
-                                    <ul class="menu-area-main">
-                                        <li class="active"> <a th:href="@{/}">Home</a> </li>
-                                        <li><a href="#contact">Contato</a></li>
-                                        <li>
-                                            <a th:href="@{/carrinho}"
-                                            class="btn p-1">
-                                                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-                                                Carrinho
-                                                <span class="badge badge-pill badge-danger"
-                                                th:if="${#lists.size(kart.items) > 0}"
-                                                th:text="${#lists.size(kart.items)}">3</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                    <div class="shadow dropdown-list dropdown-menu dropdown-menu-end" aria-labelledby="alertsDropdown">
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow">
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" data-bs-toggle="dropdown" class="dropdown-toggle
+                nav-link" href="#">
+                            <i class="fa fa-user fa-fw text-white" style="font-size:x-large"></i>
+                            <span class="d-none d-lg-inline me-2 text-white small">user
+                            </span>
+                        </a>
+                        <div class="dropdown-menu shadow dropdown-menu-end
+                animated--grow-in">
+                            <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm
+                    fa-fw me-2 text-gray-400"></i> Profile</a><a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm
+                    fa-fw me-2 text-gray-400"></i> Settings</a><a class="dropdown-item" href="#"><i class="fas fa-list fa-sm
+                    fa-fw me-2 text-gray-400"></i> Activity log</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"><i
+                                    class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
+                                Logout</a>
+                            <span class="dropdown-item-text">Text Item</span>
+                            <span class="dropdown-item-text">Text Item</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!--Menu for desktop-->
+    <nav class="navbar navbar-light navbar-expand
+    bg-white
+    shadow
+    topbar
+    d-none d-md-flex
+    static-top" style="background-image: url('images/hea.png');
+    background-repeat: no-repeat; background-size: cover; background-position:
+    center center;">
+
+        <div class="container-fluid">
+            <button class="btn d-md-none rounded-circle me-3 text-white" id="sidebarToggleTop" type="button">
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="d-none d-md-flex">
+                <a th:href="@{/}"><img th:src="@{/images/logo.png}" alt="#" width="200px" height="60px"></a>
+            </div>
+            <ul class="navbar-nav flex-nowrap ms-auto">
+                <li class="nav-item mx-2 d-none d-md-flex">
+                    <!-- Pesquisa no PC -->
+                    <form class="me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0 small" type="text"
+                                placeholder="Pesquisar por..." />
+                            <div class="input-group-append">
+                                <span class="input-group-text bg-light border-0 small"
+                                    style="font-size: x-large; border-radius: 0px;">
+                                    <i class="fa fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item dropdown d-md-none position-static">
+                    <!-- Pesquisa no celulcar -->
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" aria-haspopup="true" data-bs-toggle="dropdown"
+                            class="dropdown-toggle nav-link" href="#">
+                            <i class="fa fa-search text-white" style="font-size:x-large"></i>
+                        </a>
+                        <div class="dropdown-menu mt-0 w-100 shadow border-outline-success animated--grow-in">
+                            <form method="POST" action="/" class="px-1 py-1">
+
+                                <div class="input-group">
+                                    <input class="bg-light form-control" type="text" placeholder="Pesquisar por..." />
+                                    <div class="input-group-append">
+                                        <button type="submit" class="input-group-text bg-light border-0 small"
+                                            style="font-size: x-large; border-radius: 0px;">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item m-2 d-none d-md-inline-block"><a class="text-white" th:href="@{/}">Home</a></li>
+                <li class="nav-item m-2 d-none d-md-inline-block"><a class="text-white" href="#contact">Contato</a></li>
+                <li class="nav-item dropdown d-none d-md-none">
+                    <a class="dropdown-toggle nav-link" aria-expanded="true" data-bs-toggle="dropdown" href="#"><i
+                            class="fas fa-search"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in"
+                        aria-labelledby="searchDropdown">
+                        <form class="me-auto navbar-search w-100">
+                            <div class="input-group">
+                                <input class="bg-light form-control border-0 small" type="text"
+                                    placeholder="Pesquisar por ..." />
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary py-0" type="button">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" data-bs-toggle="dropdown" class="dropdown-toggle nav-link" href="#">
+                            <span class="badge bg-danger badge-counter">3</span>
+                            <i class="fa fa-bell fa-fw text-white" style="font-size:x-large"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-list
+              animated--grow-in">
+                            <h6 class="dropdown-header">alerts center</h6>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="me-3">
+                                    <div class="bg-primary icon-circle">
+                                        <i class="fas fa-file-alt text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="small text-gray-500">December 12, 2019</span>
+                                    <p>A new monthly report is ready to download!</p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="me-3">
+                                    <div class="bg-success icon-circle">
+                                        <i class="fas fa-donate text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="small text-gray-500">December 7, 2019</span>
+                                    <p>$290.29 has been deposited into your account!</p>
+                                </div>
+                            </a>
+                            <a class="dropdown-item d-flex align-items-center" href="#">
+                                <div class="me-3">
+                                    <div class="bg-warning icon-circle">
+                                        <i class="fas fa-exclamation-triangle text-white"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="small text-gray-500">December 2, 2019</span>
+                                    <p>
+                                        Spending Alert: We&#39;ve noticed unusually high spending for your account.
+                                    </p>
+                                </div>
+                            </a><a class="dropdown-item text-center small text-gray-500" href="#">Show
+                                All Alerts</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <!-- Itens de Carrinho -->
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" data-bs-toggle="dropdown" class="dropdown-toggle nav-link" href="#">
+                            <span class="badge bg-danger badge-counter">7</span>
+                            <i class="fa fa-shopping-cart fa-fw text-white" style="font-size:x-large"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in">
+
+                            <div class="dropdown-header">
+                                <span class="lighter-text">Total:</span>
+                                <span class="main-color-text">$2,229.97</span>
+                            </div>
+
+                            <ul class="dropdown-item">
+                                <li class="clearfix">
+                                    <span class="text-gray-400">Sony DSC-RX10</span></br>
+                                    <span class="text-gray-400">R$849.99</span>
+                                    <span class="text-gray-400">Qtd.: 01</span>
+                                </li>
+                                <div class="dropdown-divider"></div>
+                                <li class="clearfix">
+                                    <span class="text-gray-400">Sony DSC-RX10=============</span></br>
+                                    <span class="text-gray-400">R$849.99</span>
+                                    <span class="text-gray-400">Qtd.: 01</span>
+                                </li>
+
+                            </ul>
+                            <div class="row">
+                                <div class="col-6">
+                                    <a href="/checkout" class="btn btn-danger m-1">Finalizar</a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="/carrinho" class="btn btn-dark m-1">Editar</a>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                </div>
-            </div>
+                    <div class="shadow dropdown-list dropdown-menu dropdown-menu-end" aria-labelledby="alertsDropdown">
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow">
+                    <div class="nav-item dropdown no-arrow">
+                        <a aria-expanded="false" data-bs-toggle="dropdown" class="dropdown-toggle
+              nav-link" href="#">
+                            <i class="fa fa-user fa-fw text-white" style="font-size:x-large"></i>
+                            <span class="d-none d-lg-inline me-2 text-white small">user
+                            </span>
+                        </a>
+                        <div class="dropdown-menu shadow dropdown-menu-end
+              animated--grow-in">
+                            <a class="dropdown-item" href="#"><i class="fas fa-user fa-sm
+                  fa-fw me-2 text-gray-400"></i> Profile</a><a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm
+                  fa-fw me-2 text-gray-400"></i> Settings</a><a class="dropdown-item" href="#"><i class="fas fa-list fa-sm
+                  fa-fw me-2 text-gray-400"></i> Activity log</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#"><i
+                                    class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>
+                                Logout</a>
+                            <span class="dropdown-item-text">Text Item</span>
+                            <span class="dropdown-item-text">Text Item</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
-        <!-- end header inner -->
-    </header>
-    <!-- end header -->
+    </nav>
 </body>
 
 </html>
