@@ -5,7 +5,7 @@
     <title>Imporium Tech - Home</title>
 
     <div th:replace="~{global-header-includes}"></div>
-    
+
 </head>
 <!-- body -->
 
@@ -15,7 +15,8 @@
         <div id="myCarousel" class="carousel slide banner-main" data-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active carousel-size col-sm-12 col-md-12 col-lg-12 p-0">
-                    <img class="first-slide img-fluid fit-image imgfit" th:src="@{/images/banner.jpg}" alt="first slide">
+                    <img class="first-slide img-fluid fit-image imgfit" th:src="@{/images/banner.jpg}"
+                        alt="first slide">
                     <div class="container">
                         <div class="carousel-caption relative">
                             <span>All New Phones </span>
@@ -52,7 +53,7 @@
         </div>
     </section>
 
-   
+
 
     <div th:insert="sidebar.html :: insertAtContent(~{fragment-about :: body}) "></div>
 
@@ -75,7 +76,8 @@
                         <a th:href="@{/detalhes} + '?id=' + ${product.id}">
                             <div class="brand_box">
                                 <div class="row brand_box_product">
-                                    <img class="img-fluid mx-auto d-block imgfit" th:if="${#lists.size(product.imagesId) > 0}"
+                                    <img class="img-fluid mx-auto d-block imgfit"
+                                        th:if="${#lists.size(product.imagesId) > 0}"
                                         th:src="'/images/downloadDecoded/' + ${product.imagesId[0]}" alt="img" />
                                 </div>
                                 <div class="row brand_box_product_details">
@@ -207,52 +209,32 @@
     <!-- Javascript files-->
     <div th:replace="global-js-includes :: script"></div>
 
-    <script>
-        $(document).ready(function () {
-            $(".fancybox").fancybox({
-                openEffect: "none",
-                closeEffect: "none"
-            });
-
-            $(".zoom").hover(function () {
-
-                $(this).addClass('transition');
-            }, function () {
-
-                $(this).removeClass('transition');
-            });
-        });
-
-    </script>
-    <script>
-        (function ($) {
-
-            "use strict";
-
-            var fullHeight = function () {
-
-                $('.js-fullheight').css('height', $(window).height());
-                $(window).resize(function () {
-                    $('.js-fullheight').css('height', $(window).height());
-                });
-
-            };
-            fullHeight();
-
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-            });
-
-        })(jQuery);
-
-    </script>
-
-    <script>
-        $('#sidebarToggleBtn').click(function () {
-            $(this).toggleClass("click");
-            $('#sidebar').toggleClass("show");
-        });
-    </script>
+       <!-- Javascript files-->
+       <script src="js/jquery.min.js"></script>
+       <script src="js/popper.min.js"></script>
+       <script src="js/jquery-3.0.0.min.js"></script>
+       <script src="js/plugin.js"></script>
+       <!-- sidebar -->
+       <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+       <script src="js/custom.js"></script>
+       <!-- javascript -->
+       <script src="js/owl.carousel.js"></script>
+       <script>
+           $(document).ready(function() {
+               $(".fancybox").fancybox({
+                   openEffect: "none",
+                   closeEffect: "none"
+               });
+   
+               $(".zoom").hover(function() {
+   
+                   $(this).addClass('transition');
+               }, function() {
+   
+                   $(this).removeClass('transition');
+               });
+           });
+       </script>
 </body>
 
 </html>

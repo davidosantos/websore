@@ -2490,3 +2490,9 @@ ul.location_icon span {
     height: fit-content;
     width: fit-content;
 }
+
+.dropdown-menu-center {
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-70%, 0) !important;
+  }
